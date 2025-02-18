@@ -1,49 +1,85 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Webcam from "react-webcam";
 import { invoke } from "@tauri-apps/api/core";
+import { fetch } from "@tauri-apps/plugin-http";
 import "./App.css";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [text, setText] = useState("");
+  const webcamRef = useRef<Webcam | null>(null);
+  const videoConstraints = {
+    facingMode: { exact: "environment" },
+    height: 99999,
+    width: 99999,
+  };
+
+  useEffect(() => {
+    console.log("test");
+  });
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
+    setText(await invoke("Hello"));
   }
+
+  const doMagic = useCallback(async () => {
+    if (webcamRef.current === null) return;
+
+    const base64Image = webcamRef.current.getScreenshot();
+
+    if (base64Image === null) return;
+
+    setText("Processing...");
+
+    console.log(base64Image);
+
+    const response = await fetch(
+      "https://ollama-minicpm-v-31109354798.us-central1.run.app/api/generate",
+      {
+        method: "POST",
+        // TODO: Remove when we add OLLAMA_ORIGINS
+        // https://github.com/tauri-apps/plugins-workspace/issues/1968
+        headers: {
+          Origin: "",
+        },
+        body: JSON.stringify({
+          model: "minicpm-v:8b-2.6-q4_K_M",
+          prompt: "Transcribe this image.",
+          // Slice to remove `data:image/jpeg;base64,`
+          images: [base64Image.slice(23)],
+          options: {
+            temperature: 0.01,
+            top_k: 100,
+            top_p: 0.8,
+          },
+          stream: false,
+        }),
+      },
+    );
+
+    console.dir(response);
+
+    setText((await response.json()).response);
+  }, [webcamRef]);
+
+  navigator.mediaDevices.getUserMedia({
+    video: videoConstraints,
+    audio: true,
+  });
 
   return (
     <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+      <Webcam
+        ref={webcamRef}
+        screenshotFormat="image/jpeg"
+        videoConstraints={videoConstraints}
+      />
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      <button type="submit" onClick={doMagic}>
+        Transcribe
+      </button>
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
+      <pre>{text}</pre>
     </main>
   );
 }
