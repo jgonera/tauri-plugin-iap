@@ -52,6 +52,10 @@ button {
   outline: none;
 }
 
+canvas {
+  display: none;
+}
+
 pre {
   width: 100%;
   overflow-wrap: break-word;

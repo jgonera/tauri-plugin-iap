@@ -1,37 +1,56 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Webcam from "react-webcam";
-import { invoke } from "@tauri-apps/api/core";
 import { fetch } from "@tauri-apps/plugin-http";
 import "./App.css";
 
 function App() {
   const [text, setText] = useState("");
-  const webcamRef = useRef<Webcam | null>(null);
-  const videoConstraints = {
-    facingMode: { exact: "environment" },
-    height: 99999,
-    width: 99999,
-  };
+  const [imageData, setImageData] = useState<string | null>(null);
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  useEffect(() => {
-    console.log("test");
-  });
+  async function setVideoSource() {
+    if (videoRef.current === null) return;
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setText(await invoke("Hello"));
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        facingMode: { exact: "environment" },
+        height: 9999,
+        width: 9999,
+      },
+    });
+
+    const settings = stream.getVideoTracks()[0].getSettings();
+
+    if (!settings.height || !settings.width) {
+      throw new Error("Missing width and/or height of video stream!");
+    }
+
+    videoRef.current.srcObject = stream;
+    setHeight(settings.height);
+    setWidth(settings.width);
+
+    console.log(`Video resolution: ${settings.width}x${settings.height}`);
   }
 
+  useEffect(() => {
+    setVideoSource();
+  }, [setHeight, setWidth, videoRef]);
+
   const doMagic = useCallback(async () => {
-    if (webcamRef.current === null) return;
+    if (canvasRef.current === null || videoRef.current === null) return;
 
-    const base64Image = webcamRef.current.getScreenshot();
+    const canvas = canvasRef.current;
 
-    if (base64Image === null) return;
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    context?.drawImage(videoRef.current, 0, 0, width, height);
 
-    setText("Processing...");
-
-    console.log(base64Image);
+    const dataURL = canvas.toDataURL("image/jpeg", 0.75);
+    setImageData(dataURL);
 
     const response = await fetch(
       "https://ollama-minicpm-v-31109354798.us-central1.run.app/api/generate",
@@ -46,7 +65,7 @@ function App() {
           model: "minicpm-v:8b-2.6-q4_K_M",
           prompt: "Transcribe this image.",
           // Slice to remove `data:image/jpeg;base64,`
-          images: [base64Image.slice(23)],
+          images: [dataURL.slice(23)],
           options: {
             temperature: 0.01,
             top_k: 100,
@@ -60,24 +79,18 @@ function App() {
     console.dir(response);
 
     setText((await response.json()).response);
-  }, [webcamRef]);
-
-  navigator.mediaDevices.getUserMedia({
-    video: videoConstraints,
-    audio: true,
-  });
+  }, [height, width]);
 
   return (
     <main className="container">
-      <Webcam
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        videoConstraints={videoConstraints}
-      />
+      <video ref={videoRef} autoPlay />
+      <canvas ref={canvasRef} />
 
       <button type="submit" onClick={doMagic}>
         Transcribe
       </button>
+
+      {imageData && <img src={imageData} />}
 
       <pre>{text}</pre>
     </main>
