@@ -29,8 +29,17 @@ function App() {
     }
 
     videoRef.current.srcObject = stream;
-    setHeight(settings.height);
-    setWidth(settings.width);
+
+    const { height, width } = settings;
+
+    if (height > width) {
+      setHeight(height);
+      setWidth(width);
+    } else {
+      // This might be only needed in dev because of React strict mode
+      setHeight(width);
+      setWidth(height);
+    }
 
     console.log(`Video resolution: ${settings.width}x${settings.height}`);
   }
@@ -52,33 +61,35 @@ function App() {
     const dataURL = canvas.toDataURL("image/jpeg", 0.75);
     setImageData(dataURL);
 
-    const response = await fetch(
-      "https://ollama-minicpm-v-31109354798.us-central1.run.app/api/generate",
-      {
-        method: "POST",
-        // TODO: Remove when we add OLLAMA_ORIGINS
-        // https://github.com/tauri-apps/plugins-workspace/issues/1968
-        headers: {
-          Origin: "",
-        },
-        body: JSON.stringify({
-          model: "minicpm-v:8b-2.6-q4_K_M",
-          prompt: "Transcribe this image.",
-          // Slice to remove `data:image/jpeg;base64,`
-          images: [dataURL.slice(23)],
-          options: {
-            temperature: 0.01,
-            top_k: 100,
-            top_p: 0.8,
-          },
-          stream: false,
-        }),
-      },
-    );
-
-    console.dir(response);
-
-    setText((await response.json()).response);
+    // setText("Processing...");
+    //
+    // const response = await fetch(
+    //   "https://ollama-minicpm-v-31109354798.us-central1.run.app/api/generate",
+    //   {
+    //     method: "POST",
+    //     // TODO: Remove when we add OLLAMA_ORIGINS
+    //     // https://github.com/tauri-apps/plugins-workspace/issues/1968
+    //     headers: {
+    //       Origin: "",
+    //     },
+    //     body: JSON.stringify({
+    //       model: "minicpm-v:8b-2.6-q4_K_M",
+    //       prompt: "Transcribe this image.",
+    //       // Slice to remove `data:image/jpeg;base64,`
+    //       images: [dataURL.slice(23)],
+    //       options: {
+    //         temperature: 0.01,
+    //         top_k: 100,
+    //         top_p: 0.8,
+    //       },
+    //       stream: false,
+    //     }),
+    //   },
+    // );
+    //
+    // console.dir(response);
+    //
+    // setText((await response.json()).response);
   }, [height, width]);
 
   return (
