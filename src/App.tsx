@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { save } from "@tauri-apps/plugin-dialog";
 import { writeFile } from "@tauri-apps/plugin-fs";
-import { fetch } from "@tauri-apps/plugin-http";
+
+import performMockOCR from "./ocr/mock";
+import performRemoteOCR from "./ocr/remote";
+
 import "./App.css";
 
 // TODO: Use `Uint8Array.fromBase64() when
@@ -89,35 +92,8 @@ function App() {
       await writeFile(path, base64ToArrayBuffer(dataURL.slice(23)));
     }
 
-    // setText("Processing...");
-    //
-    // const response = await fetch(
-    //   "https://ollama-minicpm-v-31109354798.us-central1.run.app/api/generate",
-    //   {
-    //     method: "POST",
-    //     // TODO: Remove when we add OLLAMA_ORIGINS
-    //     // https://github.com/tauri-apps/plugins-workspace/issues/1968
-    //     headers: {
-    //       Origin: "",
-    //     },
-    //     body: JSON.stringify({
-    //       model: "minicpm-v:8b-2.6-q4_K_M",
-    //       prompt: "Transcribe this image.",
-    //       // Slice to remove `data:image/jpeg;base64,`
-    //       images: [dataURL.slice(23)],
-    //       options: {
-    //         temperature: 0.01,
-    //         top_k: 100,
-    //         top_p: 0.8,
-    //       },
-    //       stream: false,
-    //     }),
-    //   },
-    // );
-    //
-    // console.dir(response);
-    //
-    // setText((await response.json()).response);
+    setText("Processing...");
+    setText(await performMockOCR(dataURL));
   }, [height, width]);
 
   return (
