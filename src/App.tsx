@@ -1,22 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { save } from "@tauri-apps/plugin-dialog";
-import { writeFile } from "@tauri-apps/plugin-fs";
 
-import performMockOCR from "./ocr/mock";
-import performRemoteOCR from "./ocr/remote";
+import performMockOCR from "@/ocr/mock";
+import performRemoteOCR from "@/ocr/remote";
 
 import "./App.css";
-
-// TODO: Use `Uint8Array.fromBase64() when
-// https://issues.chromium.org/issues/42204568 is implemented.
-function base64ToArrayBuffer(base64: string) {
-  const binaryString = atob(base64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes;
-}
 
 function App() {
   const [text, setText] = useState("");
@@ -76,21 +63,6 @@ function App() {
 
     const dataURL = canvas.toDataURL("image/jpeg", 0.75);
     setImageData(dataURL);
-
-    const path = await save({
-      defaultPath: "test.jpeg",
-      filters: [
-        {
-          name: "My Filter",
-          extensions: ["png", "jpeg"],
-        },
-      ],
-    });
-    console.log(path);
-
-    if (path !== null) {
-      await writeFile(path, base64ToArrayBuffer(dataURL.slice(23)));
-    }
 
     setText("Processing...");
     setText(await performMockOCR(dataURL));
