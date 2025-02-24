@@ -1,31 +1,31 @@
-import { useCallback, useRef, useState } from "react";
+import "./App.css"
 
-import Camera, { CameraHandle } from "@/components/Camera";
-import performMockOCR from "@/ocr/mock";
-import performRemoteOCR from "@/ocr/remote";
+import { useCallback, useRef, useState } from "react"
 
-import "./App.css";
+import Camera, { CameraHandle } from "@/components/Camera"
+import performMockOCR from "@/ocr/mock"
+// import performRemoteOCR from "@/ocr/remote";
 
 function App() {
-  const cameraRef = useRef<CameraHandle | null>(null);
-  const [text, setText] = useState("");
-  const [imageData, setImageData] = useState<string | null>(null);
+  const cameraRef = useRef<CameraHandle | null>(null)
+  const [text, setText] = useState("")
+  const [imageData, setImageData] = useState<string | null>(null)
 
   const doMagic = useCallback(async () => {
-    if (cameraRef.current === null) return;
+    if (cameraRef.current === null) return
 
-    const dataURL = cameraRef.current.capture();
+    const dataURL = cameraRef.current.capture()
 
-    setImageData(dataURL);
-    setText("Processing...");
-    setText(await performMockOCR(dataURL));
-  }, [setText]);
+    setImageData(dataURL)
+    setText("Processing...")
+    setText(await performMockOCR(dataURL))
+  }, [setText])
 
   return (
     <main className="container">
       <Camera ref={cameraRef} />
 
-      <button type="submit" onClick={doMagic}>
+      <button type="submit" onClick={() => void doMagic()}>
         Transcribe
       </button>
 
@@ -33,7 +33,7 @@ function App() {
 
       <pre>{text}</pre>
     </main>
-  );
+  )
 }
 
-export default App;
+export default App

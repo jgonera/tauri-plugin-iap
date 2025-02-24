@@ -1,4 +1,4 @@
-import { fetch } from "@tauri-apps/plugin-http";
+import { fetch } from "@tauri-apps/plugin-http"
 
 export default async function performRemoteOCR(imageDataURL: string) {
   const response = await fetch(
@@ -23,9 +23,9 @@ export default async function performRemoteOCR(imageDataURL: string) {
         stream: false,
       }),
     },
-  );
+  )
 
-  console.dir(response);
+  console.dir(response)
 
-  return (await response.json()).response;
+  return ((await response.json()) as { response: string }).response
 }
