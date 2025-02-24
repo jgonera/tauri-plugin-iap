@@ -4,7 +4,8 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "strictNullChecks": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["eslint.config.ts", "prettier.config.ts", "vite.config.ts"]
 }

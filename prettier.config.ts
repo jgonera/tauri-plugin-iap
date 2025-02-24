@@ -1,8 +1,6 @@
 import { type Config } from "prettier"
 import prettierConfigJgonera from "prettier-config-jgonera"
 
-const config: Config = {
+export default {
   ...prettierConfigJgonera,
-}
-
-export default config
+} satisfies Config
