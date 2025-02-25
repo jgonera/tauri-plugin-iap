@@ -70,7 +70,7 @@ export default React.forwardRef<CameraHandle>((_, ref) => {
   return (
     <>
       <canvas ref={canvasRef} />
-      <video ref={videoRef} autoPlay />
+      <video ref={videoRef} autoPlay playsInline />
     </>
   )
 })
