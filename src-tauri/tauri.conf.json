@@ -2,7 +2,7 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "scanner-app",
   "version": "0.1.0",
-  "identifier": "com.scanner-app.app",
+  "identifier": "com.juliuszgonera.scanner.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -30,6 +30,9 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "iOS": {
+      "developmentTeam": "PQ7386D5U4"
+    }
   }
 }
