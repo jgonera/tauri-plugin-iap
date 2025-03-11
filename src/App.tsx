@@ -1,6 +1,7 @@
 import "./App.css"
 
 import { useCallback, useRef, useState } from "react"
+import { Link } from "react-router"
 
 import Camera, { CameraHandle } from "@/components/Camera"
 import performMockOCR from "@/ocr/mock"
@@ -28,6 +29,7 @@ function App() {
       <button type="submit" onClick={() => void doMagic()}>
         Transcribe
       </button>
+      <Link to="/new">New</Link>
 
       {imageData && <img src={imageData} />}
 
