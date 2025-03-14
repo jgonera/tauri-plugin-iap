@@ -1,41 +1,22 @@
-import "./App.css"
+import React from "react"
+import { RouterProvider } from "react-aria-components"
+import { Route, Routes, useHref, useNavigate } from "react-router"
 
-import { useCallback, useRef, useState } from "react"
-import { Link } from "react-router"
+import Doc from "@/Doc"
+import List from "@/List"
 
-import Camera, { CameraHandle } from "@/components/Camera"
-import performMockOCR from "@/ocr/mock"
-// import performRemoteOCR from "@/ocr/remote";
-
-function App() {
-  const cameraRef = useRef<CameraHandle | null>(null)
-  const [text, setText] = useState("")
-  const [imageData, setImageData] = useState<string | null>(null)
-
-  const doMagic = useCallback(async () => {
-    if (cameraRef.current === null) return
-
-    const dataURL = cameraRef.current.capture()
-
-    setImageData(dataURL)
-    setText("Processing...")
-    setText(await performMockOCR(dataURL))
-  }, [setText])
+export default function App() {
+  const navigate = useNavigate()
 
   return (
-    <main className="container">
-      <Camera ref={cameraRef} />
-
-      <button type="submit" onClick={() => void doMagic()}>
-        Transcribe
-      </button>
-      <Link to="/new">New</Link>
-
-      {imageData && <img src={imageData} />}
-
-      <pre>{text}</pre>
-    </main>
+    <React.StrictMode>
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+      <RouterProvider navigate={navigate} useHref={useHref}>
+        <Routes>
+          <Route path="/" element={<List />} />
+          <Route path="/new" element={<Doc />} />
+        </Routes>
+      </RouterProvider>
+    </React.StrictMode>
   )
 }
-
-export default App
