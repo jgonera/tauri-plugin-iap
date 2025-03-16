@@ -1,6 +1,6 @@
 import { fetch } from "@tauri-apps/plugin-http"
 
-export default async function performRemoteOCR(imageDataURL: string) {
+export default async function performRemoteOCR(base64Image: string) {
   const response = await fetch(
     "https://ollama-minicpm-v-31109354798.us-central1.run.app/api/generate",
     {
@@ -13,8 +13,7 @@ export default async function performRemoteOCR(imageDataURL: string) {
       body: JSON.stringify({
         model: "minicpm-v:8b-2.6-q4_K_M",
         prompt: "Transcribe this image.",
-        // Slice to remove `data:image/jpeg;base64,`
-        images: [imageDataURL.slice(23)],
+        images: [base64Image],
         options: {
           temperature: 0.01,
           top_k: 100,

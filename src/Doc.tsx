@@ -1,32 +1,34 @@
 import "./Doc.css"
 
-import { BaseDirectory, writeFile } from "@tauri-apps/plugin-fs"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useParams } from "react-router"
 
 import Camera, { CameraHandle } from "@/components/Camera"
-import performMockOCR from "@/ocr/mock"
-
-import { base64ToArrayBuffer } from "./util"
+import { addPage, createDoc, type Doc, getDoc } from "@/localStore"
+// import performMockOCR from "@/ocr/mock"
 // import performRemoteOCR from "@/ocr/remote";
 
 export default function Doc() {
+  const { id } = useParams()
   const cameraRef = useRef<CameraHandle | null>(null)
-  const [text, setText] = useState("")
-  const [imageData, setImageData] = useState<string | null>(null)
+  const [doc, setDoc] = useState<Doc | null>(null)
+
+  useEffect(() => {
+    void (async () => {
+      if (id === undefined) return
+
+      setDoc(await getDoc(id))
+    })()
+  }, [setDoc])
 
   const doMagic = useCallback(async () => {
     if (cameraRef.current === null) return
 
-    const dataURL = cameraRef.current.capture()
+    const { id } = doc ?? (await createDoc())
+    const base64Image = cameraRef.current.capture()
 
-    setImageData(dataURL)
-    setText("Processing...")
-    setText(await performMockOCR(dataURL))
-
-    await writeFile("docs/test.jpg", base64ToArrayBuffer(dataURL.slice(23)), {
-      baseDir: BaseDirectory.AppData,
-    })
-  }, [setText])
+    setDoc(await addPage(id, base64Image))
+  }, [setDoc])
 
   return (
     <main className="container">
@@ -36,9 +38,7 @@ export default function Doc() {
         Transcribe
       </button>
 
-      {imageData && <img src={imageData} />}
-
-      <pre>{text}</pre>
+      {doc?.pages.map((p) => <img src={p.imageURL} />)}
     </main>
   )
 }

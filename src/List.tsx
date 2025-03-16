@@ -1,23 +1,27 @@
-import { BaseDirectory, readDir } from "@tauri-apps/plugin-fs"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
+import { type Doc, getDocs } from "@/localStore"
+
 export default function List() {
-  const [entries, setEntries] = useState<string[]>([])
+  const [docs, setDocs] = useState<Doc[]>([])
 
   useEffect(() => {
     void (async () => {
-      const entries = await readDir(".", {
-        baseDir: BaseDirectory.AppData,
-      })
-      setEntries(entries.map((e) => e.name))
+      setDocs(await getDocs())
     })()
   })
 
   return (
     <>
-      <pre>{entries.map((e) => `${e}\n`)}</pre>
       <Link to="/new">New</Link>
+      <ul>
+        {docs.map((d) => (
+          <li>
+            <Link to={`/doc/${d.id}`}>{d.name}</Link>
+          </li>
+        ))}
+      </ul>
     </>
   )
 }

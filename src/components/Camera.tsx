@@ -63,7 +63,8 @@ export default React.forwardRef<CameraHandle>((_, ref) => {
       const context = canvas.getContext("2d")
       context?.drawImage(videoRef.current, 0, 0, width, height)
 
-      return canvas.toDataURL("image/jpeg", 0.75)
+      // Slice to remove `data:image/jpeg;base64,`
+      return canvas.toDataURL("image/jpeg", 0.75).slice(23)
     },
   }))
 

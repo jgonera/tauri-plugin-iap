@@ -8,57 +8,77 @@ import {
 import { v7 as uuidv7 } from "uuid"
 import { z } from "zod"
 
-import { base64ToArrayBuffer } from "./util"
+import { base64ToArrayBuffer } from "@/util"
 
-const PageSchema = z
+const RawPageSchema = z
   .object({
     id: z.string().uuid(),
   })
   .strict()
 
-type Page = z.infer<typeof PageSchema>
+const RawDocSchema = z
+  .object({
+    id: z.string().uuid(),
+    name: z.string(),
+    createdAt: z.string().datetime().pipe(z.coerce.date()),
+    updatedAt: z.string().datetime().pipe(z.coerce.date()),
+    pages: z.array(RawPageSchema),
+  })
+  .strict()
 
+type RawDoc = z.infer<typeof RawDocSchema>
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DocSchema = z
   .object({
     id: z.string().uuid(),
     name: z.string(),
     createdAt: z.string().datetime().pipe(z.coerce.date()),
     updatedAt: z.string().datetime().pipe(z.coerce.date()),
-    pages: z.array(PageSchema),
+    pages: z.array(
+      RawPageSchema.extend({ imageURL: z.string(), text: z.string() }),
+    ),
   })
   .strict()
 
-type Doc = z.infer<typeof DocSchema>
+export type Doc = z.infer<typeof DocSchema>
 
-async function updateDocs(docs: Doc[]): Promise<void> {
-  await writeTextFile("scribbleDocs.json", JSON.stringify(docs), {
+async function getRawDocs(): Promise<RawDoc[]> {
+  const rawDocsData = await readTextFile("scribbleDocs.json", {
     baseDir: BaseDirectory.AppData,
   })
+
+  return z.array(RawDocSchema).parse(JSON.parse(rawDocsData))
+}
+
+async function updateRawDocs(rawDocs: RawDoc[]): Promise<void> {
+  await writeTextFile("scribbleDocs.json", JSON.stringify(rawDocs), {
+    baseDir: BaseDirectory.AppData,
+  })
+}
+
+function augmentRawDoc(rawDoc: RawDoc): Doc {
+  return {
+    ...rawDoc,
+    pages: rawDoc.pages.map((p) => ({ ...p, imageURL: "", text: "" })),
+  }
 }
 
 export async function getDocs(): Promise<Doc[]> {
-  const docsFileText = await readTextFile("scribbleDocs.json", {
-    baseDir: BaseDirectory.AppData,
-  })
-
-  return z.array(DocSchema).parse(JSON.parse(docsFileText))
+  return (await getRawDocs()).map(augmentRawDoc)
 }
 
-export async function getDoc(id: string): Promise<Doc> {
-  const doc = (await getDocs()).find((d) => d.id === id)
+export async function getDoc(id: string): Promise<Doc | null> {
+  const doc = (await getRawDocs()).find((d) => d.id === id)
 
-  if (doc === undefined) {
-    throw new Error(`Can't find doc with id ${id}`)
-  }
-
-  return doc
+  return doc === undefined ? null : augmentRawDoc(doc)
 }
 
 export async function createDoc(): Promise<Doc> {
-  const docs = await getDocs()
+  const rawDocs = await getRawDocs()
   const now = new Date()
 
-  const doc = {
+  const rawDoc = {
     id: uuidv7(),
     name: `Scribble ${now.toISOString()}`,
     createdAt: now,
@@ -66,25 +86,25 @@ export async function createDoc(): Promise<Doc> {
     pages: [],
   }
 
-  await mkdir(`scribbleDocs/${doc.id}`, {
+  await mkdir(`scribbleDocs/${rawDoc.id}`, {
     baseDir: BaseDirectory.AppData,
     recursive: true,
   })
 
-  docs.push(doc)
-  await updateDocs(docs)
+  rawDocs.push(rawDoc)
+  await updateRawDocs(rawDocs)
 
-  return doc
+  return augmentRawDoc(rawDoc)
 }
 
 export async function addPage(
   docId: string,
   base64Image: string,
-): Promise<Page> {
-  const docs = await getDocs()
-  const doc = docs.find((d) => d.id === docId)
+): Promise<Doc> {
+  const rawDocs = await getRawDocs()
+  const rawDoc = rawDocs.find((d) => d.id === docId)
 
-  if (doc === undefined) {
+  if (rawDoc === undefined) {
     throw new Error(`Can't find doc with id ${docId}`)
   }
 
@@ -98,25 +118,25 @@ export async function addPage(
     },
   )
 
-  doc.pages.push(page)
-  await updateDocs(docs.map((d) => (d.id === docId ? doc : d)))
+  rawDoc.pages.push(page)
+  await updateRawDocs(rawDocs.map((d) => (d.id === docId ? rawDoc : d)))
 
-  return page
+  return augmentRawDoc(rawDoc)
 }
 
 export async function addPageText(
   docId: string,
   pageId: string,
   text: string,
-): Promise<Page> {
-  const docs = await getDocs()
-  const doc = docs.find((d) => d.id === docId)
+): Promise<Doc> {
+  const rawDocs = await getRawDocs()
+  const rawDoc = rawDocs.find((d) => d.id === docId)
 
-  if (doc === undefined) {
+  if (rawDoc === undefined) {
     throw new Error(`Can't find doc with id ${docId}`)
   }
 
-  const page = doc.pages.find((p) => p.id === pageId)
+  const page = rawDoc.pages.find((p) => p.id === pageId)
 
   if (page === undefined) {
     throw new Error(`Can't find page with id ${pageId} in doc ${docId}`)
@@ -126,5 +146,5 @@ export async function addPageText(
     baseDir: BaseDirectory.AppData,
   })
 
-  return page
+  return augmentRawDoc(rawDoc)
 }
