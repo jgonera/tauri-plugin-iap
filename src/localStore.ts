@@ -1,3 +1,5 @@
+import { convertFileSrc } from "@tauri-apps/api/core"
+import { appDataDir, join } from "@tauri-apps/api/path"
 import {
   BaseDirectory,
   exists,
@@ -10,6 +12,8 @@ import { v7 as uuidv7 } from "uuid"
 import { z } from "zod"
 
 import { base64ToArrayBuffer } from "@/util"
+
+const APP_DATA_DIR = await appDataDir()
 
 const RawPageSchema = z
   .object({
@@ -66,15 +70,26 @@ async function updateRawDocs(rawDocs: RawDoc[]): Promise<void> {
   })
 }
 
-function augmentRawDoc(rawDoc: RawDoc): Doc {
+async function augmentRawDoc(rawDoc: RawDoc): Promise<Doc> {
   return {
     ...rawDoc,
-    pages: rawDoc.pages.map((p) => ({ ...p, imageURL: "", text: "" })),
+    pages: await Promise.all(
+      rawDoc.pages.map(async (p) => ({
+        ...p,
+        imageURL: convertFileSrc(
+          await join(
+            APP_DATA_DIR,
+            `scribbleScan/docs/${rawDoc.id}/${p.id}.jpg`,
+          ),
+        ),
+        text: "",
+      })),
+    ),
   }
 }
 
 export async function getDocs(): Promise<Doc[]> {
-  return (await getRawDocs()).map(augmentRawDoc)
+  return await Promise.all((await getRawDocs()).map(augmentRawDoc))
 }
 
 export async function getDoc(id: string): Promise<Doc | null> {

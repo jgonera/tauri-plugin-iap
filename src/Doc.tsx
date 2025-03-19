@@ -38,7 +38,12 @@ export default function Doc() {
         Transcribe
       </button>
 
-      {doc?.pages.map((p) => <img key={p.id} src={p.imageURL} />)}
+      {doc?.pages.map((p) => (
+        <>
+          <img key={p.id} src={p.imageURL} />
+          {p.imageURL}
+        </>
+      ))}
     </main>
   )
 }
