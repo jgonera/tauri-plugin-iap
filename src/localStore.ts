@@ -1,5 +1,6 @@
 import {
   BaseDirectory,
+  exists,
   mkdir,
   readTextFile,
   writeFile,
@@ -44,7 +45,15 @@ const DocSchema = z
 export type Doc = z.infer<typeof DocSchema>
 
 async function getRawDocs(): Promise<RawDoc[]> {
-  const rawDocsData = await readTextFile("scribbleDocs.json", {
+  if (
+    !(await exists("scribbleScan/docs.json", {
+      baseDir: BaseDirectory.AppData,
+    }))
+  ) {
+    return []
+  }
+
+  const rawDocsData = await readTextFile("scribbleScan/docs.json", {
     baseDir: BaseDirectory.AppData,
   })
 
@@ -52,7 +61,7 @@ async function getRawDocs(): Promise<RawDoc[]> {
 }
 
 async function updateRawDocs(rawDocs: RawDoc[]): Promise<void> {
-  await writeTextFile("scribbleDocs.json", JSON.stringify(rawDocs), {
+  await writeTextFile("scribbleScan/docs.json", JSON.stringify(rawDocs), {
     baseDir: BaseDirectory.AppData,
   })
 }
@@ -86,7 +95,7 @@ export async function createDoc(): Promise<Doc> {
     pages: [],
   }
 
-  await mkdir(`scribbleDocs/${rawDoc.id}`, {
+  await mkdir(`scribbleScan/docs/${rawDoc.id}`, {
     baseDir: BaseDirectory.AppData,
     recursive: true,
   })
@@ -111,7 +120,7 @@ export async function addPage(
   const page = { id: uuidv7() }
 
   await writeFile(
-    `scribbleDocs/${docId}/${page.id}.jpg`,
+    `scribbleScan/docs/${docId}/${page.id}.jpg`,
     base64ToArrayBuffer(base64Image),
     {
       baseDir: BaseDirectory.AppData,
@@ -142,7 +151,7 @@ export async function addPageText(
     throw new Error(`Can't find page with id ${pageId} in doc ${docId}`)
   }
 
-  await writeTextFile(`scribbleDocs/${docId}/${pageId}.txt`, text, {
+  await writeTextFile(`scribbleScan/docs/${docId}/${pageId}.txt`, text, {
     baseDir: BaseDirectory.AppData,
   })
 

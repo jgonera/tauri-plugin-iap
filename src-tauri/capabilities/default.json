@@ -7,8 +7,14 @@
     "core:default",
     "dialog:default",
     "fs:default",
-    "fs:allow-write-file",
-    "fs:scope-app-recursive",
+    {
+      "identifier": "fs:read-all",
+      "allow": [ {"path": "$APPDATA/scribbleScan"}, { "path": "$APPDATA/scribbleScan/**" }]
+    },
+    {
+      "identifier": "fs:write-all",
+      "allow": [ {"path": "$APPDATA/scribbleScan"}, { "path": "$APPDATA/scribbleScan/**" }]
+    },
     {
       "identifier": "http:default",
       "allow": [
