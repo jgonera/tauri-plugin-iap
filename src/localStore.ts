@@ -41,7 +41,10 @@ const DocSchema = z
     createdAt: z.string().datetime().pipe(z.coerce.date()),
     updatedAt: z.string().datetime().pipe(z.coerce.date()),
     pages: z.array(
-      RawPageSchema.extend({ imageURL: z.string(), text: z.string() }),
+      RawPageSchema.extend({
+        imageURL: z.string(),
+        text: z.string().optional(),
+      }),
     ),
   })
   .strict()
@@ -74,16 +77,22 @@ async function augmentRawDoc(rawDoc: RawDoc): Promise<Doc> {
   return {
     ...rawDoc,
     pages: await Promise.all(
-      rawDoc.pages.map(async (p) => ({
-        ...p,
-        imageURL: convertFileSrc(
-          await join(
-            APP_DATA_DIR,
-            `scribbleScan/docs/${rawDoc.id}/${p.id}.jpg`,
+      rawDoc.pages.map(async (p) => {
+        const textPath = `scribbleScan/docs/${rawDoc.id}/${p.id}.txt`
+
+        return {
+          ...p,
+          imageURL: convertFileSrc(
+            await join(
+              APP_DATA_DIR,
+              `scribbleScan/docs/${rawDoc.id}/${p.id}.jpg`,
+            ),
           ),
-        ),
-        text: "",
-      })),
+          text: (await exists(textPath, { baseDir: BaseDirectory.AppData }))
+            ? await readTextFile(textPath, { baseDir: BaseDirectory.AppData })
+            : undefined,
+        }
+      }),
     ),
   }
 }

@@ -30,7 +30,7 @@ export default function List() {
         ))}
       </ul>
 
-      <pre>{appData.join("\n")}</pre>
+      {import.meta.env.DEV && <pre>{appData.join("\n")}</pre>}
     </>
   )
 }

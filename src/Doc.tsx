@@ -4,9 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useParams } from "react-router"
 
 import Camera, { CameraHandle } from "@/components/Camera"
-import { addPage, createDoc, type Doc, getDoc } from "@/localStore"
+import { addPage, addPageText, createDoc, type Doc, getDoc } from "@/localStore"
 // import performMockOCR from "@/ocr/mock"
-// import performRemoteOCR from "@/ocr/remote";
+import performRemoteOCR from "@/ocr/remote"
+
+// const performOCR = import.meta.env.DEV ? performMockOCR : performRemoteOCR
+const performOCR = performRemoteOCR
 
 export default function Doc() {
   const { id } = useParams()
@@ -24,10 +27,21 @@ export default function Doc() {
   const doMagic = useCallback(async () => {
     if (cameraRef.current === null) return
 
-    const { id } = doc ?? (await createDoc())
+    let localDoc = doc ?? (await createDoc())
+    const { id } = localDoc
     const base64Image = cameraRef.current.capture()
 
-    setDoc(await addPage(id, base64Image))
+    localDoc = await addPage(id, base64Image)
+    setDoc(localDoc)
+    const lastPage = localDoc.pages.at(-1)
+
+    if (lastPage === undefined) {
+      throw new Error("Can't access last page after adding a page!")
+    }
+
+    const text = await performOCR(base64Image)
+    localDoc = await addPageText(id, lastPage.id, text)
+    setDoc(localDoc)
   }, [setDoc])
 
   return (
@@ -41,7 +55,8 @@ export default function Doc() {
       {doc?.pages.map((p) => (
         <>
           <img key={p.id} src={p.imageURL} />
-          {p.imageURL}
+          <p>{p.imageURL}</p>
+          <pre>{p.text}</pre>
         </>
       ))}
     </main>
