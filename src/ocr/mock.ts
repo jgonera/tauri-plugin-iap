@@ -5,5 +5,8 @@ export default async function performMockOCR(base64Image: string) {
   const hashArray = Array.from(new Uint8Array(hashBuffer)) // convert buffer to byte array
   const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("") // convert bytes to hex string
 
+  // Simulate server response delay
+  await new Promise((resolve) => setTimeout(resolve, 3000))
+
   return `Transcribed text for image with SHA-1 ${hashHex}\n\n`
 }
