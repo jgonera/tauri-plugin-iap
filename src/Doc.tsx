@@ -1,5 +1,3 @@
-import "./Doc.css"
-
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useParams } from "react-router"
 

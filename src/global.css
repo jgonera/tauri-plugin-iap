@@ -1,0 +1,39 @@
+:root {
+  font-family:
+    system,
+    -apple-system,
+    Roboto,
+    sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #000;
+  color: #fff;
+
+  @media (prefers-color-scheme: light) {
+    background: #fff;
+    color: #000;
+  }
+}
+
+main {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+pre {
+  width: 100%;
+  overflow-wrap: break-word;
+  text-wrap: wrap;
+}
