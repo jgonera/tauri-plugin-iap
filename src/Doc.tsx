@@ -3,11 +3,11 @@ import { useParams } from "react-router"
 
 import Camera, { CameraHandle } from "@/components/Camera"
 import { addPage, addPageText, createDoc, type Doc, getDoc } from "@/localStore"
-// import performMockOCR from "@/ocr/mock"
+import performMockOCR from "@/ocr/mock"
 import performRemoteOCR from "@/ocr/remote"
 
-// const performOCR = import.meta.env.DEV ? performMockOCR : performRemoteOCR
-const performOCR = performRemoteOCR
+const performOCR = import.meta.env.DEV ? performMockOCR : performRemoteOCR
+// const performOCR = performRemoteOCR
 
 export default function Doc() {
   const { id } = useParams()
@@ -40,7 +40,7 @@ export default function Doc() {
     const text = await performOCR(base64Image)
     localDoc = await addPageText(id, lastPage.id, text)
     setDoc(localDoc)
-  }, [setDoc])
+  }, [doc, setDoc])
 
   return (
     <main className="container">
