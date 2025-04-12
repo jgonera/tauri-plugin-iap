@@ -152,6 +152,7 @@ export async function addPage(
   )
 
   rawDoc.pages.push(page)
+  rawDoc.updatedAt = new Date()
   await updateRawDocs(rawDocs.map((d) => (d.id === docId ? rawDoc : d)))
 
   return augmentRawDoc(rawDoc)
