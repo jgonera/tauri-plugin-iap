@@ -28,12 +28,14 @@
 
   --color-background: var(--color-black);
   --color-background-accent: var(--color-green-500);
+  --color-border: var(--color-gray-700);
   --color-text: var(--color-white);
   --color-text-muted: var(--color-gray-400);
 
   @media (prefers-color-scheme: light) {
     --color-background: var(--color-white);
     --color-background-accent: var(--color-green-500);
+    --color-border: var(--color-gray-300);
     --color-text: var(--color-black);
     --color-text-muted: var(--color-gray-600);
   }
