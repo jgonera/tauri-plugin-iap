@@ -1,3 +1,4 @@
+import { Plus } from "@phosphor-icons/react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
@@ -23,7 +24,9 @@ export default function List() {
         <h1>Scribbles</h1>
       </header>
 
-      <Link to="/new">New</Link>
+      <Link aria-label="New" className={classes.new} to="/new">
+        <Plus size={32} />
+      </Link>
 
       <ul className={classes.list}>
         {docs.map((d) => (

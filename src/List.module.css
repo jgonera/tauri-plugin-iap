@@ -26,4 +26,21 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  p {
+    color: var(--color-text-muted);
+  }
+}
+
+.new {
+  align-items: center;
+  background: var(--color-background-accent);
+  border-radius: 32px;
+  bottom: 16px;
+  display: flex;
+  height: 64px;
+  justify-content: center;
+  position: fixed;
+  right: 16px;
+  width: 64px;
 }

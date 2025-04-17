@@ -16,6 +16,28 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
+  --color-black: #0a0a0a;
+  --color-gray-200: #eeecec;
+  --color-gray-300: #cecaca;
+  --color-gray-400: #aaa2a2;
+  --color-gray-500: #776e6e;
+  --color-gray-600: #5d5656;
+  --color-gray-700: #403b3b;
+  --color-green-500: #00a982;
+  --color-white: #fff;
+
+  --color-background: var(--color-black);
+  --color-background-accent: var(--color-green-500);
+  --color-text: var(--color-white);
+  --color-text-muted: var(--color-gray-400);
+
+  @media (prefers-color-scheme: light) {
+    --color-background: var(--color-white);
+    --color-background-accent: var(--color-green-500);
+    --color-text: var(--color-black);
+    --color-text-muted: var(--color-gray-600);
+  }
+
   --content-padding: 16px;
 }
 
@@ -59,13 +81,8 @@ button {
 }
 
 body {
-  background: #000;
-  color: #fff;
-
-  @media (prefers-color-scheme: light) {
-    background: #fff;
-    color: #000;
-  }
+  background: var(--color-background);
+  color: var(--color-text);
 }
 
 h1 {
