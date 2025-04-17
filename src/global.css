@@ -96,15 +96,8 @@ h2 {
   font-size: 20px;
 }
 
-main {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 pre {
-  width: 100%;
+  font-family: inherit;
   overflow-wrap: break-word;
   text-wrap: wrap;
 }

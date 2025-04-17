@@ -6,6 +6,8 @@ import { addPage, addPageText, createDoc, type Doc, getDoc } from "@/localStore"
 import performMockOCR from "@/ocr/mock"
 import performRemoteOCR from "@/ocr/remote"
 
+import classes from "./Doc.module.css"
+
 const performOCR = import.meta.env.DEV ? performMockOCR : performRemoteOCR
 // const performOCR = performRemoteOCR
 
@@ -43,20 +45,22 @@ export default function Doc() {
   }, [doc, setDoc])
 
   return (
-    <main className="container">
-      <Camera ref={cameraRef} />
+    <main>
+      <div className={classes.temp}>
+        <Camera ref={cameraRef} />
 
-      <button type="submit" onClick={() => void doMagic()}>
-        Transcribe
-      </button>
+        <button type="submit" onClick={() => void doMagic()}>
+          Transcribe
+        </button>
+      </div>
 
-      {doc?.pages.map((p) => (
-        <>
-          <img key={p.id} src={p.imageURL} />
-          <p>{p.imageURL}</p>
-          <pre>{p.text}</pre>
-        </>
-      ))}
+      <section className={classes.content}>
+        {doc?.pages.map((p) => <pre>{p.text}</pre>)}
+      </section>
+
+      <section className={classes.thumbnails}>
+        {doc?.pages.map((p) => <img key={p.id} src={p.imageURL} />)}
+      </section>
     </main>
   )
 }
