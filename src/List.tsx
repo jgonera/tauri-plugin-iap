@@ -2,6 +2,11 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
 import { type Doc, getDocs } from "@/localStore"
+import { pluralize } from "@/util"
+
+import classes from "./List.module.css"
+
+const dateTimeFormat = new Intl.DateTimeFormat()
 
 export default function List() {
   const [docs, setDocs] = useState<Doc[]>([])
@@ -14,11 +19,27 @@ export default function List() {
 
   return (
     <>
+      <header className={classes.header}>
+        <h1>Scribbles</h1>
+      </header>
+
       <Link to="/new">New</Link>
-      <ul>
+
+      <ul className={classes.list}>
         {docs.map((d) => (
-          <li>
-            <Link to={`/doc/${d.id}`}>{d.name}</Link>
+          <li key={d.id}>
+            <Link className={classes.link} to={`/doc/${d.id}`}>
+              <img src={d.pages.at(0)?.imageURL} />
+              <div>
+                <h2>{d.name}</h2>
+                <p>
+                  <time dateTime={d.updatedAt.toISOString()}>
+                    {dateTimeFormat.format(d.updatedAt)}
+                  </time>{" "}
+                  • {pluralize(d.pages.length, "page")}
+                </p>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>

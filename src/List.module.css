@@ -1,0 +1,29 @@
+.header {
+  position: sticky;
+  padding: var(--content-padding);
+  top: 0;
+}
+
+.list {
+  .link {
+    align-items: center;
+    display: flex;
+    padding: 12px var(--content-padding);
+  }
+
+  img {
+    border-radius: 4px;
+    margin-right: 8px;
+    width: 48px;
+  }
+
+  div {
+    display: grid;
+  }
+
+  h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

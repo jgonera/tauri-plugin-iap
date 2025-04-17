@@ -12,6 +12,10 @@ export function base64ToArrayBuffer(base64: string) {
   return bytes
 }
 
+export function pluralize(count: number, noun: string, suffix = "s") {
+  return `${count.toString()} ${noun}${count !== 1 ? suffix : ""}`
+}
+
 export async function saveJPEG(imageDataURL: string) {
   const path = await save({
     defaultPath: "test.jpeg",
