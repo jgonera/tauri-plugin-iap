@@ -24,7 +24,7 @@ export default function Doc() {
 
       setDoc(await getDoc(id))
     })()
-  }, [setDoc])
+  }, [id])
 
   const doMagic = useCallback(
     async (base64Image: string) => {
@@ -43,7 +43,7 @@ export default function Doc() {
       localDoc = await addPageText(id, lastPage.id, text)
       setDoc(localDoc)
     },
-    [doc, setDoc],
+    [doc],
   )
 
   return (
