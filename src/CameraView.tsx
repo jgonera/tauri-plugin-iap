@@ -1,12 +1,14 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
-export interface CameraHandle {
-  capture: () => string
+interface CameraViewProps {
+  onBack: () => void
+  onCapture: (base64Image: string) => void
 }
 
-export default React.forwardRef<CameraHandle>((_, ref) => {
+export default function CameraView({ onBack, onCapture }: CameraViewProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const [stream, setStream] = useState<MediaStream | null>(null)
   const [height, setHeight] = useState(0)
   const [width, setWidth] = useState(0)
 
@@ -21,6 +23,8 @@ export default React.forwardRef<CameraHandle>((_, ref) => {
         width: 9999,
       },
     })
+
+    setStream(stream)
 
     const settings = stream.getVideoTracks()[0].getSettings()
 
@@ -48,30 +52,41 @@ export default React.forwardRef<CameraHandle>((_, ref) => {
 
   useEffect(() => {
     void setMediaStream()
+
+    // return () => {
+    //   if (stream) {
+    //     stream.getTracks().forEach((track) => {
+    //       track.stop()
+    //     })
+    //   }
+    // }
   }, [setHeight, setWidth, videoRef])
 
-  useImperativeHandle(ref, () => ({
-    capture() {
-      if (canvasRef.current === null || videoRef.current === null) {
-        throw new Error("Camera not ready!")
-      }
+  const onCaptureCallback = useCallback(() => {
+    if (canvasRef.current === null || videoRef.current === null) {
+      throw new Error("Camera not ready!")
+    }
 
-      const canvas = canvasRef.current
+    const canvas = canvasRef.current
 
-      canvas.width = width
-      canvas.height = height
-      const context = canvas.getContext("2d")
-      context?.drawImage(videoRef.current, 0, 0, width, height)
+    canvas.width = width
+    canvas.height = height
+    const context = canvas.getContext("2d")
+    context?.drawImage(videoRef.current, 0, 0, width, height)
 
-      // Slice to remove `data:image/jpeg;base64,`
-      return canvas.toDataURL("image/jpeg", 0.75).slice(23)
-    },
-  }))
+    // Slice to remove `data:image/jpeg;base64,`
+    const base64Image = canvas.toDataURL("image/jpeg", 0.75).slice(23)
+
+    onCapture(base64Image)
+  }, [canvasRef, videoRef, onCapture])
 
   return (
     <>
       <canvas ref={canvasRef} style={{ display: "none" }} />
       <video ref={videoRef} autoPlay playsInline />
+
+      <button onClick={onBack}>Back</button>
+      <button onClick={onCaptureCallback}>Capture</button>
     </>
   )
-})
+}
