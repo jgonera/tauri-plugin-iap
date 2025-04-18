@@ -24,7 +24,7 @@ export default function List() {
         <h1>Scribbles</h1>
       </header>
 
-      <Link aria-label="New" className={classes.new} to="/new">
+      <Link aria-label="New" className={classes.new} to="/camera">
         <Plus size={32} />
       </Link>
 

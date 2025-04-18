@@ -4,6 +4,7 @@ import React from "react"
 import { RouterProvider } from "react-aria-components"
 import { Route, Routes, useHref, useNavigate } from "react-router"
 
+import Camera from "@/Camera"
 import Debug from "@/Debug"
 import Doc from "@/Doc"
 import List from "@/List"
@@ -17,9 +18,10 @@ export default function App() {
       <RouterProvider navigate={navigate} useHref={useHref}>
         <Routes>
           <Route path="/" element={<List />} />
+          <Route path="/camera" element={<Camera />} />
           <Route path="/debug" element={<Debug />} />
           <Route path="/doc/:id" element={<Doc />} />
-          <Route path="/new" element={<Doc />} />
+          <Route path="/doc/:id/camera" element={<Camera />} />
         </Routes>
       </RouterProvider>
     </React.StrictMode>

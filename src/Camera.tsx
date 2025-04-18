@@ -1,11 +1,17 @@
+import { ArrowLeft } from "@phosphor-icons/react"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useNavigate, useParams } from "react-router"
 
-interface CameraViewProps {
-  readonly onBack: () => void
-  readonly onCapture: (base64Image: string) => void
-}
+import { addPage, addPageText, createDoc } from "@/localStore"
+import performMockOCR from "@/ocr/mock"
+import performRemoteOCR from "@/ocr/remote"
 
-export default function CameraView({ onBack, onCapture }: CameraViewProps) {
+const performOCR = import.meta.env.DEV ? performMockOCR : performRemoteOCR
+// const performOCR = performRemoteOCR
+
+export default function Camera() {
+  const { id } = useParams()
+  const navigate = useNavigate()
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [stream, setStream] = useState<MediaStream | null>(null)
@@ -36,7 +42,7 @@ export default function CameraView({ onBack, onCapture }: CameraViewProps) {
     }
   }, [stream])
 
-  const onCaptureCallback = useCallback(() => {
+  const capture = useCallback(async () => {
     if (
       canvasRef.current === null ||
       videoRef.current === null ||
@@ -69,17 +75,48 @@ export default function CameraView({ onBack, onCapture }: CameraViewProps) {
 
     // Slice to remove `data:image/jpeg;base64,`
     const base64Image = canvas.toDataURL("image/jpeg", 0.75).slice(23)
+    const currentId = id ?? (await createDoc()).id
 
-    onCapture(base64Image)
-  }, [onCapture, stream])
+    if (id === undefined) {
+      void navigate(`/doc/${currentId}`, { replace: true })
+    } else {
+      void navigate(-1)
+    }
+
+    void (async () => {
+      const doc = await addPage(currentId, base64Image)
+      const lastPage = doc.pages.at(-1)
+
+      if (lastPage === undefined) {
+        throw new Error("Can't access last page after adding a page!")
+      }
+
+      const text = await performOCR(base64Image)
+      await addPageText(currentId, lastPage.id, text)
+    })()
+  }, [id, navigate, stream])
 
   return (
-    <>
+    <main>
+      <button
+        aria-label="Go back"
+        onClick={() => {
+          void navigate(-1)
+        }}
+      >
+        <ArrowLeft size={32} />
+      </button>
+
       <canvas ref={canvasRef} style={{ display: "none" }} />
       <video autoPlay playsInline ref={videoRef} />
 
-      <button onClick={onBack}>Back</button>
-      <button onClick={onCaptureCallback}>Capture</button>
-    </>
+      <button
+        onClick={() => {
+          void capture()
+        }}
+      >
+        Capture
+      </button>
+    </main>
   )
 }

@@ -1,13 +1,3 @@
-.temp {
-  display: none;
-}
-
-main {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
 .header {
   align-items: center;
   background: var(--color-background);
