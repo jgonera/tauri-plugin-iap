@@ -16,7 +16,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --color-black: #0a0a0a;
+  --color-black: #000;
   --color-gray-200: #eeecec;
   --color-gray-300: #cecaca;
   --color-gray-400: #aaa2a2;
@@ -80,6 +80,7 @@ a {
 button {
   background: none;
   border: 0;
+  color: inherit;
 }
 
 body {
@@ -88,7 +89,7 @@ body {
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: bold;
 }
 

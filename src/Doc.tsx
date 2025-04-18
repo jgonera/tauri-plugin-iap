@@ -1,5 +1,6 @@
+import { ArrowLeft } from "@phosphor-icons/react"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 
 import Camera, { CameraHandle } from "@/components/Camera"
 import { addPage, addPageText, createDoc, type Doc, getDoc } from "@/localStore"
@@ -15,6 +16,7 @@ export default function Doc() {
   const { id } = useParams()
   const cameraRef = useRef<CameraHandle | null>(null)
   const [doc, setDoc] = useState<Doc | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     void (async () => {
@@ -46,21 +48,31 @@ export default function Doc() {
 
   return (
     <main>
-      <div className={classes.temp}>
-        <Camera ref={cameraRef} />
+      <header className={classes.header}>
+        <button
+          aria-label="Go back"
+          onClick={() => {
+            void navigate(-1)
+          }}
+        >
+          <ArrowLeft size={32} />
+        </button>
+        <h1>{doc?.name}</h1>
+      </header>
 
+      <div className={classes.temp}>
         <button type="submit" onClick={() => void doMagic()}>
           Transcribe
         </button>
       </div>
 
       <section className={classes.content}>
-        {doc?.pages.map((p) => <pre>{p.text}</pre>)}
+        {doc?.pages.map((p) => <pre key={p.id}>{p.text}</pre>)}
       </section>
 
-      <section className={classes.thumbnails}>
+      <nav className={classes.footer}>
         {doc?.pages.map((p) => <img key={p.id} src={p.imageURL} />)}
-      </section>
+      </nav>
     </main>
   )
 }
