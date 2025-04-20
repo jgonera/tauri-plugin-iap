@@ -15,7 +15,7 @@ export default function Doc() {
   if (doc === undefined) return
 
   return (
-    <main>
+    <>
       <header className={classes.header}>
         <button
           aria-label="Go back"
@@ -49,6 +49,6 @@ export default function Doc() {
           <img key={p.id} src={p.imageURL} />
         ))}
       </nav>
-    </main>
+    </>
   )
 }

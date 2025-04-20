@@ -92,7 +92,7 @@ export default function Camera() {
   }, [addPage, addPageText, createDoc, id, navigate, stream])
 
   return (
-    <main>
+    <>
       <button
         aria-label="Go back"
         onClick={() => {
@@ -112,6 +112,6 @@ export default function Camera() {
       >
         Capture
       </button>
-    </main>
+    </>
   )
 }

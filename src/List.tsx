@@ -12,7 +12,7 @@ export default function List() {
   const { docs } = useStore()
 
   return (
-    <main>
+    <>
       <header className={classes.header}>
         <h1>Scribbles</h1>
       </header>
@@ -41,6 +41,6 @@ export default function List() {
       </ul>
 
       {import.meta.env.DEV && <Link to="/debug">Debug</Link>}
-    </main>
+    </>
   )
 }
