@@ -2,9 +2,9 @@ import { ArrowLeft } from "@phosphor-icons/react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 
-import { addPage, addPageText, createDoc } from "@/localStore"
 import performMockOCR from "@/ocr/mock"
 import performRemoteOCR from "@/ocr/remote"
+import useStore from "@/useStore"
 
 const performOCR = import.meta.env.DEV ? performMockOCR : performRemoteOCR
 // const performOCR = performRemoteOCR
@@ -15,6 +15,7 @@ export default function Camera() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [stream, setStream] = useState<MediaStream | null>(null)
+  const { createDoc, addPage, addPageText } = useStore()
 
   useEffect(() => {
     void (async () => {
@@ -75,7 +76,7 @@ export default function Camera() {
 
     // Slice to remove `data:image/jpeg;base64,`
     const base64Image = canvas.toDataURL("image/jpeg", 0.75).slice(23)
-    const currentId = id ?? (await createDoc()).id
+    const currentId = id ?? (await createDoc())
 
     if (id === undefined) {
       void navigate(`/doc/${currentId}`, { replace: true })
@@ -84,17 +85,11 @@ export default function Camera() {
     }
 
     void (async () => {
-      const doc = await addPage(currentId, base64Image)
-      const lastPage = doc.pages.at(-1)
-
-      if (lastPage === undefined) {
-        throw new Error("Can't access last page after adding a page!")
-      }
-
+      const pageId = await addPage(currentId, base64Image)
       const text = await performOCR(base64Image)
-      await addPageText(currentId, lastPage.id, text)
+      await addPageText(currentId, pageId, text)
     })()
-  }, [id, navigate, stream])
+  }, [addPage, addPageText, createDoc, id, navigate, stream])
 
   return (
     <main>

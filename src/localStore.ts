@@ -101,12 +101,6 @@ export async function getDocs(): Promise<Doc[]> {
   return await Promise.all((await getRawDocs()).map(augmentRawDoc))
 }
 
-export async function getDoc(id: string): Promise<Doc | null> {
-  const doc = (await getRawDocs()).find((d) => d.id === id)
-
-  return doc === undefined ? null : augmentRawDoc(doc)
-}
-
 export async function createDoc(): Promise<Doc> {
   const rawDocs = await getRawDocs()
   const now = new Date()

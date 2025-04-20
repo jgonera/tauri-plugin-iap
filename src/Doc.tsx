@@ -1,25 +1,18 @@
 import { ArrowLeft, Camera } from "@phosphor-icons/react"
-import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 
-import { type Doc, getDoc } from "@/localStore"
+import useStore from "@/useStore"
 
 import classes from "./Doc.module.css"
 
 export default function Doc() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [doc, setDoc] = useState<Doc | null>(null)
+  const { docs } = useStore()
 
-  useEffect(() => {
-    if (id === undefined) return
+  const doc = docs.find((d) => d.id === id)
 
-    void (async () => {
-      setDoc(await getDoc(id))
-    })()
-  }, [id])
-
-  if (id === undefined) return
+  if (doc === undefined) return
 
   return (
     <main>
@@ -32,11 +25,13 @@ export default function Doc() {
         >
           <ArrowLeft size={32} />
         </button>
-        <h1>{doc?.name}</h1>
+        <h1>{doc.name}</h1>
       </header>
 
       <section className={classes.content}>
-        {doc?.pages.map((p) => <pre key={p.id}>{p.text}</pre>)}
+        {doc.pages.map((p) => (
+          <pre key={p.id}>{p.text}</pre>
+        ))}
       </section>
 
       <nav className={classes.footer}>
@@ -44,13 +39,15 @@ export default function Doc() {
           aria-label="New page"
           className={classes.newPage}
           onClick={() => {
-            void navigate(`/doc/${id}/camera`)
+            void navigate(`/doc/${doc.id}/camera`)
           }}
         >
           <Camera size={32} />
         </button>
 
-        {doc?.pages.map((p) => <img key={p.id} src={p.imageURL} />)}
+        {doc.pages.map((p) => (
+          <img key={p.id} src={p.imageURL} />
+        ))}
       </nav>
     </main>
   )

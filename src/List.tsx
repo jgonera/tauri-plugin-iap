@@ -1,8 +1,7 @@
 import { Plus } from "@phosphor-icons/react"
-import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
-import { type Doc, getDocs } from "@/localStore"
+import useStore from "@/useStore"
 import { pluralize } from "@/util"
 
 import classes from "./List.module.css"
@@ -10,13 +9,7 @@ import classes from "./List.module.css"
 const dateTimeFormat = new Intl.DateTimeFormat()
 
 export default function List() {
-  const [docs, setDocs] = useState<Doc[]>([])
-
-  useEffect(() => {
-    void (async () => {
-      setDocs(await getDocs())
-    })()
-  })
+  const { docs } = useStore()
 
   return (
     <>
