@@ -1,5 +1,3 @@
-import "@/global.css"
-
 import React from "react"
 import { RouterProvider } from "react-aria-components"
 import { Route, Routes, useHref, useNavigate } from "react-router"
