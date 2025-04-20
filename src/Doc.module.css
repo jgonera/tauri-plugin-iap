@@ -29,11 +29,10 @@
   scroll-snap-type: y mandatory;
 
   pre {
-    scroll-snap-align: start;
-
     &:first-child {
       margin-top: 32px;
       padding-top: 16px;
+      scroll-snap-align: start;
     }
 
     &:last-child {
