@@ -6,6 +6,8 @@ import performMockOCR from "@/ocr/mock"
 import performRemoteOCR from "@/ocr/remote"
 import useStore from "@/useStore"
 
+import classes from "./Camera.module.css"
+
 const performOCR = import.meta.env.DEV ? performMockOCR : performRemoteOCR
 // const performOCR = performRemoteOCR
 
@@ -15,6 +17,7 @@ export default function Camera() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [stream, setStream] = useState<MediaStream | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
   const { createDoc, addPage, addPageText } = useStore()
 
   useEffect(() => {
@@ -93,25 +96,39 @@ export default function Camera() {
 
   return (
     <>
-      <button
-        aria-label="Go back"
-        onClick={() => {
-          void navigate(-1)
-        }}
-      >
-        <ArrowLeft size={32} />
-      </button>
+      <header className={classes.header}>
+        <button
+          aria-label="Go back"
+          onClick={() => {
+            void navigate(-1)
+          }}
+        >
+          <ArrowLeft size={32} />
+        </button>
+      </header>
 
       <canvas ref={canvasRef} style={{ display: "none" }} />
-      <video autoPlay playsInline ref={videoRef} />
-
-      <button
-        onClick={() => {
-          void capture()
+      <video
+        autoPlay
+        onLoadedData={() => {
+          setIsLoaded(true)
         }}
-      >
-        Capture
-      </button>
+        playsInline
+        ref={videoRef}
+        style={{ visibility: isLoaded ? "visible" : "hidden" }}
+      />
+
+      <div className={classes.footer}>
+        <button
+          aria-label="Capture"
+          className={classes.capture}
+          onClick={() => {
+            void capture()
+          }}
+        >
+          <span>&nbsp;</span>
+        </button>
+      </div>
     </>
   )
 }
