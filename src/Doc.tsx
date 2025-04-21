@@ -12,7 +12,9 @@ export default function Doc() {
 
   const doc = docs.find((d) => d.id === id)
 
-  if (doc === undefined) return
+  if (doc === undefined) {
+    throw new Error(`Can't find doc with id ${id ?? "undefined"}`)
+  }
 
   return (
     <>
