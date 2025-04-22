@@ -5,6 +5,7 @@ import {
   exists,
   mkdir,
   readTextFile,
+  remove,
   writeFile,
   writeTextFile,
 } from "@tauri-apps/plugin-fs"
@@ -122,6 +123,17 @@ export async function createDoc(): Promise<Doc> {
   await updateRawDocs(rawDocs)
 
   return augmentRawDoc(rawDoc)
+}
+
+export async function deleteDoc(docId: string): Promise<void> {
+  const rawDocs = await getRawDocs()
+
+  await remove(`scribbleScan/docs/${docId}`, {
+    baseDir: BaseDirectory.AppData,
+    recursive: true,
+  })
+
+  await updateRawDocs(rawDocs.filter((d) => d.id !== docId))
 }
 
 export async function addPage(

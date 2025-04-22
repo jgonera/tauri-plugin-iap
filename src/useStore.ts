@@ -4,6 +4,7 @@ import {
   addPage,
   addPageText,
   createDoc,
+  deleteDoc,
   type Doc,
   getDocs,
 } from "@/localStore"
@@ -11,6 +12,7 @@ import {
 interface StoreState {
   docs: Doc[]
   createDoc: () => Promise<string>
+  deleteDoc: (docId: string) => Promise<void>
   addPage: (docId: string, base64Image: string) => Promise<string>
   addPageText: (docId: string, pageId: string, text: string) => Promise<void>
 }
@@ -24,6 +26,11 @@ const useStore = create<StoreState>()((set) => ({
     const docs = await getDocs()
     set(() => ({ docs }))
     return doc.id
+  },
+  deleteDoc: async (docId) => {
+    await deleteDoc(docId)
+    const docs = await getDocs()
+    set(() => ({ docs }))
   },
   addPage: async (docId, base64Image) => {
     const doc = await addPage(docId, base64Image)

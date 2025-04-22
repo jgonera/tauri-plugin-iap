@@ -24,7 +24,7 @@ interface ListProps {
 export default function List({ showDocMenu }: ListProps) {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { docs } = useStore()
+  const { deleteDoc, docs } = useStore()
   const [doc, setDoc] = useState<Doc | undefined>()
 
   // We keep `doc` set even when there's no `id` so that the drawer can be
@@ -93,7 +93,15 @@ export default function List({ showDocMenu }: ListProps) {
                     </button>
                   </li>
                   <li>
-                    <button className={classes.delete}>
+                    <button
+                      className={classes.delete}
+                      onClick={() => {
+                        if (confirm("Are you sure?")) {
+                          void deleteDoc(doc.id)
+                          void navigate(-1)
+                        }
+                      }}
+                    >
                       <Trash size={24} /> Delete
                     </button>
                   </li>
