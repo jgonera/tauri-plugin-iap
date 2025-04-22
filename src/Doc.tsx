@@ -1,5 +1,6 @@
 import { ArrowLeft, Camera } from "@phosphor-icons/react"
 import clsx from "clsx"
+import { useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { useNavigate, useParams } from "react-router"
 
@@ -7,12 +8,39 @@ import useStore from "@/useStore"
 
 import classes from "./Doc.module.css"
 
+interface TextProps {
+  id: string
+  onActive: () => void
+  text?: string
+}
+
+function Text({ id, onActive, text }: TextProps) {
+  const { ref, inView } = useInView({
+    rootMargin: "-50% 0% -50% 0%",
+  })
+
+  if (inView) {
+    onActive()
+  }
+
+  return (
+    <pre
+      className={clsx({ [classes.active]: inView })}
+      id={`text-${id}`}
+      ref={ref}
+    >
+      {text}
+    </pre>
+  )
+}
+
 interface ThumbnailProps {
+  id: string
   imageURL: string
   onActive: () => void
 }
 
-function Thumbnail({ imageURL, onActive }: ThumbnailProps) {
+function Thumbnail({ id, imageURL, onActive }: ThumbnailProps) {
   const { ref, inView } = useInView({
     rootMargin: "0% -50% 0% -50%",
   })
@@ -22,7 +50,14 @@ function Thumbnail({ imageURL, onActive }: ThumbnailProps) {
   }
 
   return (
-    <li className={clsx({ [classes.active]: inView })} ref={ref}>
+    <li
+      className={clsx({ [classes.active]: inView })}
+      id={`thumbnail-${id}`}
+      onClick={(e) => {
+        e.currentTarget.scrollIntoView({ inline: "center" })
+      }}
+      ref={ref}
+    >
       <img src={imageURL} />
     </li>
   )
@@ -32,6 +67,8 @@ export default function Doc() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { docs } = useStore()
+  const [isScrollingText, setIsScrollingText] = useState(false)
+  const [isScrollingThumbnails, setIsScrollingThumbnails] = useState(false)
 
   const doc = docs.find((d) => d.id === id)
 
@@ -53,11 +90,26 @@ export default function Doc() {
         <h1>{doc.name}</h1>
       </header>
 
-      <section className={classes.text}>
+      <section
+        className={classes.text}
+        onTouchStart={() => {
+          setIsScrollingText(true)
+          setIsScrollingThumbnails(false)
+        }}
+      >
         {doc.pages.map((p) => (
-          <pre id={`text-${p.id}`} key={p.id}>
-            {p.text}
-          </pre>
+          <Text
+            id={p.id}
+            key={p.id}
+            onActive={() => {
+              if (isScrollingText) {
+                document
+                  .getElementById(`thumbnail-${p.id}`)
+                  ?.scrollIntoView({ inline: "center" })
+              }
+            }}
+            text={p.text}
+          />
         ))}
       </section>
 
@@ -72,16 +124,24 @@ export default function Doc() {
           <Camera size={32} />
         </button>
 
-        <ul>
+        <ul
+          onTouchStart={() => {
+            setIsScrollingThumbnails(true)
+            setIsScrollingText(false)
+          }}
+        >
           {doc.pages.map((p) => (
             <Thumbnail
-              onActive={() => {
-                document
-                  .getElementById(`text-${p.id}`)
-                  ?.scrollIntoView({ block: "start" })
-              }}
+              id={p.id}
               imageURL={p.imageURL}
               key={p.id}
+              onActive={() => {
+                if (isScrollingThumbnails) {
+                  document
+                    .getElementById(`text-${p.id}`)
+                    ?.scrollIntoView({ block: "start" })
+                }
+              }}
             />
           ))}
         </ul>

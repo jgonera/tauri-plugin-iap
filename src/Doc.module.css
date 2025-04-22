@@ -29,8 +29,16 @@
   scroll-behavior: smooth;
 
   pre {
+    color: var(--color-text-muted);
+    padding-top: var(--content-padding);
+    transition: color 300ms ease-out;
+
     &:last-child {
       padding-bottom: 96px;
+    }
+
+    &.active {
+      color: var(--color-text);
     }
   }
 }
@@ -57,6 +65,7 @@
   ul {
     display: flex;
     overflow-x: scroll;
+    scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
   }
 
@@ -75,18 +84,18 @@
       margin-right: 50vw;
     }
 
+    &.active {
+      img {
+        transform: none;
+      }
+    }
+
     img {
       border-radius: 4px;
       display: block;
       transform: scale(0.865);
       transition: transform 150ms ease-out;
       width: 56px;
-    }
-
-    &.active {
-      img {
-        transform: none;
-      }
     }
   }
 }
