@@ -1,9 +1,10 @@
-import { ArrowLeft, Camera } from "@phosphor-icons/react"
+import { ArrowLeft, Camera, DotsThreeVertical } from "@phosphor-icons/react"
 import clsx from "clsx"
 import { useState } from "react"
 import { useInView } from "react-intersection-observer"
-import { useNavigate, useParams } from "react-router"
+import { Link, useNavigate, useParams } from "react-router"
 
+import DocDrawer from "@/components/DocDrawer"
 import useStore from "@/useStore"
 
 import classes from "./Doc.module.css"
@@ -63,7 +64,11 @@ function Thumbnail({ id, imageURL, onActive }: ThumbnailProps) {
   )
 }
 
-export default function Doc() {
+interface DocProps {
+  showDocDrawer?: boolean
+}
+
+export default function Doc({ showDocDrawer }: DocProps) {
   const { id } = useParams()
   const navigate = useNavigate()
   const { docs } = useStore()
@@ -88,6 +93,13 @@ export default function Doc() {
           <ArrowLeft size={32} />
         </button>
         <h1>{doc.name}</h1>
+        <Link
+          className={classes.menuLink}
+          aria-label={`Menu for ${doc.name}`}
+          to={`/doc/${doc.id}/doc-drawer`}
+        >
+          <DotsThreeVertical size={32} />
+        </Link>
       </header>
 
       <section
@@ -146,6 +158,14 @@ export default function Doc() {
           ))}
         </ul>
       </nav>
+
+      <DocDrawer
+        doc={doc}
+        isOpen={showDocDrawer}
+        onDelete={() => {
+          void navigate(-2)
+        }}
+      />
     </>
   )
 }

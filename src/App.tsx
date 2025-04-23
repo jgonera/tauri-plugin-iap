@@ -20,7 +20,8 @@ export default function App() {
           <Route path="/debug" element={<Debug />} />
           <Route path="/doc/:id" element={<Doc />} />
           <Route path="/doc/:id/camera" element={<Camera />} />
-          <Route path="/list/:id/menu" element={<List showDocDrawer />} />
+          <Route path="/doc/:id/doc-drawer" element={<Doc showDocDrawer />} />
+          <Route path="/list/:id/doc-drawer" element={<List showDocDrawer />} />
         </Routes>
       </RouterProvider>
     </React.StrictMode>

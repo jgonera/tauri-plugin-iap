@@ -1,6 +1,6 @@
 import { DotsThreeVertical, Plus } from "@phosphor-icons/react"
 import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router"
+import { Link, useNavigate, useParams } from "react-router"
 
 import DocDrawer from "@/components/DocDrawer"
 import { Doc } from "@/localStore"
@@ -17,6 +17,7 @@ interface ListProps {
 
 export default function List({ showDocDrawer }: ListProps) {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { docs } = useStore()
   const [doc, setDoc] = useState<Doc | undefined>()
 
@@ -56,7 +57,7 @@ export default function List({ showDocDrawer }: ListProps) {
             <Link
               className={classes.docMenuLink}
               aria-label={`Menu for ${d.name}`}
-              to={`/list/${d.id}/menu`}
+              to={`/list/${d.id}/doc-drawer`}
             >
               <DotsThreeVertical size={32} />
             </Link>
@@ -64,7 +65,15 @@ export default function List({ showDocDrawer }: ListProps) {
         ))}
       </ul>
 
-      {doc && <DocDrawer doc={doc} isOpen={showDocDrawer} />}
+      {doc && (
+        <DocDrawer
+          doc={doc}
+          isOpen={showDocDrawer}
+          onDelete={() => {
+            void navigate(-1)
+          }}
+        />
+      )}
     </>
   )
 }

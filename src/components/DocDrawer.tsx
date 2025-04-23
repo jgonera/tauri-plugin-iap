@@ -10,9 +10,10 @@ import classes from "./DocDrawer.module.css"
 interface DocDrawerProps {
   doc: Doc
   isOpen?: boolean
+  onDelete: () => void
 }
 
-export default function DocDrawer({ doc, isOpen }: DocDrawerProps) {
+export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
   const navigate = useNavigate()
   const { deleteDoc, renameDoc } = useStore()
 
@@ -52,7 +53,7 @@ export default function DocDrawer({ doc, isOpen }: DocDrawerProps) {
                   onClick={() => {
                     if (confirm("Are you sure?")) {
                       void deleteDoc(doc.id)
-                      void navigate(-1)
+                      onDelete()
                     }
                   }}
                 >

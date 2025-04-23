@@ -15,10 +15,12 @@
   }
 
   h1 {
-    white-space: nowrap;
+    flex-grow: 1;
+    line-height: 1.1;
     overflow: hidden;
-    text-overflow: ellipsis;
     padding-right: var(--content-padding);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
