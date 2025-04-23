@@ -29,6 +29,7 @@
   .docLink {
     align-items: center;
     display: flex;
+    flex-grow: 1;
     padding: 12px var(--content-padding);
   }
 

@@ -24,7 +24,7 @@ interface ListProps {
 export default function List({ showDocMenu }: ListProps) {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { deleteDoc, docs } = useStore()
+  const { deleteDoc, renameDoc, docs } = useStore()
   const [doc, setDoc] = useState<Doc | undefined>()
 
   // We keep `doc` set even when there's no `id` so that the drawer can be
@@ -87,7 +87,16 @@ export default function List({ showDocMenu }: ListProps) {
                 <h1>{doc.name}</h1>
                 <ul>
                   <li>
-                    <button>
+                    <button
+                      onClick={() => {
+                        const name = prompt(undefined, doc.name)
+
+                        if (name !== null && name !== "") {
+                          void renameDoc(doc.id, name)
+                          void navigate(-1)
+                        }
+                      }}
+                    >
                       <PencilSimpleLine size={24} />
                       Rename
                     </button>

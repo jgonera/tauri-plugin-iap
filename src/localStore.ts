@@ -136,6 +136,20 @@ export async function deleteDoc(docId: string): Promise<void> {
   await updateRawDocs(rawDocs.filter((d) => d.id !== docId))
 }
 
+export async function renameDoc(docId: string, name: string): Promise<void> {
+  const rawDocs = await getRawDocs()
+  const rawDoc = rawDocs.find((d) => d.id === docId)
+
+  if (rawDoc === undefined) {
+    throw new Error(`Can't find doc with id ${docId}`)
+  }
+
+  rawDoc.name = name
+  rawDoc.updatedAt = new Date()
+
+  await updateRawDocs(rawDocs.map((d) => (d.id === docId ? rawDoc : d)))
+}
+
 export async function addPage(
   docId: string,
   base64Image: string,
