@@ -1,28 +1,23 @@
 .header {
   background: var(--color-background);
-  border-bottom: 1px solid var(--color-border);
   padding: var(--content-padding);
 }
 
 .list {
+  border-top: 1px solid var(--color-border);
   flex-grow: 1;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
 
   li {
     align-items: center;
     display: flex;
 
     &:first-child {
-      margin-top: 32px;
       padding-top: 4px;
-      scroll-snap-align: start;
     }
 
     &:last-child {
-      margin-bottom: 32px;
       padding-bottom: 96px;
-      scroll-snap-align: end;
     }
   }
 
