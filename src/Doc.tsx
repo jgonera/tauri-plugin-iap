@@ -1,4 +1,9 @@
-import { ArrowLeft, Camera, DotsThreeVertical } from "@phosphor-icons/react"
+import {
+  ArrowLeft,
+  Camera,
+  DotsThreeVertical,
+  MagnifyingGlassPlus,
+} from "@phosphor-icons/react"
 import clsx from "clsx"
 import { useState } from "react"
 import { useInView } from "react-intersection-observer"
@@ -60,6 +65,7 @@ function Thumbnail({ id, imageURL, onActive }: ThumbnailProps) {
       ref={ref}
     >
       <img src={imageURL} />
+      <MagnifyingGlassPlus size={32} />
     </li>
   )
 }
