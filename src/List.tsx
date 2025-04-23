@@ -1,14 +1,8 @@
-import {
-  Bug,
-  DotsThreeVertical,
-  PencilSimpleLine,
-  Plus,
-  Trash,
-} from "@phosphor-icons/react"
+import { DotsThreeVertical, Plus } from "@phosphor-icons/react"
 import { useEffect, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router"
-import { Drawer } from "vaul"
+import { Link, useParams } from "react-router"
 
+import DocDrawer from "@/components/DocDrawer"
 import { Doc } from "@/localStore"
 import useStore from "@/useStore"
 import { pluralize } from "@/util"
@@ -18,13 +12,12 @@ import classes from "./List.module.css"
 const dateTimeFormat = new Intl.DateTimeFormat()
 
 interface ListProps {
-  showDocMenu?: boolean
+  showDocDrawer?: boolean
 }
 
-export default function List({ showDocMenu }: ListProps) {
+export default function List({ showDocDrawer }: ListProps) {
   const { id } = useParams()
-  const navigate = useNavigate()
-  const { deleteDoc, renameDoc, docs } = useStore()
+  const { docs } = useStore()
   const [doc, setDoc] = useState<Doc | undefined>()
 
   // We keep `doc` set even when there's no `id` so that the drawer can be
@@ -71,62 +64,7 @@ export default function List({ showDocMenu }: ListProps) {
         ))}
       </ul>
 
-      {doc && (
-        <Drawer.Root
-          open={showDocMenu}
-          onOpenChange={(isOpen) => {
-            if (!isOpen) {
-              void navigate(-1)
-            }
-          }}
-        >
-          <Drawer.Portal>
-            <Drawer.Overlay className={classes.overlay} />
-            <Drawer.Content className={classes.content}>
-              <nav>
-                <h1>{doc.name}</h1>
-                <ul>
-                  <li>
-                    <button
-                      onClick={() => {
-                        const name = prompt(undefined, doc.name)
-
-                        if (name !== null && name !== "") {
-                          void renameDoc(doc.id, name)
-                          void navigate(-1)
-                        }
-                      }}
-                    >
-                      <PencilSimpleLine size={24} />
-                      Rename
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className={classes.delete}
-                      onClick={() => {
-                        if (confirm("Are you sure?")) {
-                          void deleteDoc(doc.id)
-                          void navigate(-1)
-                        }
-                      }}
-                    >
-                      <Trash size={24} /> Delete
-                    </button>
-                  </li>
-                  {import.meta.env.DEV && (
-                    <li>
-                      <Link to="/debug">
-                        <Bug size={24} /> Debug
-                      </Link>
-                    </li>
-                  )}
-                </ul>
-              </nav>
-            </Drawer.Content>
-          </Drawer.Portal>
-        </Drawer.Root>
-      )}
+      {doc && <DocDrawer doc={doc} isOpen={showDocDrawer} />}
     </>
   )
 }
