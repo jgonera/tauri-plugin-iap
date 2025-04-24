@@ -202,3 +202,21 @@ export async function addPageText(
 
   return augmentRawDoc(rawDoc)
 }
+
+export async function deletePage(docId: string, pageId: string): Promise<void> {
+  const rawDocs = await getRawDocs()
+  const rawDoc = rawDocs.find((d) => d.id === docId)
+
+  if (rawDoc === undefined) {
+    throw new Error(`Can't find doc with id ${docId}`)
+  }
+
+  await remove(`scribbleScan/docs/${docId}/${pageId}.txt`, {
+    baseDir: BaseDirectory.AppData,
+  })
+
+  rawDoc.pages = rawDoc.pages.filter((p) => p.id !== pageId)
+  rawDoc.updatedAt = new Date()
+
+  await updateRawDocs(rawDocs)
+}

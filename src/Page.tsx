@@ -9,7 +9,7 @@ import classes from "./Page.module.css"
 export default function Page() {
   const { id, pageId } = useParams()
   const navigate = useNavigate()
-  const { docs } = useStore()
+  const { deleteDoc, deletePage, docs } = useStore()
 
   const doc = docs.find((d) => d.id === id)
 
@@ -39,9 +39,25 @@ export default function Page() {
           <ArrowLeft size={32} />
         </button>
         <h1>
-          Page {index + 1}/{doc.pages.length}
+          Page {index + 1} / {doc.pages.length}
         </h1>
-        <button aria-label="Delete page">
+        <button
+          aria-label="Delete page"
+          className={classes.delete}
+          onClick={() => {
+            if (doc.pages.length > 1) {
+              if (confirm("Are you sure you want to delete this page?")) {
+                void deletePage(doc.id, page.id)
+                void navigate(-1)
+              }
+            } else {
+              if (confirm(`Are you sure you want to delete "${doc.name}"?`)) {
+                void deleteDoc(doc.id)
+                void navigate(-2)
+              }
+            }
+          }}
+        >
           <Trash size={32} />
         </button>
       </header>

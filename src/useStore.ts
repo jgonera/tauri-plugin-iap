@@ -5,6 +5,7 @@ import {
   addPageText,
   createDoc,
   deleteDoc,
+  deletePage,
   type Doc,
   getDocs,
   renameDoc,
@@ -17,6 +18,7 @@ interface StoreState {
   renameDoc: (docId: string, name: string) => Promise<void>
   addPage: (docId: string, base64Image: string) => Promise<string>
   addPageText: (docId: string, pageId: string, text: string) => Promise<void>
+  deletePage: (docId: string, pageId: string) => Promise<void>
 }
 
 const docs = await getDocs()
@@ -54,6 +56,11 @@ const useStore = create<StoreState>()((set) => ({
   },
   addPageText: async (docId, base64Image, text) => {
     await addPageText(docId, base64Image, text)
+    const docs = await getDocs()
+    set(() => ({ docs }))
+  },
+  deletePage: async (docId, pageId) => {
+    await deletePage(docId, pageId)
     const docs = await getDocs()
     set(() => ({ docs }))
   },

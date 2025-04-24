@@ -23,6 +23,10 @@
   }
 }
 
+.delete {
+  color: var(--color-text-danger);
+}
+
 .content {
   flex-grow: 1;
   overflow: scroll;

@@ -35,7 +35,7 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
               <li>
                 <button
                   onClick={() => {
-                    const name = prompt(undefined, doc.name)
+                    const name = prompt("New name:", doc.name)
 
                     if (name !== null && name !== "") {
                       void renameDoc(doc.id, name)
@@ -51,7 +51,9 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
                 <button
                   className={classes.delete}
                   onClick={() => {
-                    if (confirm("Are you sure?")) {
+                    if (
+                      confirm(`Are you sure you want to delete "${doc.name}"?`)
+                    ) {
                       void deleteDoc(doc.id)
                       onDelete()
                     }
