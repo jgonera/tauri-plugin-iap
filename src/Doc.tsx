@@ -5,9 +5,9 @@ import {
   MagnifyingGlassPlus,
 } from "@phosphor-icons/react"
 import clsx from "clsx"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useInView } from "react-intersection-observer"
-import { Link, useNavigate, useParams } from "react-router"
+import { Link, useLocation, useNavigate, useParams } from "react-router"
 
 import DocDrawer from "@/components/DocDrawer"
 import useStore from "@/useStore"
@@ -22,12 +22,13 @@ interface TextProps {
 
 function Text({ id, onActive, text }: TextProps) {
   const { ref, inView } = useInView({
+    onChange: (inView) => {
+      if (inView) {
+        onActive()
+      }
+    },
     rootMargin: "-50% 0% -50% 0%",
   })
-
-  if (inView) {
-    onActive()
-  }
 
   return (
     <pre
@@ -51,12 +52,13 @@ function Thumbnail({ id, imageURL, onActive, pageId }: ThumbnailProps) {
   const navigate = useNavigate()
 
   const { ref, inView } = useInView({
+    onChange: (inView) => {
+      if (inView) {
+        onActive()
+      }
+    },
     rootMargin: "0% -50% 0% -50%",
   })
-
-  if (inView) {
-    onActive()
-  }
 
   return (
     <li
@@ -84,9 +86,25 @@ interface DocProps {
 export default function Doc({ showDocDrawer }: DocProps) {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const { docs } = useStore()
-  const [isScrollingText, setIsScrollingText] = useState(false)
+  const [isScrollingText, setIsScrollingText] = useState(true)
   const [isScrollingThumbnails, setIsScrollingThumbnails] = useState(false)
+  const scrollableRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (scrollableRef.current) {
+      const searchParams = new URLSearchParams(location.search)
+      const scroll = searchParams.get("scroll")
+
+      if (scroll !== null) {
+        scrollableRef.current.scrollTo({
+          behavior: "instant",
+          top: parseInt(scroll),
+        })
+      }
+    }
+  }, [])
 
   const doc = docs.find((d) => d.id === id)
 
@@ -116,16 +134,32 @@ export default function Doc({ showDocDrawer }: DocProps) {
 
       <section
         className={classes.text}
+        onScroll={(e) => {
+          console.log("*")
+          console.log(window.location.href)
+
+          const searchParams = new URLSearchParams({
+            ...Object.fromEntries(new URLSearchParams(location.search)),
+            scroll: Math.round(e.currentTarget.scrollTop).toString(),
+          }).toString()
+
+          void navigate(`${location.pathname}?${searchParams}`, {
+            replace: true,
+          })
+          console.log(window.location.href)
+        }}
         onTouchStart={() => {
           setIsScrollingText(true)
           setIsScrollingThumbnails(false)
         }}
+        ref={scrollableRef}
       >
         {doc.pages.map((p) => (
           <Text
             id={p.id}
             key={p.id}
             onActive={() => {
+              console.log(`Text onActive, ${isScrollingText}`)
               if (isScrollingText) {
                 document
                   .getElementById(`thumbnail-${p.id}`)
