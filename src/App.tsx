@@ -6,6 +6,7 @@ import Camera from "@/Camera"
 import Debug from "@/Debug"
 import Doc from "@/Doc"
 import List from "@/List"
+import Page from "@/Page"
 
 export default function App() {
   const navigate = useNavigate()
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/doc/:id" element={<Doc />} />
           <Route path="/doc/:id/camera" element={<Camera />} />
           <Route path="/doc/:id/doc-drawer" element={<Doc showDocDrawer />} />
+          <Route path="/doc/:id/page/:pageId" element={<Page />} />
           <Route path="/list/:id/doc-drawer" element={<List showDocDrawer />} />
         </Routes>
       </RouterProvider>

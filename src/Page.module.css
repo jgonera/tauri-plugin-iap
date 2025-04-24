@@ -1,0 +1,33 @@
+.header {
+  align-items: center;
+  background: var(--color-background);
+  display: flex;
+
+  a,
+  button {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    height: 64px;
+    justify-content: center;
+    width: 64px;
+  }
+
+  h1 {
+    flex-grow: 1;
+    line-height: 1.1;
+    overflow: hidden;
+    padding-right: var(--content-padding);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.content {
+  flex-grow: 1;
+  overflow: scroll;
+
+  img {
+    width: 100%;
+  }
+}

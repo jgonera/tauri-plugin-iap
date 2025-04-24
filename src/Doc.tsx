@@ -44,9 +44,12 @@ interface ThumbnailProps {
   id: string
   imageURL: string
   onActive: () => void
+  pageId: string
 }
 
-function Thumbnail({ id, imageURL, onActive }: ThumbnailProps) {
+function Thumbnail({ id, imageURL, onActive, pageId }: ThumbnailProps) {
+  const navigate = useNavigate()
+
   const { ref, inView } = useInView({
     rootMargin: "0% -50% 0% -50%",
   })
@@ -58,9 +61,13 @@ function Thumbnail({ id, imageURL, onActive }: ThumbnailProps) {
   return (
     <li
       className={clsx({ [classes.active]: inView })}
-      id={`thumbnail-${id}`}
+      id={`thumbnail-${pageId}`}
       onClick={(e) => {
-        e.currentTarget.scrollIntoView({ inline: "center" })
+        if (!inView) {
+          e.currentTarget.scrollIntoView({ inline: "center" })
+        } else {
+          void navigate(`/doc/${id}/page/${pageId}`)
+        }
       }}
       ref={ref}
     >
@@ -100,7 +107,6 @@ export default function Doc({ showDocDrawer }: DocProps) {
         </button>
         <h1>{doc.name}</h1>
         <Link
-          className={classes.menuLink}
           aria-label={`Menu for ${doc.name}`}
           to={`/doc/${doc.id}/doc-drawer`}
         >
@@ -150,7 +156,7 @@ export default function Doc({ showDocDrawer }: DocProps) {
         >
           {doc.pages.map((p) => (
             <Thumbnail
-              id={p.id}
+              id={doc.id}
               imageURL={p.imageURL}
               key={p.id}
               onActive={() => {
@@ -160,6 +166,7 @@ export default function Doc({ showDocDrawer }: DocProps) {
                     ?.scrollIntoView({ block: "start" })
                 }
               }}
+              pageId={p.id}
             />
           ))}
         </ul>
