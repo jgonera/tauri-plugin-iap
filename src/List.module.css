@@ -36,13 +36,20 @@
     min-width: 48px;
   }
 
-  img {
-    border-radius: 4px;
+  .thumbnailWrapper {
+    flex-shrink: 0;
     margin-right: 8px;
+    min-height: 64px;
     width: 48px;
   }
 
-  div {
+  img {
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+  }
+
+  .description {
     display: grid;
   }
 

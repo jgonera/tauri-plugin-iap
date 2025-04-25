@@ -43,8 +43,10 @@ export default function List({ showDocDrawer }: ListProps) {
         {docs.map((d) => (
           <li key={d.id}>
             <Link className={classes.docLink} to={`/doc/${d.id}`}>
-              <img src={d.pages.at(0)?.imageURL} />
-              <div>
+              <div className={classes.thumbnailWrapper}>
+                <img src={d.pages.at(0)?.imageURL} />
+              </div>
+              <div className={classes.description}>
                 <h2>{d.name}</h2>
                 <p>
                   <time dateTime={d.updatedAt.toISOString()}>
