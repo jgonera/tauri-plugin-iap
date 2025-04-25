@@ -108,14 +108,11 @@ export default function Doc({ showDocDrawer }: DocProps) {
   }
 
   useEffect(() => {
-    console.log("e")
     if (
       doc.pages.at(-1)?.text === undefined &&
       textScrollRef.current !== null &&
       thumbnailScrollRef.current !== null
     ) {
-      console.log(textScrollRef.current.scrollHeight)
-      console.log(thumbnailScrollRef.current.scrollWidth)
       textScrollRef.current.scrollTo({
         top: textScrollRef.current.scrollHeight,
       })
