@@ -5,15 +5,16 @@ import {
   MagnifyingGlassPlus,
 } from "@phosphor-icons/react"
 import clsx from "clsx"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { Link, useNavigate, useParams } from "react-router"
 
 import DocDrawer from "@/components/DocDrawer"
+import Loader from "@/components/Loader"
+import useScrollRestore from "@/useScrollRestore"
 import useStore from "@/useStore"
 
 import classes from "./Doc.module.css"
-import useScrollRestore from "./useScrollRestore"
 
 interface TextProps {
   id: string
@@ -31,7 +32,7 @@ function Text({ id, onActive, text }: TextProps) {
     rootMargin: "-50% 0% -50% 0%",
   })
 
-  return (
+  return text !== undefined ? (
     <pre
       className={clsx({ [classes.active]: inView })}
       id={`text-${id}`}
@@ -39,6 +40,10 @@ function Text({ id, onActive, text }: TextProps) {
     >
       {text}
     </pre>
+  ) : (
+    <div className={classes.loaderWrapper} id={`text-${id}`} ref={ref}>
+      <Loader />
+    </div>
   )
 }
 
@@ -101,6 +106,24 @@ export default function Doc({ showDocDrawer }: DocProps) {
   if (doc === undefined) {
     throw new Error(`Can't find doc with id ${id ?? "undefined"}`)
   }
+
+  useEffect(() => {
+    console.log("e")
+    if (
+      doc.pages.at(-1)?.text === undefined &&
+      textScrollRef.current !== null &&
+      thumbnailScrollRef.current !== null
+    ) {
+      console.log(textScrollRef.current.scrollHeight)
+      console.log(thumbnailScrollRef.current.scrollWidth)
+      textScrollRef.current.scrollTo({
+        top: textScrollRef.current.scrollHeight,
+      })
+      thumbnailScrollRef.current.scrollTo({
+        left: thumbnailScrollRef.current.scrollWidth,
+      })
+    }
+  }, [doc.pages, textScrollRef, thumbnailScrollRef])
 
   return (
     <>

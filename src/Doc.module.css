@@ -32,8 +32,12 @@
 
   pre {
     color: var(--color-text-muted);
-    padding-top: var(--content-padding);
+    padding-top: 1em;
     transition: color 300ms ease-out;
+
+    &:first-child {
+      padding-top: var(--content-padding);
+    }
 
     &:last-child {
       padding-bottom: 96px;
@@ -43,6 +47,12 @@
       color: var(--color-text);
     }
   }
+}
+
+.loaderWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2em var(--content-padding) 96px;
 }
 
 .newPage {
