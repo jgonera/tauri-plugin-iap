@@ -30,7 +30,7 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
         <Drawer.Overlay className={classes.overlay} />
         <Drawer.Content className={classes.content}>
           <nav>
-            <h1>{doc.name}</h1>
+            <Drawer.Title className={classes.title}>{doc.name}</Drawer.Title>
             <ul>
               <li>
                 <button
