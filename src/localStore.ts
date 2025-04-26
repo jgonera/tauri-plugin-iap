@@ -212,9 +212,13 @@ export async function deletePage(docId: string, pageId: string): Promise<void> {
     throw new Error(`Can't find doc with id ${docId}`)
   }
 
-  await remove(`scribbleScan/docs/${docId}/${pageId}.txt`, {
-    baseDir: BaseDirectory.AppData,
-  })
+  const pagePath = `scribbleScan/docs/${docId}/${pageId}.txt`
+
+  // Text file might not be present if page is removed just after it was added
+  // but before OCR results came from the server.
+  if (await exists(pagePath, { baseDir: BaseDirectory.AppData })) {
+    await remove(pagePath, { baseDir: BaseDirectory.AppData })
+  }
 
   rawDoc.pages = rawDoc.pages.filter((p) => p.id !== pageId)
   rawDoc.updatedAt = new Date()
