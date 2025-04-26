@@ -93,6 +93,7 @@ export default function Doc({ showDocDrawer }: DocProps) {
   const { id } = useParams()
   const navigate = useNavigate()
   const { docs } = useStore()
+  const [currentPageNumber, setCurrentPageNumber] = useState(1)
   const [isScrollingText, setIsScrollingText] = useState(false)
   const [isScrollingThumbnails, setIsScrollingThumbnails] = useState(false)
   const textScrollRef = useScrollRestore({ name: "text", restoreY: true })
@@ -177,6 +178,13 @@ export default function Doc({ showDocDrawer }: DocProps) {
           <Camera size={32} />
         </button>
 
+        <div
+          aria-label="Current page number"
+          className={classes.currentPageNumber}
+        >
+          {currentPageNumber} / {doc.pages.length}
+        </div>
+
         <ul
           onTouchStart={() => {
             setIsScrollingThumbnails(true)
@@ -184,12 +192,14 @@ export default function Doc({ showDocDrawer }: DocProps) {
           }}
           ref={thumbnailScrollRef}
         >
-          {doc.pages.map((p) => (
+          {doc.pages.map((p, index) => (
             <Thumbnail
               id={doc.id}
               imageURL={p.imageURL}
               key={p.id}
               onActive={() => {
+                setCurrentPageNumber(index + 1)
+
                 if (isScrollingThumbnails) {
                   document
                     .getElementById(`text-${p.id}`)
