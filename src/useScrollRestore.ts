@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
+import { useDebouncedCallback } from "use-debounce"
 
 interface UseScrollRestoreArgs {
   name: string
@@ -12,41 +13,42 @@ export default function useScrollRestore<T extends HTMLElement>({
   restoreX = false,
   restoreY = false,
 }: UseScrollRestoreArgs) {
-  const ref = useRef<T>(null)
   const navigate = useNavigate()
+  const ref = useRef<T>(null)
+  const [scrollX, setScrollX] = useState<number | null>(null)
+  const [scrollY, setScrollY] = useState<number | null>(null)
 
-  function handleScroll(e: Event) {
-    if (!(e.currentTarget instanceof Element)) return
+  const handleScroll = useDebouncedCallback((e: Event) => {
+    if (!(e.target instanceof Element)) return
 
-    const searchParams = new URLSearchParams({
+    setScrollX(e.target.scrollLeft)
+    setScrollY(e.target.scrollTop)
+  }, 100)
+
+  useEffect(() => {
+    const search = new URLSearchParams({
       ...Object.fromEntries(new URLSearchParams(window.location.search)),
-      ...(restoreX
+      ...(restoreX && scrollX !== null
         ? {
-            [`${name}ScrollX`]: Math.round(
-              e.currentTarget.scrollLeft,
-            ).toString(),
+            [`${name}ScrollX`]: Math.round(scrollX).toString(),
           }
         : {}),
-      ...(restoreY
+      ...(restoreY && scrollY !== null
         ? {
-            [`${name}ScrollY`]: Math.round(
-              e.currentTarget.scrollTop,
-            ).toString(),
+            [`${name}ScrollY`]: Math.round(scrollY).toString(),
           }
         : {}),
     }).toString()
 
-    void navigate(`${window.location.pathname}?${searchParams}`, {
-      replace: true,
-    })
-  }
+    void navigate({ search }, { replace: true })
+  }, [scrollX, scrollY])
 
   useEffect(() => {
     if (ref.current === null) return
 
-    const searchParams = new URLSearchParams(location.search)
-    const x = searchParams.get(`${name}ScrollX`)
-    const y = searchParams.get(`${name}ScrollY`)
+    const search = new URLSearchParams(location.search)
+    const x = search.get(`${name}ScrollX`)
+    const y = search.get(`${name}ScrollY`)
 
     if (x || y) {
       ref.current.scrollTo({
