@@ -32,17 +32,13 @@ function Text({ id, onActive, text }: TextProps) {
     rootMargin: "-50% 0% -50% 0%",
   })
 
-  return text !== undefined ? (
-    <pre
-      className={clsx({ [classes.active]: inView })}
-      id={`text-${id}`}
-      ref={ref}
-    >
-      {text}
-    </pre>
-  ) : (
-    <div className={classes.loaderWrapper} id={`text-${id}`} ref={ref}>
-      <Loader />
+  return (
+    <div className={classes.pageContainer} id={`text-${id}`} ref={ref}>
+      {text !== undefined ? (
+        <pre className={clsx({ [classes.active]: inView })}>{text}</pre>
+      ) : (
+        <Loader />
+      )}
     </div>
   )
 }
@@ -201,9 +197,17 @@ export default function Doc({ showDocDrawer }: DocProps) {
                 setCurrentPageNumber(index + 1)
 
                 if (isScrollingThumbnails) {
-                  document
-                    .getElementById(`text-${p.id}`)
-                    ?.scrollIntoView({ block: "start" })
+                  const textEl = document.getElementById(`text-${p.id}`)
+
+                  if (textEl === null) return
+
+                  textEl.scrollIntoView({
+                    block:
+                      textEl.scrollHeight >
+                      0.5 * window.document.body.clientHeight
+                        ? "start"
+                        : "center",
+                  })
                 }
               }}
               pageId={p.id}
