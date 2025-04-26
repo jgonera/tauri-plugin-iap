@@ -31,6 +31,9 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
         <Drawer.Content className={classes.content}>
           <nav>
             <Drawer.Title className={classes.title}>{doc.name}</Drawer.Title>
+            <Drawer.Description className={classes.description}>
+              Actions for {doc.name}
+            </Drawer.Description>
             <ul>
               <li>
                 <button
