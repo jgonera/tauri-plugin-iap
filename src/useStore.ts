@@ -33,31 +33,31 @@ const useStore = create<StoreState>()((set) => {
     docs,
     createDoc: async () => {
       const id = await createDoc()
-      void refreshDocs()
+      await refreshDocs()
 
       return id
     },
     deleteDoc: async (docId) => {
       await deleteDoc(docId)
-      void refreshDocs()
+      await refreshDocs()
     },
     renameDoc: async (docId, name) => {
       await renameDoc(docId, name)
-      void refreshDocs()
+      await refreshDocs()
     },
     addPage: async (docId, base64Image) => {
       const pageId = await addPage(docId, base64Image)
-      void refreshDocs()
+      await refreshDocs()
 
       return pageId
     },
     addPageText: async (docId, base64Image, text) => {
       await addPageText(docId, base64Image, text)
-      void refreshDocs()
+      await refreshDocs()
     },
     deletePage: async (docId, pageId) => {
       await deletePage(docId, pageId)
-      void refreshDocs()
+      await refreshDocs()
     },
   }
 })
