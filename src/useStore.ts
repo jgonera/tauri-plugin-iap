@@ -23,47 +23,43 @@ interface StoreState {
 
 const docs = await getDocs()
 
-const useStore = create<StoreState>()((set) => ({
-  docs,
-  createDoc: async () => {
-    const doc = await createDoc()
+const useStore = create<StoreState>()((set) => {
+  async function refreshDocs() {
     const docs = await getDocs()
     set(() => ({ docs }))
-    return doc.id
-  },
-  deleteDoc: async (docId) => {
-    await deleteDoc(docId)
-    const docs = await getDocs()
-    set(() => ({ docs }))
-  },
-  renameDoc: async (docId, name) => {
-    await renameDoc(docId, name)
-    const docs = await getDocs()
-    set(() => ({ docs }))
-  },
-  addPage: async (docId, base64Image) => {
-    const doc = await addPage(docId, base64Image)
-    const docs = await getDocs()
-    set(() => ({ docs }))
+  }
 
-    const lastPage = doc.pages.at(-1)
+  return {
+    docs,
+    createDoc: async () => {
+      const id = await createDoc()
+      void refreshDocs()
 
-    if (lastPage === undefined) {
-      throw new Error("Can't access newly added page!")
-    }
+      return id
+    },
+    deleteDoc: async (docId) => {
+      await deleteDoc(docId)
+      void refreshDocs()
+    },
+    renameDoc: async (docId, name) => {
+      await renameDoc(docId, name)
+      void refreshDocs()
+    },
+    addPage: async (docId, base64Image) => {
+      const pageId = await addPage(docId, base64Image)
+      void refreshDocs()
 
-    return lastPage.id
-  },
-  addPageText: async (docId, base64Image, text) => {
-    await addPageText(docId, base64Image, text)
-    const docs = await getDocs()
-    set(() => ({ docs }))
-  },
-  deletePage: async (docId, pageId) => {
-    await deletePage(docId, pageId)
-    const docs = await getDocs()
-    set(() => ({ docs }))
-  },
-}))
+      return pageId
+    },
+    addPageText: async (docId, base64Image, text) => {
+      await addPageText(docId, base64Image, text)
+      void refreshDocs()
+    },
+    deletePage: async (docId, pageId) => {
+      await deletePage(docId, pageId)
+      void refreshDocs()
+    },
+  }
+})
 
 export default useStore

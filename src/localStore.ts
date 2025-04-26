@@ -102,7 +102,7 @@ export async function getDocs(): Promise<Doc[]> {
   return await Promise.all((await getRawDocs()).map(augmentRawDoc))
 }
 
-export async function createDoc(): Promise<Doc> {
+export async function createDoc(): Promise<string> {
   const rawDocs = await getRawDocs()
   const now = new Date()
 
@@ -122,7 +122,7 @@ export async function createDoc(): Promise<Doc> {
   rawDocs.push(rawDoc)
   await updateRawDocs(rawDocs)
 
-  return augmentRawDoc(rawDoc)
+  return rawDoc.id
 }
 
 export async function deleteDoc(docId: string): Promise<void> {
@@ -153,7 +153,7 @@ export async function renameDoc(docId: string, name: string): Promise<void> {
 export async function addPage(
   docId: string,
   base64Image: string,
-): Promise<Doc> {
+): Promise<string> {
   const rawDocs = await getRawDocs()
   const rawDoc = rawDocs.find((d) => d.id === docId)
 
@@ -175,14 +175,14 @@ export async function addPage(
   rawDoc.updatedAt = new Date()
   await updateRawDocs(rawDocs.map((d) => (d.id === docId ? rawDoc : d)))
 
-  return augmentRawDoc(rawDoc)
+  return page.id
 }
 
 export async function addPageText(
   docId: string,
   pageId: string,
   text: string,
-): Promise<Doc> {
+): Promise<void> {
   const rawDocs = await getRawDocs()
   const rawDoc = rawDocs.find((d) => d.id === docId)
 
@@ -193,14 +193,15 @@ export async function addPageText(
   const page = rawDoc.pages.find((p) => p.id === pageId)
 
   if (page === undefined) {
-    throw new Error(`Can't find page with id ${pageId} in doc ${docId}`)
+    // This can happen if someone added a new page and removed it right away
+    // before the OCR results were back.
+    console.warn(`Can't find page with id ${pageId} in doc ${docId}`)
+    return
   }
 
   await writeTextFile(`scribbleScan/docs/${docId}/${pageId}.txt`, text, {
     baseDir: BaseDirectory.AppData,
   })
-
-  return augmentRawDoc(rawDoc)
 }
 
 export async function deletePage(docId: string, pageId: string): Promise<void> {
