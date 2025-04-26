@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import { useDebouncedCallback } from "use-debounce"
 
 interface UseScrollRestoreArgs {
@@ -13,6 +13,7 @@ export default function useScrollRestore<T extends HTMLElement>({
   restoreX = false,
   restoreY = false,
 }: UseScrollRestoreArgs) {
+  const location = useLocation()
   const navigate = useNavigate()
   const ref = useRef<T>(null)
   const [scrollX, setScrollX] = useState<number | null>(null)
@@ -27,7 +28,7 @@ export default function useScrollRestore<T extends HTMLElement>({
 
   useEffect(() => {
     const search = new URLSearchParams({
-      ...Object.fromEntries(new URLSearchParams(window.location.search)),
+      ...Object.fromEntries(new URLSearchParams(location.search)),
       ...(restoreX && scrollX !== null
         ? {
             [`${name}ScrollX`]: Math.round(scrollX).toString(),
