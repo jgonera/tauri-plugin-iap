@@ -50,6 +50,11 @@
   --content-padding: 16px;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 button,
 h1,
 h2,
@@ -115,5 +120,5 @@ pre {
 #root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 }
