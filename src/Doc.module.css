@@ -95,6 +95,11 @@
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
     width: 100%;
+
+    /* https://stackoverflow.com/a/58342565 */
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   li {
@@ -110,7 +115,8 @@
     }
 
     &:last-child {
-      margin-right: 50vw;
+      /* https://stackoverflow.com/a/38997047 */
+      border-right: calc(50vw - 32px) solid transparent;
     }
 
     &.active {
