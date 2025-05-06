@@ -1,6 +1,6 @@
-name: scanner-app
+name: ScribbleScan
 options:
-  bundleIdPrefix: com.scanner-app.app
+  bundleIdPrefix: com.scribblescan
   deploymentTarget:
     iOS: 13.0
 fileGroups: [../../src]
@@ -10,8 +10,9 @@ configs:
 settingGroups:
   app:
     base:
-      PRODUCT_NAME: scanner-app
-      PRODUCT_BUNDLE_IDENTIFIER: com.scanner-app.app
+      PRODUCT_NAME: ScribbleScan
+      PRODUCT_BUNDLE_IDENTIFIER: com.scribblescan
+      DEVELOPMENT_TEAM: PQ7386D5U4
 targetTemplates:
   app:
     type: application
@@ -24,20 +25,20 @@ targetTemplates:
     settings:
       groups: [app]
 targets:
-  scanner-app_iOS:
+  ScribbleScan_iOS:
     type: application
     platform: iOS
     sources:
       - path: Sources
       - path: Assets.xcassets
       - path: Externals
-      - path: scanner-app_iOS
+      - path: ScribbleScan_iOS
       - path: assets
         buildPhase: resources
         type: folder
       - path: LaunchScreen.storyboard
     info:
-      path: scanner-app_iOS/Info.plist
+      path: ScribbleScan_iOS/Info.plist
       properties:
         LSRequiresIPhoneOS: true
         UILaunchStoryboardName: LaunchScreen
@@ -54,7 +55,7 @@ targets:
         CFBundleShortVersionString: 0.1.0
         CFBundleVersion: 0.1.0
     entitlements:
-      path: scanner-app_iOS/scanner-app_iOS.entitlements
+      path: ScribbleScan_iOS/ScribbleScan_iOS.entitlements
     scheme:
       environmentVariables:
         RUST_BACKTRACE: full

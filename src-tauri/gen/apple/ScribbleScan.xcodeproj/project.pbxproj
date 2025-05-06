@@ -1,0 +1,472 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		03399FA05E1F90F107EF569E /* assets in Resources */ = {isa = PBXBuildFile; fileRef = ADC04A3C37C00FC7FAE37DFC /* assets */; };
+		119819D92B2DFAE3DC6F3E1B /* libapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A215B7136DCC7D69854E0B /* libapp.a */; };
+		5D04BEEC30E4D1468E222482 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 407380200AB3999AFBD852D8 /* CoreGraphics.framework */; };
+		8235C566FB050C80F2F466E4 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0A91D301F1B4F4D55A0F43A /* MetalKit.framework */; };
+		92BBD431E3D7CCC4B16C92E0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91F710FE24B96EB4DBA66CC2 /* QuartzCore.framework */; };
+		A54A61B4A3BD765C82DC696F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EFE4B2184EB056605D4E129 /* UIKit.framework */; };
+		AFEFA47E7056372BC15E52F9 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A80E74A39C171D90FAB0D40 /* Metal.framework */; };
+		B1A907044E15BA2B0B56C681 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7527F0A8A130E58E3F9C52A8 /* Security.framework */; };
+		B421713D198159F3BC8B441B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 035E436634337DD3DBA6D024 /* LaunchScreen.storyboard */; };
+		C05340027CCCB0B2775AEF2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73BC2266FC2DD5D99D88646F /* Assets.xcassets */; };
+		CE3F87BE05DB5DD41BE7AAEA /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6EB6477B695951EB28B43E7 /* WebKit.framework */; };
+		D26E7F659AAF832F219D2904 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55E50B0E4905E090D0248BB0 /* main.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		035E436634337DD3DBA6D024 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		08A215B7136DCC7D69854E0B /* libapp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libapp.a; sourceTree = "<group>"; };
+		127C4ADFAECC9F5C1CA1D3E7 /* ScribbleScan_iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScribbleScan_iOS.entitlements; sourceTree = "<group>"; };
+		15E09A4F06031C425690625B /* lib.rs */ = {isa = PBXFileReference; path = lib.rs; sourceTree = "<group>"; };
+		2EFE4B2184EB056605D4E129 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		407380200AB3999AFBD852D8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		42799BFC82AEB0EBCFD62C3E /* main.rs */ = {isa = PBXFileReference; path = main.rs; sourceTree = "<group>"; };
+		55E50B0E4905E090D0248BB0 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		571CFEDCDEF009200A878549 /* bindings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bindings.h; sourceTree = "<group>"; };
+		6A80E74A39C171D90FAB0D40 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		6F59452C532436340F99DF26 /* ScribbleScan_iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ScribbleScan_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		73BC2266FC2DD5D99D88646F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7527F0A8A130E58E3F9C52A8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		91F710FE24B96EB4DBA66CC2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A1B0AF1C635970D840F5F68B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		ADC04A3C37C00FC7FAE37DFC /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = SOURCE_ROOT; };
+		B0A91D301F1B4F4D55A0F43A /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
+		D6EB6477B695951EB28B43E7 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9E89979CA6DAD9FD03E21DF6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				119819D92B2DFAE3DC6F3E1B /* libapp.a in Frameworks */,
+				5D04BEEC30E4D1468E222482 /* CoreGraphics.framework in Frameworks */,
+				AFEFA47E7056372BC15E52F9 /* Metal.framework in Frameworks */,
+				8235C566FB050C80F2F466E4 /* MetalKit.framework in Frameworks */,
+				92BBD431E3D7CCC4B16C92E0 /* QuartzCore.framework in Frameworks */,
+				B1A907044E15BA2B0B56C681 /* Security.framework in Frameworks */,
+				A54A61B4A3BD765C82DC696F /* UIKit.framework in Frameworks */,
+				CE3F87BE05DB5DD41BE7AAEA /* WebKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0AD42297A17B1F61420488B1 /* Externals */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Externals;
+			sourceTree = "<group>";
+		};
+		573AA26B1931F1D358B9CCBB /* ScribbleScan */ = {
+			isa = PBXGroup;
+			children = (
+				55E50B0E4905E090D0248BB0 /* main.mm */,
+				E1F34D9F54B3969136F6F1FF /* bindings */,
+			);
+			path = ScribbleScan;
+			sourceTree = "<group>";
+		};
+		BAD865378AB9E145C55E8C3F = {
+			isa = PBXGroup;
+			children = (
+				ADC04A3C37C00FC7FAE37DFC /* assets */,
+				73BC2266FC2DD5D99D88646F /* Assets.xcassets */,
+				035E436634337DD3DBA6D024 /* LaunchScreen.storyboard */,
+				0AD42297A17B1F61420488B1 /* Externals */,
+				DAB53FAD47EA1D4093A8AAB8 /* ScribbleScan_iOS */,
+				BD61FCAFD5C570B999A118B9 /* Sources */,
+				E58422B3902A04A606917483 /* src */,
+				C032EA08A24F4BEED8EA34C3 /* Frameworks */,
+				BEA2253CDA737BC277ED51C6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BD61FCAFD5C570B999A118B9 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				573AA26B1931F1D358B9CCBB /* ScribbleScan */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		BEA2253CDA737BC277ED51C6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6F59452C532436340F99DF26 /* ScribbleScan_iOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C032EA08A24F4BEED8EA34C3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				407380200AB3999AFBD852D8 /* CoreGraphics.framework */,
+				08A215B7136DCC7D69854E0B /* libapp.a */,
+				6A80E74A39C171D90FAB0D40 /* Metal.framework */,
+				B0A91D301F1B4F4D55A0F43A /* MetalKit.framework */,
+				91F710FE24B96EB4DBA66CC2 /* QuartzCore.framework */,
+				7527F0A8A130E58E3F9C52A8 /* Security.framework */,
+				2EFE4B2184EB056605D4E129 /* UIKit.framework */,
+				D6EB6477B695951EB28B43E7 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DAB53FAD47EA1D4093A8AAB8 /* ScribbleScan_iOS */ = {
+			isa = PBXGroup;
+			children = (
+				A1B0AF1C635970D840F5F68B /* Info.plist */,
+				127C4ADFAECC9F5C1CA1D3E7 /* ScribbleScan_iOS.entitlements */,
+			);
+			path = ScribbleScan_iOS;
+			sourceTree = "<group>";
+		};
+		E1F34D9F54B3969136F6F1FF /* bindings */ = {
+			isa = PBXGroup;
+			children = (
+				571CFEDCDEF009200A878549 /* bindings.h */,
+			);
+			path = bindings;
+			sourceTree = "<group>";
+		};
+		E58422B3902A04A606917483 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				15E09A4F06031C425690625B /* lib.rs */,
+				42799BFC82AEB0EBCFD62C3E /* main.rs */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E7C074B6328ABD9F8EEE7A8E /* ScribbleScan_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1BD8642708BF142B001B196D /* Build configuration list for PBXNativeTarget "ScribbleScan_iOS" */;
+			buildPhases = (
+				5AEC97EB64461E19DB9D506E /* Build Rust Code */,
+				5602DC5EA38E73CA5681D40B /* Sources */,
+				A8ACDF9990BAB6C679C39D23 /* Resources */,
+				9E89979CA6DAD9FD03E21DF6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ScribbleScan_iOS;
+			packageProductDependencies = (
+			);
+			productName = ScribbleScan_iOS;
+			productReference = 6F59452C532436340F99DF26 /* ScribbleScan_iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F19ACEB5621CDDB7EEEEAFCB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					E7C074B6328ABD9F8EEE7A8E = {
+						DevelopmentTeam = PQ7386D5U4;
+					};
+				};
+			};
+			buildConfigurationList = 0688004175B83E6A3F4C1175 /* Build configuration list for PBXProject "ScribbleScan" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BAD865378AB9E145C55E8C3F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 54;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E7C074B6328ABD9F8EEE7A8E /* ScribbleScan_iOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A8ACDF9990BAB6C679C39D23 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C05340027CCCB0B2775AEF2A /* Assets.xcassets in Resources */,
+				B421713D198159F3BC8B441B /* LaunchScreen.storyboard in Resources */,
+				03399FA05E1F90F107EF569E /* assets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5AEC97EB64461E19DB9D506E /* Build Rust Code */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build Rust Code";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Externals/x86_64/${CONFIGURATION}/libapp.a",
+				"$(SRCROOT)/Externals/arm64/${CONFIGURATION}/libapp.a",
+				"$(SRCROOT)/Externals/arm64-sim/${CONFIGURATION}/libapp.a",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "npm run -- tauri ios xcode-script -v --platform ${PLATFORM_DISPLAY_NAME:?} --sdk-root ${SDKROOT:?} --framework-search-paths \"${FRAMEWORK_SEARCH_PATHS:?}\" --header-search-paths \"${HEADER_SEARCH_PATHS:?}\" --gcc-preprocessor-definitions \"${GCC_PREPROCESSOR_DEFINITIONS:-}\" --configuration ${CONFIGURATION:?} ${FORCE_COLOR} ${ARCHS:?}";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5602DC5EA38E73CA5681D40B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D26E7F659AAF832F219D2904 /* main.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		41C216B30D21DBB1D01954D5 /* release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = release;
+		};
+		6EFC1A8DE7EBAA499E68784A /* debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ARCHS = (
+					arm64,
+					x86_64,
+				);
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ScribbleScan_iOS/ScribbleScan_iOS.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "PQ7386D5U4";
+				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "arm64-sim x86_64";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\".\"",
+				);
+				INFOPLIST_FILE = ScribbleScan_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=arm64-sim]" = "$(inherited) $(PROJECT_DIR)/Externals/arm64-sim/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
+				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(inherited) $(PROJECT_DIR)/Externals/arm64/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
+				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(inherited) $(PROJECT_DIR)/Externals/x86_64/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.scribblescan;
+				PRODUCT_NAME = ScribbleScan;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64  x86_64";
+			};
+			name = debug;
+		};
+		AD27F87FD96B680B0A62A8D4 /* release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ARCHS = (
+					arm64,
+					x86_64,
+				);
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ScribbleScan_iOS/ScribbleScan_iOS.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "PQ7386D5U4";
+				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "arm64-sim x86_64";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\".\"",
+				);
+				INFOPLIST_FILE = ScribbleScan_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=arm64-sim]" = "$(inherited) $(PROJECT_DIR)/Externals/arm64-sim/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
+				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(inherited) $(PROJECT_DIR)/Externals/arm64/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
+				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(inherited) $(PROJECT_DIR)/Externals/x86_64/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.scribblescan;
+				PRODUCT_NAME = ScribbleScan;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64  x86_64";
+			};
+			name = release;
+		};
+		EC287F3B784ACEA12DBFB3C9 /* debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0688004175B83E6A3F4C1175 /* Build configuration list for PBXProject "ScribbleScan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC287F3B784ACEA12DBFB3C9 /* debug */,
+				41C216B30D21DBB1D01954D5 /* release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = debug;
+		};
+		1BD8642708BF142B001B196D /* Build configuration list for PBXNativeTarget "ScribbleScan_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6EFC1A8DE7EBAA499E68784A /* debug */,
+				AD27F87FD96B680B0A62A8D4 /* release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F19ACEB5621CDDB7EEEEAFCB /* Project object */;
+}
