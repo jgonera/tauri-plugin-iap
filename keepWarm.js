@@ -8,5 +8,5 @@ while (true) {
     console.error(`${new Date().toISOString()} ${e}`)
   }
   console.log(`${new Date().toISOString()} Done. Waiting...`)
-  await new Promise((r) => setTimeout(r, 14 * 60 * 1000))
+  await new Promise((r) => setTimeout(r, 3 * 60 * 1000))
 }
