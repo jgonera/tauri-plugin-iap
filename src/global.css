@@ -50,11 +50,6 @@
   --content-padding: 16px;
 }
 
-html,
-body {
-  height: 100%;
-}
-
 button,
 h1,
 h2,
@@ -100,6 +95,12 @@ body {
   background: var(--color-background);
   color: var(--color-text);
   font-size: 16px;
+  height: 100vh;
+  /* Use a minimum for top and bottom to work around
+   * https://chromium-review.googlesource.com/c/chromium/src/+/6295663/comments/a5fc2d65_86c53b45 */
+  padding: max(env(safe-area-inset-top), 22px) env(safe-area-inset-right)
+    max(env(safe-area-inset-bottom), 14px) env(safe-area-inset-left) !important;
+  position: relative;
 }
 
 h1 {
