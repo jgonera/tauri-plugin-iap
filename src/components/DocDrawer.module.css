@@ -16,11 +16,11 @@
   }
 
   background: var(--color-background-muted);
-  border-radius: 8px 8px 0;
+  border-radius: 8px 8px 0 0;
   bottom: 0;
   left: 0;
   padding: 0 var(--content-padding) var(--content-padding);
-  position: fixed;
+  position: absolute;
   right: 0;
 
   .title {
@@ -38,18 +38,67 @@
     display: none;
   }
 
-  a,
-  button {
-    display: flex;
-    align-items: center;
-    height: 48px;
+  ul {
+    a,
+    button {
+      display: flex;
+      align-items: center;
+      height: 48px;
 
-    svg {
-      margin: 0 6px 0 -3px;
+      svg {
+        margin: 0 6px 0 -3px;
+      }
     }
   }
 }
 
-.delete {
+.deleteMenu {
   color: var(--color-text-danger);
+}
+
+.buttonBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  height: 48px;
+  margin: 16px 0;
+  font-weight: bold;
+
+  &.accent,
+  &.danger {
+    border-radius: 4px;
+    color: var(--color-text-button);
+    padding: 0 24px;
+  }
+
+  &.accent {
+    background: var(--color-background-accent);
+  }
+
+  &.danger {
+    background: var(--color-background-danger);
+  }
+
+  &.text {
+    text-decoration: underline;
+    text-underline-offset: 8px;
+  }
+}
+
+.input {
+  background: var(--color-background-muted);
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text);
+  display: block;
+  margin-top: 24px;
+  padding: 8px;
+  width: 100%;
+  outline: none;
+
+  &:focus {
+    outline: 1px solid var(--color-border);
+  }
 }

@@ -26,23 +26,28 @@
   --color-gray-800: #201d1d;
   --color-green-500: #00a982;
   --color-red-400: #f65577;
+  --color-red-500: #f42752;
   --color-red-600: #da0b37;
   --color-white: #fff;
 
   --color-background: var(--color-black);
   --color-background-accent: var(--color-green-500);
+  --color-background-danger: var(--color-red-500);
   --color-background-muted: var(--color-gray-800);
   --color-border: var(--color-gray-700);
   --color-text: var(--color-white);
+  --color-text-button: var(--color-white);
   --color-text-danger: var(--color-red-400);
   --color-text-muted: var(--color-gray-400);
 
   @media (prefers-color-scheme: light) {
     --color-background: var(--color-white);
     --color-background-accent: var(--color-green-500);
+    --color-background-danger: var(--color-red-500);
     --color-background-muted: var(--color-gray-200);
     --color-border: var(--color-gray-300);
     --color-text: var(--color-black);
+    --color-text-button: var(--color-white);
     --color-text-danger: var(--color-red-600);
     --color-text-muted: var(--color-gray-600);
   }
@@ -95,11 +100,11 @@ body {
   background: var(--color-background);
   color: var(--color-text);
   font-size: 16px;
-  height: 100vh;
+  height: 100dvh;
   /* Use a minimum for top and bottom to work around
    * https://chromium-review.googlesource.com/c/chromium/src/+/6295663/comments/a5fc2d65_86c53b45 */
-  padding: max(env(safe-area-inset-top), 22px) env(safe-area-inset-right)
-    max(env(safe-area-inset-bottom), 14px) env(safe-area-inset-left) !important;
+  padding: max(env(safe-area-inset-top), 0) env(safe-area-inset-right)
+    max(env(safe-area-inset-bottom), 0) env(safe-area-inset-left) !important;
   position: relative;
 }
 
