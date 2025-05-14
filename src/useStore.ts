@@ -6,10 +6,10 @@ import {
   createDoc,
   deleteDoc,
   deletePage,
-  type Doc,
   getDocs,
   renameDoc,
-} from "@/localStore"
+} from "@/store/sqliteStore"
+import type { Doc } from "@/store/types"
 
 interface StoreState {
   docs: Doc[]

@@ -12,45 +12,10 @@ import {
 import { v7 as uuidv7 } from "uuid"
 import { z } from "zod"
 
+import { Doc, RawDoc, RawDocSchema } from "@/store/types"
 import { base64ToArrayBuffer } from "@/util"
 
 const APP_DATA_DIR = await appDataDir()
-
-const RawPageSchema = z
-  .object({
-    id: z.string().uuid(),
-  })
-  .strict()
-
-const RawDocSchema = z
-  .object({
-    id: z.string().uuid(),
-    name: z.string(),
-    createdAt: z.string().datetime().pipe(z.coerce.date()),
-    updatedAt: z.string().datetime().pipe(z.coerce.date()),
-    pages: z.array(RawPageSchema),
-  })
-  .strict()
-
-type RawDoc = z.infer<typeof RawDocSchema>
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const DocSchema = z
-  .object({
-    id: z.string().uuid(),
-    name: z.string(),
-    createdAt: z.string().datetime().pipe(z.coerce.date()),
-    updatedAt: z.string().datetime().pipe(z.coerce.date()),
-    pages: z.array(
-      RawPageSchema.extend({
-        imageURL: z.string(),
-        text: z.string().optional(),
-      }),
-    ),
-  })
-  .strict()
-
-export type Doc = z.infer<typeof DocSchema>
 
 async function getRawDocs(): Promise<RawDoc[]> {
   if (
@@ -91,7 +56,7 @@ async function augmentRawDoc(rawDoc: RawDoc): Promise<Doc> {
           ),
           text: (await exists(textPath, { baseDir: BaseDirectory.AppData }))
             ? await readTextFile(textPath, { baseDir: BaseDirectory.AppData })
-            : undefined,
+            : null,
         }
       }),
     ),
@@ -161,7 +126,7 @@ export async function addPage(
     throw new Error(`Can't find doc with id ${docId}`)
   }
 
-  const page = { id: uuidv7() }
+  const page = { id: uuidv7(), text: null }
 
   await writeFile(
     `scribbleScan/docs/${docId}/${page.id}.jpg`,

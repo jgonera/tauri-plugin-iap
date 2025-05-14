@@ -43,5 +43,10 @@
     "iOS": {
       "developmentTeam": "PQ7386D5U4"
     }
+  },
+  "plugins": {
+    "sql": {
+      "preload": ["sqlite:scribbleScan.db"]
+    }
   }
 }

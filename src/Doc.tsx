@@ -19,7 +19,7 @@ import classes from "./Doc.module.css"
 interface TextProps {
   id: string
   onActive: () => void
-  text?: string
+  text: string | null
 }
 
 function Text({ id, onActive, text }: TextProps) {
@@ -34,7 +34,7 @@ function Text({ id, onActive, text }: TextProps) {
 
   return (
     <div className={classes.pageContainer} id={`text-${id}`} ref={ref}>
-      {text !== undefined ? (
+      {text !== null ? (
         <pre className={clsx({ [classes.active]: inView })}>{text}</pre>
       ) : (
         <Loader />
