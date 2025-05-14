@@ -69,6 +69,7 @@
   background: var(--color-background-accent);
   border-radius: 32px;
   bottom: 32px;
+  color: var(--color-text-button);
   display: flex;
   height: 64px;
   justify-content: center;
