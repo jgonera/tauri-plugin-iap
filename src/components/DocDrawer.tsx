@@ -1,4 +1,5 @@
-import { Bug, PencilSimpleLine, Trash } from "@phosphor-icons/react"
+import { shareText } from "@buildyourwebapp/tauri-plugin-sharesheet"
+import { Bug, Export, PencilSimpleLine, Trash } from "@phosphor-icons/react"
 import clsx from "clsx"
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
@@ -47,6 +48,19 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
             </Drawer.Description>
             {state === "default" && (
               <ul>
+                <li>
+                  <button
+                    onClick={() => {
+                      void shareText(
+                        doc.pages.map((p) => p.text ?? "").join("\n\n"),
+                      )
+                      void navigate(-1)
+                    }}
+                  >
+                    <Export size={24} />
+                    Share
+                  </button>
+                </li>
                 <li>
                   <button
                     onClick={() => {

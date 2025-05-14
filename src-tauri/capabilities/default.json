@@ -21,6 +21,7 @@
         { "url": "https://ollama-minicpm-v-31109354798.us-central1.run.app" }
       ]
     },
-    "opener:default"
+    "opener:default",
+    "sharesheet:default"
   ]
 }
