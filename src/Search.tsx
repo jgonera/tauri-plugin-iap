@@ -1,6 +1,12 @@
-import { DotsThreeVertical, MagnifyingGlass, Plus } from "@phosphor-icons/react"
-import { useEffect, useState } from "react"
+import {
+  ArrowLeft,
+  DotsThreeVertical,
+  MagnifyingGlass,
+  Plus,
+} from "@phosphor-icons/react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
+import { useDebouncedCallback } from "use-debounce"
 
 import DocDrawer from "@/components/DocDrawer"
 import { Doc } from "@/store/types"
@@ -11,14 +17,10 @@ import classes from "./List.module.css"
 
 const dateTimeFormat = new Intl.DateTimeFormat()
 
-interface ListProps {
-  showDocDrawer?: boolean
-}
-
-export default function List({ showDocDrawer }: ListProps) {
+export default function Search() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { docs } = useStore()
+  const { docs, searchResults, setSearchQuery } = useStore()
   const [doc, setDoc] = useState<Doc | undefined>()
 
   // We keep `doc` set even when there's no `id` so that the drawer can be
@@ -29,13 +31,25 @@ export default function List({ showDocDrawer }: ListProps) {
     }
   }, [docs, id])
 
+  const handleInput = useDebouncedCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value)
+    },
+    100,
+  )
+
   return (
     <>
       <header className={classes.header}>
-        <h1>Scribbles</h1>
-        <Link aria-label="Search" to={`/search`}>
-          <MagnifyingGlass size={32} />
-        </Link>
+        <button
+          aria-label="Go back"
+          onClick={() => {
+            void navigate(-1)
+          }}
+        >
+          <ArrowLeft size={32} />
+        </button>
+        <input onChange={handleInput} />
       </header>
 
       <Link aria-label="New" className={classes.new} to="/camera">
@@ -43,26 +57,26 @@ export default function List({ showDocDrawer }: ListProps) {
       </Link>
 
       <ul className={classes.list}>
-        {docs.map((d) => (
-          <li key={d.id}>
-            <Link className={classes.docLink} to={`/doc/${d.id}`}>
+        {searchResults.map((sr) => (
+          <li key={sr.id}>
+            <Link className={classes.docLink} to={`/doc/${sr.id}`}>
               <div className={classes.thumbnailWrapper}>
-                <img src={d.pages.at(0)?.imageURL} />
+                <img src="" />
               </div>
               <div className={classes.description}>
-                <h2>{d.name}</h2>
+                <h2 dangerouslySetInnerHTML={{ __html: sr.name }}></h2>
                 <p>
-                  <time dateTime={d.updatedAt.toISOString()}>
-                    {dateTimeFormat.format(d.updatedAt)}
+                  <time dateTime={sr.updatedAt.toISOString()}>
+                    {dateTimeFormat.format(sr.updatedAt)}
                   </time>{" "}
-                  • {pluralize(d.pages.length, "page")}
+                  • {pluralize(sr.pageCount, "page")}
                 </p>
               </div>
             </Link>
             <Link
               className={classes.docMenuLink}
-              aria-label={`Menu for ${d.name}`}
-              to={`/list/${d.id}/doc-drawer`}
+              aria-label={`Menu for ${sr.name}`}
+              to={`/search/${sr.id}/doc-drawer`}
             >
               <DotsThreeVertical size={32} />
             </Link>
@@ -73,7 +87,7 @@ export default function List({ showDocDrawer }: ListProps) {
       {doc && (
         <DocDrawer
           doc={doc}
-          isOpen={showDocDrawer}
+          isOpen={false}
           onDelete={() => {
             void navigate(-1)
           }}

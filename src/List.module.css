@@ -1,6 +1,25 @@
 .header {
+  align-items: center;
   background: var(--color-background);
-  padding: var(--content-padding);
+  display: flex;
+
+  a {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    height: 64px;
+    justify-content: center;
+    width: 64px;
+  }
+
+  h1 {
+    flex-grow: 1;
+    line-height: 1.1;
+    overflow: hidden;
+    padding: 0 var(--content-padding);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .list {

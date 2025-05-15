@@ -8,29 +8,43 @@ import {
   deletePage,
   getDocs,
   renameDoc,
+  search,
 } from "@/store/sqliteStore"
-import type { Doc } from "@/store/types"
+import type { Doc, SearchResult } from "@/store/types"
 
 interface StoreState {
   docs: Doc[]
+  searchResults: SearchResult[]
+  searchQuery: string
   createDoc: () => Promise<string>
   deleteDoc: (docId: string) => Promise<void>
   renameDoc: (docId: string, name: string) => Promise<void>
   addPage: (docId: string, base64Image: string) => Promise<string>
   addPageText: (docId: string, pageId: string, text: string) => Promise<void>
   deletePage: (docId: string, pageId: string) => Promise<void>
+  setSearchQuery: (searchQuery: string) => void
 }
 
 const docs = await getDocs()
 
-const useStore = create<StoreState>()((set) => {
+const useStore = create<StoreState>()((set, get) => {
   async function refreshDocs() {
     const docs = await getDocs()
     set(() => ({ docs }))
   }
 
+  async function refreshSearchResults() {
+    const searchQuery = get().searchQuery
+    const searchResults =
+      searchQuery.length < 2 ? [] : await search(searchQuery)
+    set(() => ({ searchResults }))
+  }
+
   return {
     docs,
+    searchResults: [],
+    searchQuery: "",
+
     createDoc: async () => {
       const id = await createDoc()
       await refreshDocs()
@@ -58,6 +72,10 @@ const useStore = create<StoreState>()((set) => {
     deletePage: async (docId, pageId) => {
       await deletePage(docId, pageId)
       await refreshDocs()
+    },
+    setSearchQuery: (searchQuery) => {
+      set(() => ({ searchQuery }))
+      void refreshSearchResults()
     },
   }
 })

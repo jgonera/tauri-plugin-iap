@@ -34,3 +34,16 @@ export const DocSchema = z
   .strict()
 
 export type Doc = z.infer<typeof DocSchema>
+
+export const SearchResultSchema = z
+  .object({
+    createdAt: z.string().datetime().pipe(z.coerce.date()),
+    fragments: z.array(z.string()),
+    id: z.string().uuid(),
+    name: z.string(),
+    pageCount: z.number(),
+    updatedAt: z.string().datetime().pipe(z.coerce.date()),
+  })
+  .strict()
+
+export type SearchResult = z.infer<typeof SearchResultSchema>

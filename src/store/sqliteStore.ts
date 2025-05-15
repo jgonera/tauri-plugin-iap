@@ -8,7 +8,7 @@ import { v7 as uuidv7 } from "uuid"
 import { z } from "zod"
 
 import { execute, select } from "@/store/dbHelpers"
-import { Doc } from "@/store/types"
+import { Doc, SearchResult } from "@/store/types"
 import { base64ToArrayBuffer } from "@/util"
 
 const APP_DATA_DIR = await appDataDir()
@@ -235,5 +235,52 @@ export async function deletePage(docId: string, pageId: string): Promise<void> {
       WHERE
         id = ${docId};
     `,
+  )
+}
+
+function highlightQuery(query: string, text: string) {
+  return text.replaceAll(query, `<mark>${query}</mark>`)
+}
+
+export async function search(query: string): Promise<SearchResult[]> {
+  const results = await select(
+    DB,
+    DBDocSchema.extend({ text: DBPageSchema.shape.text }),
+    sql`
+      SELECT
+        doc.*,
+        page.text
+      FROM
+        doc
+        LEFT JOIN page ON page.doc_id = doc.id
+      WHERE
+        doc.name LIKE ${`%${query}%`}
+        OR page.text LIKE ${`%${query}%`}
+    `,
+  )
+
+  console.log(results)
+
+  return Array.from(
+    results
+      .reduce<Map<string, SearchResult>>((acc, r) => {
+        if (!acc.has(r.id)) {
+          acc.set(r.id, {
+            createdAt: r.createdAt,
+            fragments: [],
+            id: r.id,
+            name: highlightQuery(query, r.name),
+            pageCount: r.pageCount,
+            updatedAt: r.updatedAt,
+          })
+        }
+
+        if (r.text !== null) {
+          acc.get(r.id)?.fragments.push(highlightQuery(query, r.text))
+        }
+
+        return acc
+      }, new Map())
+      .values(),
   )
 }

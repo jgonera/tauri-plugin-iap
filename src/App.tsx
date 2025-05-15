@@ -7,6 +7,7 @@ import Debug from "@/Debug"
 import Doc from "@/Doc"
 import List from "@/List"
 import Page from "@/Page"
+import Search from "@/Search"
 
 export default function App() {
   const navigate = useNavigate()
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/doc/:id/doc-drawer" element={<Doc showDocDrawer />} />
           <Route path="/doc/:id/page/:pageId" element={<Page />} />
           <Route path="/list/:id/doc-drawer" element={<List showDocDrawer />} />
+          <Route path="/search" element={<Search />} />
         </Routes>
       </RouterProvider>
     </React.StrictMode>
