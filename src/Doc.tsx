@@ -106,7 +106,7 @@ export default function Doc({ showDocDrawer }: DocProps) {
 
   useEffect(() => {
     if (
-      doc.pages.at(-1)?.text === undefined &&
+      doc.pages.at(-1)?.text === null &&
       textScrollRef.current !== null &&
       thumbnailScrollRef.current !== null
     ) {
