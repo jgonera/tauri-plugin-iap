@@ -6,13 +6,13 @@
 
 .content {
   &::before {
+    background: var(--color-border);
+    border-radius: 2px;
     content: "";
     display: block;
-    background: var(--color-border);
-    width: 48px;
     height: 4px;
     margin: 8px auto var(--content-padding);
-    border-radius: 2px;
+    width: 48px;
   }
 
   background: var(--color-background-muted);
@@ -28,10 +28,10 @@
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 8px;
-    padding-bottom: 16px;
-    white-space: nowrap;
     overflow: hidden;
+    padding-bottom: 16px;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .description {
@@ -41,8 +41,8 @@
   ul {
     a,
     button {
-      display: flex;
       align-items: center;
+      display: flex;
       height: 48px;
 
       svg {
@@ -62,9 +62,9 @@
 }
 
 .button {
+  font-weight: bold;
   height: 48px;
   margin: 16px 0;
-  font-weight: bold;
 
   &.accent,
   &.danger {
@@ -94,9 +94,9 @@
   color: var(--color-text);
   display: block;
   margin-top: 24px;
+  outline: none;
   padding: 8px;
   width: 100%;
-  outline: none;
 
   &:focus {
     outline: 1px solid var(--color-border);
