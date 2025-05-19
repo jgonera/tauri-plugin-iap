@@ -48,16 +48,19 @@ const useStore = create<StoreState>()((set, get) => {
     createDoc: async () => {
       const id = await createDoc()
       await refreshDocs()
+      void refreshSearchResults()
 
       return id
     },
     deleteDoc: async (docId) => {
       await deleteDoc(docId)
       await refreshDocs()
+      void refreshSearchResults()
     },
     renameDoc: async (docId, name) => {
       await renameDoc(docId, name)
       await refreshDocs()
+      void refreshSearchResults()
     },
     addPage: async (docId, base64Image) => {
       const pageId = await addPage(docId, base64Image)

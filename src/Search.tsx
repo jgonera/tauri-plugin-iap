@@ -53,7 +53,11 @@ function SearchInput({ onChange, defaultValue = "" }: SearchInputProps) {
   )
 }
 
-export default function Search() {
+interface SearchProps {
+  showDocDrawer?: boolean
+}
+
+export default function Search({ showDocDrawer }: SearchProps) {
   const { id } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -142,7 +146,7 @@ export default function Search() {
       {doc && (
         <DocDrawer
           doc={doc}
-          isOpen={false}
+          isOpen={showDocDrawer}
           onDelete={() => {
             void navigate(-1)
           }}

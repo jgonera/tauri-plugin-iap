@@ -110,9 +110,13 @@ export async function deleteDoc(docId: string): Promise<void> {
   await execute(
     DB,
     sql`
+      DELETE FROM page
+      WHERE
+        doc_id = ${docId};
+
       DELETE FROM doc
       WHERE
-        id = ${docId}
+        id = ${docId};
     `,
   )
 
@@ -290,14 +294,12 @@ export async function search(query: string): Promise<SearchResult[]> {
         }
 
         if (r.text !== null) {
-          acc
-            .get(r.id)
-            ?.fragments.push(
-              ...getFragments(query, r.text).map((f) => ({
-                pageId: r.pageId,
-                text: f,
-              })),
-            )
+          acc.get(r.id)?.fragments.push(
+            ...getFragments(query, r.text).map((f) => ({
+              pageId: r.pageId,
+              text: f,
+            })),
+          )
         }
 
         return acc

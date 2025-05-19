@@ -26,6 +26,10 @@ export default function App() {
           <Route path="/doc/:id/page/:pageId" element={<Page />} />
           <Route path="/list/:id/doc-drawer" element={<List showDocDrawer />} />
           <Route path="/search" element={<Search />} />
+          <Route
+            path="/search/:id/doc-drawer"
+            element={<Search showDocDrawer />}
+          />
         </Routes>
       </RouterProvider>
     </React.StrictMode>
