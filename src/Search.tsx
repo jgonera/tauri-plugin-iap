@@ -1,6 +1,6 @@
 import { ArrowLeft, DotsThreeVertical, Plus, X } from "@phosphor-icons/react"
 import { useEffect, useRef, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router"
+import { Link, useLocation, useNavigate, useParams } from "react-router"
 import { useThrottledCallback } from "use-debounce"
 
 import DocDrawer from "@/components/DocDrawer"
@@ -14,11 +14,16 @@ const dateTimeFormat = new Intl.DateTimeFormat()
 
 interface SearchInputProps {
   onChange: (value: string) => void
+  defaultValue?: string
 }
 
-function SearchInput({ onChange }: SearchInputProps) {
+function SearchInput({ onChange, defaultValue = "" }: SearchInputProps) {
   const [value, setValue] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setValue(defaultValue)
+  }, [defaultValue])
 
   return (
     <div className={classes.searchInput}>
@@ -50,9 +55,16 @@ function SearchInput({ onChange }: SearchInputProps) {
 
 export default function Search() {
   const { id } = useParams()
+  const location = useLocation()
   const navigate = useNavigate()
-  const { docs, searchResults, setSearchQuery } = useStore()
+  const { docs, searchResults, searchQuery, setSearchQuery } = useStore()
   const [doc, setDoc] = useState<Doc | undefined>()
+
+  useEffect(() => {
+    const search = new URLSearchParams(location.search)
+    setSearchQuery(search.get("query") ?? "")
+    console.log(`Setting query to ${search.get("query") ?? ""}`)
+  }, [])
 
   // We keep `doc` set even when there's no `id` so that the drawer can be
   // still rendered with full content while its closing animation finishes.
@@ -64,7 +76,14 @@ export default function Search() {
 
   const handleInput = useThrottledCallback((value: string) => {
     setSearchQuery(value)
-  }, 300)
+
+    const search = new URLSearchParams({
+      ...Object.fromEntries(new URLSearchParams(location.search)),
+      query: value,
+    }).toString()
+
+    void navigate({ search }, { replace: true })
+  }, 100)
 
   return (
     <>
@@ -77,7 +96,7 @@ export default function Search() {
         >
           <ArrowLeft size={32} />
         </button>
-        <SearchInput onChange={handleInput} />
+        <SearchInput defaultValue={searchQuery} onChange={handleInput} />
       </header>
 
       <Link aria-label="New" className={classes.new} to="/camera">
