@@ -99,7 +99,8 @@
     color: var(--color-text-muted);
   }
 
-  li > p {
+  li > a {
+    display: block;
     padding: 8px var(--content-padding);
   }
 }

@@ -7,7 +7,7 @@ import {
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
-import { Link, useNavigate, useParams } from "react-router"
+import { Link, useLocation, useNavigate, useParams } from "react-router"
 
 import DocDrawer from "@/components/DocDrawer"
 import Loader from "@/components/Loader"
@@ -87,6 +87,7 @@ interface DocProps {
 
 export default function Doc({ showDocDrawer }: DocProps) {
   const { id } = useParams()
+  const location = useLocation()
   const navigate = useNavigate()
   const { docs } = useStore()
   const [currentPageNumber, setCurrentPageNumber] = useState(1)
@@ -103,6 +104,38 @@ export default function Doc({ showDocDrawer }: DocProps) {
   if (doc === undefined) {
     throw new Error(`Can't find doc with id ${id ?? "undefined"}`)
   }
+
+  function scrollTextIntoView(pageId: string) {
+    const textEl = document.getElementById(`text-${pageId}`)
+
+    if (textEl === null) return
+
+    textEl.scrollIntoView({
+      block:
+        textEl.scrollHeight > 0.5 * window.document.body.clientHeight
+          ? "start"
+          : "center",
+    })
+  }
+
+  function scrollThumbnailIntoView(pageId: string) {
+    document
+      .getElementById(`thumbnail-${pageId}`)
+      ?.scrollIntoView({ inline: "center" })
+  }
+
+  useEffect(() => {
+    const search = new URLSearchParams(location.search)
+    const pageId = search.get("pageId")
+
+    if (pageId !== null) {
+      scrollTextIntoView(pageId)
+      scrollThumbnailIntoView(pageId)
+
+      search.delete("pageId")
+      void navigate({ search: search.toString() }, { replace: true })
+    }
+  }, [])
 
   useEffect(() => {
     if (
@@ -153,9 +186,7 @@ export default function Doc({ showDocDrawer }: DocProps) {
             key={p.id}
             onActive={() => {
               if (isScrollingText) {
-                document
-                  .getElementById(`thumbnail-${p.id}`)
-                  ?.scrollIntoView({ inline: "center" })
+                scrollThumbnailIntoView(p.id)
               }
             }}
             text={p.text}
@@ -197,17 +228,7 @@ export default function Doc({ showDocDrawer }: DocProps) {
                 setCurrentPageNumber(index + 1)
 
                 if (isScrollingThumbnails) {
-                  const textEl = document.getElementById(`text-${p.id}`)
-
-                  if (textEl === null) return
-
-                  textEl.scrollIntoView({
-                    block:
-                      textEl.scrollHeight >
-                      0.5 * window.document.body.clientHeight
-                        ? "start"
-                        : "center",
-                  })
+                  scrollTextIntoView(p.id)
                 }
               }}
               pageId={p.id}

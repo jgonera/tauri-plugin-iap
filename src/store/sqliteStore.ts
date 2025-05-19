@@ -254,10 +254,14 @@ function getFragments(query: string, text: string) {
 export async function search(query: string): Promise<SearchResult[]> {
   const results = await select(
     DB,
-    DBDocSchema.extend({ text: DBPageSchema.shape.text }),
+    DBDocSchema.extend({
+      pageId: DBPageSchema.shape.id,
+      text: DBPageSchema.shape.text,
+    }),
     sql`
       SELECT
         doc.*,
+        page.id AS page_id,
         page.text
       FROM
         doc
@@ -286,7 +290,14 @@ export async function search(query: string): Promise<SearchResult[]> {
         }
 
         if (r.text !== null) {
-          acc.get(r.id)?.fragments.push(...getFragments(query, r.text))
+          acc
+            .get(r.id)
+            ?.fragments.push(
+              ...getFragments(query, r.text).map((f) => ({
+                pageId: r.pageId,
+                text: f,
+              })),
+            )
         }
 
         return acc

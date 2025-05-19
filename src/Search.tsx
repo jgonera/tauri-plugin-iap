@@ -128,8 +128,12 @@ export default function Search() {
                 <DotsThreeVertical size={32} />
               </Link>
             </div>
-            {sr.fragments.map((f) => (
-              <p key={f} dangerouslySetInnerHTML={{ __html: f }}></p>
+            {sr.fragments.map((f, index) => (
+              <Link
+                key={index}
+                to={`/doc/${sr.id}?pageId=${f.pageId}`}
+                dangerouslySetInnerHTML={{ __html: f.text }}
+              ></Link>
             ))}
           </li>
         ))}
