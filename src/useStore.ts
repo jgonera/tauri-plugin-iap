@@ -6,14 +6,17 @@ import {
   createDoc,
   deleteDoc,
   deletePage,
+  getDoc,
   getDocs,
   renameDoc,
   search,
 } from "@/store/sqliteStore"
-import type { Doc, SearchResult } from "@/store/types"
+import type { Doc, ListItem, SearchResult } from "@/store/types"
 
 interface StoreState {
-  docs: Doc[]
+  docs: ListItem[]
+  openDoc: Doc | null
+  openDocId: string | null
   searchResults: SearchResult[]
   searchQuery: string
   createDoc: () => Promise<string>
@@ -22,6 +25,7 @@ interface StoreState {
   addPage: (docId: string, base64Image: string) => Promise<string>
   addPageText: (docId: string, pageId: string, text: string) => Promise<void>
   deletePage: (docId: string, pageId: string) => Promise<void>
+  setOpenDocId: (docId: string | null) => void
   setSearchQuery: (searchQuery: string) => void
 }
 
@@ -33,6 +37,12 @@ const useStore = create<StoreState>()((set, get) => {
     set(() => ({ docs }))
   }
 
+  async function refreshOpenDoc() {
+    const openDocId = get().openDocId
+    const openDoc = openDocId === null ? null : await getDoc(openDocId)
+    set(() => ({ openDoc }))
+  }
+
   async function refreshSearchResults() {
     const searchQuery = get().searchQuery
     const searchResults =
@@ -42,40 +52,56 @@ const useStore = create<StoreState>()((set, get) => {
 
   return {
     docs,
+    openDoc: null,
+    openDocId: null,
     searchResults: [],
     searchQuery: "",
 
     createDoc: async () => {
       const id = await createDoc()
-      await refreshDocs()
+      void refreshDocs()
       void refreshSearchResults()
 
       return id
     },
+
     deleteDoc: async (docId) => {
       await deleteDoc(docId)
-      await refreshDocs()
+      void refreshDocs()
       void refreshSearchResults()
     },
+
     renameDoc: async (docId, name) => {
       await renameDoc(docId, name)
-      await refreshDocs()
+      void refreshDocs()
+      void refreshOpenDoc()
       void refreshSearchResults()
     },
+
     addPage: async (docId, base64Image) => {
       const pageId = await addPage(docId, base64Image)
-      await refreshDocs()
+      void refreshDocs()
+      void refreshOpenDoc()
 
       return pageId
     },
+
     addPageText: async (docId, base64Image, text) => {
       await addPageText(docId, base64Image, text)
-      await refreshDocs()
+      void refreshOpenDoc()
     },
+
     deletePage: async (docId, pageId) => {
       await deletePage(docId, pageId)
-      await refreshDocs()
+      void refreshDocs()
+      void refreshOpenDoc()
     },
+
+    setOpenDocId: (openDocId) => {
+      set(() => ({ openDocId }))
+      void refreshOpenDoc()
+    },
+
     setSearchQuery: (searchQuery) => {
       set(() => ({ searchQuery }))
       void refreshSearchResults()

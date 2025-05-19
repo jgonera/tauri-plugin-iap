@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { Drawer } from "vaul"
 
-import { Doc } from "@/localStore"
+import { Doc } from "@/store/types"
 import useStore from "@/useStore"
 
 import classes from "./DocDrawer.module.css"

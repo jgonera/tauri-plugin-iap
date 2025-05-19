@@ -1,9 +1,8 @@
 import { DotsThreeVertical, MagnifyingGlass, Plus } from "@phosphor-icons/react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Link, useNavigate, useParams } from "react-router"
 
 import DocDrawer from "@/components/DocDrawer"
-import { Doc } from "@/store/types"
 import useStore from "@/useStore"
 import { pluralize } from "@/util"
 
@@ -18,16 +17,15 @@ interface ListProps {
 export default function List({ showDocDrawer }: ListProps) {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { docs } = useStore()
-  const [doc, setDoc] = useState<Doc | undefined>()
+  const { docs, openDoc, setOpenDocId } = useStore()
 
-  // We keep `doc` set even when there's no `id` so that the drawer can be
+  // We keep `openDoc` set even when there's no `id` so that the drawer can be
   // still rendered with full content while its closing animation finishes.
   useEffect(() => {
     if (id !== undefined) {
-      setDoc(docs.find((d) => d.id === id))
+      setOpenDocId(id)
     }
-  }, [docs, id])
+  }, [id, setOpenDocId])
 
   return (
     <>
@@ -47,7 +45,7 @@ export default function List({ showDocDrawer }: ListProps) {
           <li key={d.id}>
             <Link className={classes.docLink} to={`/doc/${d.id}`}>
               <div className={classes.thumbnailWrapper}>
-                <img src={d.pages.at(0)?.imageURL} />
+                <img src={d.imageURL} />
               </div>
               <div className={classes.description}>
                 <h2>{d.name}</h2>
@@ -55,7 +53,7 @@ export default function List({ showDocDrawer }: ListProps) {
                   <time dateTime={d.updatedAt.toISOString()}>
                     {dateTimeFormat.format(d.updatedAt)}
                   </time>{" "}
-                  • {pluralize(d.pages.length, "page")}
+                  • {pluralize(d.pageCount, "page")}
                 </p>
               </div>
             </Link>
@@ -70,9 +68,9 @@ export default function List({ showDocDrawer }: ListProps) {
         ))}
       </ul>
 
-      {doc && (
+      {openDoc && (
         <DocDrawer
-          doc={doc}
+          doc={openDoc}
           isOpen={showDocDrawer}
           onDelete={() => {
             void navigate(-1)

@@ -86,10 +86,10 @@ interface DocProps {
 }
 
 export default function Doc({ showDocDrawer }: DocProps) {
-  const { id } = useParams()
+  const { id = null } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const { docs } = useStore()
+  const { openDoc, setOpenDocId } = useStore()
   const [currentPageNumber, setCurrentPageNumber] = useState(1)
   const [isScrollingText, setIsScrollingText] = useState(false)
   const [isScrollingThumbnails, setIsScrollingThumbnails] = useState(false)
@@ -98,12 +98,6 @@ export default function Doc({ showDocDrawer }: DocProps) {
     name: "thumbnail",
     restoreX: true,
   })
-
-  const doc = docs.find((d) => d.id === id)
-
-  if (doc === undefined) {
-    throw new Error(`Can't find doc with id ${id ?? "undefined"}`)
-  }
 
   function scrollTextIntoView(pageId: string) {
     const textEl = document.getElementById(`text-${pageId}`)
@@ -138,8 +132,13 @@ export default function Doc({ showDocDrawer }: DocProps) {
   }, [])
 
   useEffect(() => {
+    setOpenDocId(id)
+  }, [id, setOpenDocId])
+
+  useEffect(() => {
     if (
-      doc.pages.at(-1)?.text === null &&
+      openDoc !== null &&
+      openDoc.pages.at(-1)?.text === null &&
       textScrollRef.current !== null &&
       thumbnailScrollRef.current !== null
     ) {
@@ -150,100 +149,102 @@ export default function Doc({ showDocDrawer }: DocProps) {
         left: thumbnailScrollRef.current.scrollWidth,
       })
     }
-  }, [doc.pages, textScrollRef, thumbnailScrollRef])
+  }, [openDoc, textScrollRef, thumbnailScrollRef])
 
   return (
-    <>
-      <header className={classes.header}>
-        <button
-          aria-label="Go back"
-          onClick={() => {
-            void navigate(-1)
-          }}
-        >
-          <ArrowLeft size={32} />
-        </button>
-        <h1>{doc.name}</h1>
-        <Link
-          aria-label={`Menu for ${doc.name}`}
-          to={`/doc/${doc.id}/doc-drawer`}
-        >
-          <DotsThreeVertical size={32} />
-        </Link>
-      </header>
-
-      <section
-        className={classes.text}
-        onTouchStart={() => {
-          setIsScrollingText(true)
-          setIsScrollingThumbnails(false)
-        }}
-        ref={textScrollRef}
-      >
-        {doc.pages.map((p) => (
-          <Text
-            id={p.id}
-            key={p.id}
-            onActive={() => {
-              if (isScrollingText) {
-                scrollThumbnailIntoView(p.id)
-              }
+    openDoc && (
+      <>
+        <header className={classes.header}>
+          <button
+            aria-label="Go back"
+            onClick={() => {
+              void navigate(-1)
             }}
-            text={p.text}
-          />
-        ))}
-      </section>
+          >
+            <ArrowLeft size={32} />
+          </button>
+          <h1>{openDoc.name}</h1>
+          <Link
+            aria-label={`Menu for ${openDoc.name}`}
+            to={`/doc/${openDoc.id}/doc-drawer`}
+          >
+            <DotsThreeVertical size={32} />
+          </Link>
+        </header>
 
-      <nav className={classes.footer}>
-        <button
-          aria-label="New page"
-          className={classes.newPage}
-          onClick={() => {
-            void navigate(`/doc/${doc.id}/camera`)
-          }}
-        >
-          <Camera size={32} />
-        </button>
-
-        <div
-          aria-label="Current page number"
-          className={classes.currentPageNumber}
-        >
-          {currentPageNumber} / {doc.pages.length}
-        </div>
-
-        <ul
+        <section
+          className={classes.text}
           onTouchStart={() => {
-            setIsScrollingThumbnails(true)
-            setIsScrollingText(false)
+            setIsScrollingText(true)
+            setIsScrollingThumbnails(false)
           }}
-          ref={thumbnailScrollRef}
+          ref={textScrollRef}
         >
-          {doc.pages.map((p, index) => (
-            <Thumbnail
-              id={doc.id}
-              imageURL={p.imageURL}
+          {openDoc.pages.map((p) => (
+            <Text
+              id={p.id}
               key={p.id}
               onActive={() => {
-                setCurrentPageNumber(index + 1)
-
-                if (isScrollingThumbnails) {
-                  scrollTextIntoView(p.id)
+                if (isScrollingText) {
+                  scrollThumbnailIntoView(p.id)
                 }
               }}
-              pageId={p.id}
+              text={p.text}
             />
           ))}
-        </ul>
-      </nav>
+        </section>
 
-      <DocDrawer
-        doc={doc}
-        isOpen={showDocDrawer}
-        onDelete={() => {
-          void navigate(-2)
-        }}
-      />
-    </>
+        <nav className={classes.footer}>
+          <button
+            aria-label="New page"
+            className={classes.newPage}
+            onClick={() => {
+              void navigate(`/doc/${openDoc.id}/camera`)
+            }}
+          >
+            <Camera size={32} />
+          </button>
+
+          <div
+            aria-label="Current page number"
+            className={classes.currentPageNumber}
+          >
+            {currentPageNumber} / {openDoc.pages.length}
+          </div>
+
+          <ul
+            onTouchStart={() => {
+              setIsScrollingThumbnails(true)
+              setIsScrollingText(false)
+            }}
+            ref={thumbnailScrollRef}
+          >
+            {openDoc.pages.map((p, index) => (
+              <Thumbnail
+                id={openDoc.id}
+                imageURL={p.imageURL}
+                key={p.id}
+                onActive={() => {
+                  setCurrentPageNumber(index + 1)
+
+                  if (isScrollingThumbnails) {
+                    scrollTextIntoView(p.id)
+                  }
+                }}
+                pageId={p.id}
+              />
+            ))}
+          </ul>
+        </nav>
+
+        <DocDrawer
+          doc={openDoc}
+          isOpen={showDocDrawer}
+          onDelete={() => {
+            void navigate(-2)
+          }}
+        />
+      </>
+    )
   )
 }

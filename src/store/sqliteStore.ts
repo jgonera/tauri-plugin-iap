@@ -1,42 +1,58 @@
 import { convertFileSrc } from "@tauri-apps/api/core"
-import { appDataDir, BaseDirectory, join } from "@tauri-apps/api/path"
+import { appDataDir, BaseDirectory } from "@tauri-apps/api/path"
 import { mkdir, remove, writeFile } from "@tauri-apps/plugin-fs"
 import Database from "@tauri-apps/plugin-sql"
-import camelcaseKeys from "camelcase-keys"
 import sql from "sql-template-tag"
 import { v7 as uuidv7 } from "uuid"
-import { z } from "zod"
 
 import { execute, select } from "@/store/dbHelpers"
-import { Doc, SearchResult } from "@/store/types"
+import {
+  DBDocSchema,
+  DBPageSchema,
+  Doc,
+  ListItem,
+  SearchResult,
+} from "@/store/types"
 import { base64ToArrayBuffer } from "@/util"
 
 const APP_DATA_DIR = await appDataDir()
 const DB = await Database.load("sqlite:scribbleScan.db")
 
-const DBDocSchema = z
-  .object({
-    createdAt: z.string().datetime().pipe(z.coerce.date()),
-    id: z.string().uuid(),
-    name: z.string(),
-    updatedAt: z.string().datetime().pipe(z.coerce.date()),
-    pageCount: z.number(),
-  })
-  .strict()
+function getImageURL(docId: string, pageId: string) {
+  return convertFileSrc(
+    `${APP_DATA_DIR}/scribbleScan/docs/${docId}/${pageId}.jpg`,
+  )
+}
 
-const DBPageSchema = z
-  .object({
-    createdAt: z.string().datetime().pipe(z.coerce.date()),
-    docId: z.string().uuid(),
-    id: z.string().uuid(),
-    position: z.number(),
-    text: z.string().nullable(),
-    updatedAt: z.string().datetime().pipe(z.coerce.date()),
-  })
-  .strict()
+export async function getDocs(): Promise<ListItem[]> {
+  const results = await select(
+    DB,
+    DBDocSchema.extend({
+      firstPageId: DBPageSchema.shape.id,
+    }),
+    sql`
+      SELECT
+        doc.*,
+        first_page.id AS first_page_id
+      FROM
+        doc
+        JOIN page first_page ON first_page.doc_id = doc.id
+        AND first_page.position = 0
+    `,
+  )
 
-export async function getDocs(): Promise<Doc[]> {
-  const docs = await select(
+  return results.map((r) => {
+    const { firstPageId, ...rest } = r
+
+    return {
+      ...rest,
+      imageURL: getImageURL(r.id, firstPageId),
+    }
+  })
+}
+
+export async function getDoc(docId: string): Promise<Doc> {
+  const doc = await select(
     DB,
     DBDocSchema,
     sql`
@@ -44,33 +60,29 @@ export async function getDocs(): Promise<Doc[]> {
         *
       FROM
         doc
+      WHERE
+        id = ${docId}
     `,
   )
 
-  return await Promise.all(
-    docs.map(async (d) => {
-      const pages = await Promise.all(
-        z
-          .array(DBPageSchema)
-          .parse(
-            camelcaseKeys(
-              await DB.select("SELECT * FROM page WHERE doc_id = $1", [d.id]),
-            ),
-          )
-          .map(async (p) => ({
-            ...p,
-            imageURL: convertFileSrc(
-              await join(APP_DATA_DIR, `scribbleScan/docs/${d.id}/${p.id}.jpg`),
-            ),
-          })),
-      )
-
-      return {
-        ...d,
-        pages,
-      }
-    }),
+  const pages = await select(
+    DB,
+    DBPageSchema.pick({ id: true, text: true }),
+    sql`
+      SELECT
+        id,
+        text
+      FROM
+        page
+      WHERE
+        doc_id = ${docId}
+    `,
   )
+
+  return {
+    ...doc[0],
+    pages: pages.map((p) => ({ ...p, imageURL: getImageURL(docId, p.id) })),
+  }
 }
 
 export async function createDoc(): Promise<string> {
@@ -152,7 +164,7 @@ export async function addPage(
     position: sql`
       (
         SELECT
-          page_count + 1
+          page_count
         FROM
           doc
         WHERE
@@ -259,16 +271,20 @@ export async function search(query: string): Promise<SearchResult[]> {
   const results = await select(
     DB,
     DBDocSchema.extend({
+      firstPageId: DBPageSchema.shape.id,
       pageId: DBPageSchema.shape.id,
       text: DBPageSchema.shape.text,
     }),
     sql`
       SELECT
         doc.*,
+        first_page.id AS first_page_id,
         page.id AS page_id,
         page.text
       FROM
         doc
+        JOIN page first_page ON first_page.doc_id = doc.id
+        AND first_page.position = 0
         LEFT JOIN page ON page.doc_id = doc.id
       WHERE
         doc.name LIKE ${`%${query}%`}
@@ -284,6 +300,7 @@ export async function search(query: string): Promise<SearchResult[]> {
             createdAt: r.createdAt,
             fragments: [],
             id: r.id,
+            imageURL: getImageURL(r.id, r.firstPageId),
             name: r.name.replaceAll(
               new RegExp(`(${query})`, "ig"),
               "<mark>$1</mark>",
