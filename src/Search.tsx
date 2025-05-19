@@ -63,7 +63,6 @@ export default function Search() {
   useEffect(() => {
     const search = new URLSearchParams(location.search)
     setSearchQuery(search.get("query") ?? "")
-    console.log(`Setting query to ${search.get("query") ?? ""}`)
   }, [])
 
   // We keep `doc` set even when there's no `id` so that the drawer can be

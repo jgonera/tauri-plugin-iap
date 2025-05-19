@@ -42,16 +42,18 @@
   flex-grow: 1;
   overflow-y: scroll;
 
-  li > div {
-    align-items: center;
-    display: flex;
-
+  li {
     &:first-child {
       padding-top: 4px;
     }
 
     &:last-child {
       padding-bottom: 96px;
+    }
+
+    > div {
+      align-items: center;
+      display: flex;
     }
   }
 
