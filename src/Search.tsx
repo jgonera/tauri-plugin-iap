@@ -1,21 +1,52 @@
-import {
-  ArrowLeft,
-  DotsThreeVertical,
-  MagnifyingGlass,
-  Plus,
-} from "@phosphor-icons/react"
-import { ChangeEvent, useEffect, useState } from "react"
+import { ArrowLeft, DotsThreeVertical, Plus, X } from "@phosphor-icons/react"
+import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
-import { useDebouncedCallback } from "use-debounce"
+import { useThrottledCallback } from "use-debounce"
 
 import DocDrawer from "@/components/DocDrawer"
 import { Doc } from "@/store/types"
 import useStore from "@/useStore"
 import { pluralize } from "@/util"
 
-import classes from "./List.module.css"
+import classes from "./Search.module.css"
 
 const dateTimeFormat = new Intl.DateTimeFormat()
+
+interface SearchInputProps {
+  onChange: (value: string) => void
+}
+
+function SearchInput({ onChange }: SearchInputProps) {
+  const [value, setValue] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <div className={classes.searchInput}>
+      <input
+        autoFocus
+        onChange={(e) => {
+          setValue(e.target.value)
+          onChange(e.target.value)
+        }}
+        placeholder="Start typing to search"
+        ref={inputRef}
+        value={value}
+      />
+      {value !== "" && (
+        <button
+          aria-label="Clear"
+          onClick={() => {
+            setValue("")
+            onChange("")
+            inputRef.current?.focus()
+          }}
+        >
+          <X size={24} />
+        </button>
+      )}
+    </div>
+  )
+}
 
 export default function Search() {
   const { id } = useParams()
@@ -31,12 +62,9 @@ export default function Search() {
     }
   }, [docs, id])
 
-  const handleInput = useDebouncedCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value)
-    },
-    100,
-  )
+  const handleInput = useThrottledCallback((value: string) => {
+    setSearchQuery(value)
+  }, 300)
 
   return (
     <>
@@ -49,7 +77,7 @@ export default function Search() {
         >
           <ArrowLeft size={32} />
         </button>
-        <input onChange={handleInput} />
+        <SearchInput onChange={handleInput} />
       </header>
 
       <Link aria-label="New" className={classes.new} to="/camera">
@@ -59,27 +87,32 @@ export default function Search() {
       <ul className={classes.list}>
         {searchResults.map((sr) => (
           <li key={sr.id}>
-            <Link className={classes.docLink} to={`/doc/${sr.id}`}>
-              <div className={classes.thumbnailWrapper}>
-                <img src="" />
-              </div>
-              <div className={classes.description}>
-                <h2 dangerouslySetInnerHTML={{ __html: sr.name }}></h2>
-                <p>
-                  <time dateTime={sr.updatedAt.toISOString()}>
-                    {dateTimeFormat.format(sr.updatedAt)}
-                  </time>{" "}
-                  • {pluralize(sr.pageCount, "page")}
-                </p>
-              </div>
-            </Link>
-            <Link
-              className={classes.docMenuLink}
-              aria-label={`Menu for ${sr.name}`}
-              to={`/search/${sr.id}/doc-drawer`}
-            >
-              <DotsThreeVertical size={32} />
-            </Link>
+            <div>
+              <Link className={classes.docLink} to={`/doc/${sr.id}`}>
+                <div className={classes.thumbnailWrapper}>
+                  <img src="" />
+                </div>
+                <div className={classes.description}>
+                  <h2 dangerouslySetInnerHTML={{ __html: sr.name }}></h2>
+                  <p className={classes.metadata}>
+                    <time dateTime={sr.updatedAt.toISOString()}>
+                      {dateTimeFormat.format(sr.updatedAt)}
+                    </time>{" "}
+                    • {pluralize(sr.pageCount, "page")}
+                  </p>
+                </div>
+              </Link>
+              <Link
+                className={classes.docMenuLink}
+                aria-label={`Menu for ${sr.name}`}
+                to={`/search/${sr.id}/doc-drawer`}
+              >
+                <DotsThreeVertical size={32} />
+              </Link>
+            </div>
+            {sr.fragments.map((f) => (
+              <p key={f} dangerouslySetInnerHTML={{ __html: f }}></p>
+            ))}
           </li>
         ))}
       </ul>

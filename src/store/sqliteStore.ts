@@ -238,8 +238,17 @@ export async function deletePage(docId: string, pageId: string): Promise<void> {
   )
 }
 
-function highlightQuery(query: string, text: string) {
-  return text.replaceAll(query, `<mark>${query}</mark>`)
+function getFragments(query: string, text: string) {
+  return (
+    `START${text}END`
+      .match(new RegExp(`\\b.{0,50}${query}.{0,50}\\b`, "ig"))
+      ?.map((m) =>
+        ` ${m} `
+          .replaceAll(/(^ START|END $)/g, "")
+          .replaceAll(/(^\s+|\s+$)/g, "…")
+          .replaceAll(new RegExp(`(${query})`, "ig"), "<mark>$1</mark>"),
+      ) ?? []
+  )
 }
 
 export async function search(query: string): Promise<SearchResult[]> {
@@ -259,8 +268,6 @@ export async function search(query: string): Promise<SearchResult[]> {
     `,
   )
 
-  console.log(results)
-
   return Array.from(
     results
       .reduce<Map<string, SearchResult>>((acc, r) => {
@@ -269,14 +276,17 @@ export async function search(query: string): Promise<SearchResult[]> {
             createdAt: r.createdAt,
             fragments: [],
             id: r.id,
-            name: highlightQuery(query, r.name),
+            name: r.name.replaceAll(
+              new RegExp(`(${query})`, "ig"),
+              "<mark>$1</mark>",
+            ),
             pageCount: r.pageCount,
             updatedAt: r.updatedAt,
           })
         }
 
         if (r.text !== null) {
-          acc.get(r.id)?.fragments.push(highlightQuery(query, r.text))
+          acc.get(r.id)?.fragments.push(...getFragments(query, r.text))
         }
 
         return acc
