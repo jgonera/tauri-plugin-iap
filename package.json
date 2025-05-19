@@ -51,7 +51,7 @@
     "prettier": "^3.5.2",
     "prettier-config-jgonera": "github:jgonera/prettier-config-jgonera#main",
     "stylelint": "^16.19.1",
-    "stylelint-order": "^7.0.0",
+    "stylelint-config-jgonera": "github:jgonera/stylelint-config-jgonera#main",
     "typescript": "~5.6.2",
     "vite": "^6.0.3"
   }

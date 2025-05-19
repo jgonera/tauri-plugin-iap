@@ -1,8 +1,4 @@
 /** @type {import("stylelint").Config} */
 export default {
-  plugins: ["stylelint-order"],
-  rules: {
-    "order/order": ["custom-properties", "declarations"],
-    "order/properties-alphabetical-order": true,
-  },
+  extends: "stylelint-config-jgonera",
 }
