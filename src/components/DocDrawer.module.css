@@ -44,6 +44,7 @@
       align-items: center;
       display: flex;
       height: 48px;
+      width: 100%;
 
       svg {
         margin: 0 6px 0 -3px;
@@ -59,12 +60,12 @@
 .buttonBar {
   display: flex;
   justify-content: space-between;
+  margin: 32px 0;
 }
 
 .button {
   font-weight: bold;
   height: 48px;
-  margin: 16px 0;
 
   &.accent,
   &.danger {

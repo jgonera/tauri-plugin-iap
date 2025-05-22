@@ -42,53 +42,57 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
         <Drawer.Overlay className={classes.overlay} />
         <Drawer.Content className={classes.content}>
           <nav>
-            <Drawer.Title className={classes.title}>{doc.name}</Drawer.Title>
-            <Drawer.Description className={classes.description}>
-              Actions for {doc.name}
-            </Drawer.Description>
             {state === "default" && (
-              <ul>
-                <li>
-                  <button
-                    onClick={() => {
-                      void shareText(
-                        doc.pages.map((p) => p.text ?? "").join("\n\n"),
-                      )
-                      void navigate(-1)
-                    }}
-                  >
-                    <Export size={24} />
-                    Share
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      setState("rename")
-                    }}
-                  >
-                    <PencilSimpleLine size={24} />
-                    Rename
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={classes.deleteMenu}
-                    onClick={() => {
-                      setState("delete")
-                    }}
-                  >
-                    <Trash size={24} /> Delete
-                  </button>
-                </li>
-                {import.meta.env.DEV && (
+              <>
+                <Drawer.Title className={classes.title}>
+                  {doc.name}
+                </Drawer.Title>
+                <Drawer.Description className={classes.description}>
+                  Actions for {doc.name}
+                </Drawer.Description>
+                <ul>
                   <li>
-                    <Link to="/debug">
-                      <Bug size={24} /> Debug
-                    </Link>
+                    <button
+                      onClick={() => {
+                        void shareText(
+                          doc.pages.map((p) => p.text ?? "").join("\n\n"),
+                        )
+                        void navigate(-1)
+                      }}
+                    >
+                      <Export size={24} />
+                      Share
+                    </button>
                   </li>
-                )}
-              </ul>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setState("rename")
+                      }}
+                    >
+                      <PencilSimpleLine size={24} />
+                      Rename
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={classes.deleteMenu}
+                      onClick={() => {
+                        setState("delete")
+                      }}
+                    >
+                      <Trash size={24} /> Delete
+                    </button>
+                  </li>
+                  {import.meta.env.DEV && (
+                    <li>
+                      <Link to="/debug">
+                        <Bug size={24} /> Debug
+                      </Link>
+                    </li>
+                  )}
+                </ul>
+              </>
             )}
             {state === "delete" && (
               <>
