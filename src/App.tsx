@@ -24,6 +24,10 @@ export default function App() {
           <Route path="/doc/:id/camera" element={<Camera />} />
           <Route path="/doc/:id/doc-drawer" element={<Doc showDocDrawer />} />
           <Route path="/doc/:id/page/:pageId" element={<Page />} />
+          <Route
+            path="/doc/:id/page/:pageId/delete-drawer"
+            element={<Page showDeleteDrawer />}
+          />
           <Route path="/list/:id/doc-drawer" element={<List showDocDrawer />} />
           <Route path="/search" element={<Search />} />
           <Route

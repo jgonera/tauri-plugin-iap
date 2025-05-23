@@ -41,15 +41,13 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
       <Drawer.Portal>
         <Drawer.Overlay className={classes.overlay} />
         <Drawer.Content className={classes.content}>
-          <nav>
-            {state === "default" && (
-              <>
-                <Drawer.Title className={classes.title}>
-                  {doc.name}
-                </Drawer.Title>
-                <Drawer.Description className={classes.description}>
-                  Actions for {doc.name}
-                </Drawer.Description>
+          {state === "default" && (
+            <>
+              <Drawer.Title className={classes.title}>{doc.name}</Drawer.Title>
+              <Drawer.Description className={classes.description}>
+                Actions for {doc.name}
+              </Drawer.Description>
+              <nav>
                 <ul>
                   <li>
                     <button
@@ -92,68 +90,68 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
                     </li>
                   )}
                 </ul>
-              </>
-            )}
-            {state === "delete" && (
-              <>
-                <p>
-                  Are you sure you want to delete <strong>{doc.name}</strong>?
-                </p>
-                <div className={classes.buttonBar}>
-                  <button
-                    className={clsx(classes.button, classes.text)}
-                    onClick={() => {
-                      setState("default")
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className={clsx(classes.button, classes.danger)}
-                    onClick={() => {
-                      void deleteDoc(doc.id)
-                      onDelete()
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </>
-            )}
-            {state === "rename" && (
-              <>
-                <input
-                  className={classes.input}
-                  ref={nameInputRef}
-                  type="text"
-                  defaultValue={doc.name}
-                />
-                <div className={classes.buttonBar}>
-                  <button
-                    className={clsx(classes.button, classes.text)}
-                    onClick={() => {
-                      setState("default")
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className={clsx(classes.button, classes.accent)}
-                    onClick={() => {
-                      const name = nameInputRef.current?.value
+              </nav>
+            </>
+          )}
+          {state === "delete" && (
+            <>
+              <p>
+                Are you sure you want to delete <strong>{doc.name}</strong>?
+              </p>
+              <div className={classes.buttonBar}>
+                <button
+                  className={clsx(classes.button, classes.text)}
+                  onClick={() => {
+                    setState("default")
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={clsx(classes.button, classes.danger)}
+                  onClick={() => {
+                    void deleteDoc(doc.id)
+                    onDelete()
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </>
+          )}
+          {state === "rename" && (
+            <>
+              <input
+                className={classes.input}
+                ref={nameInputRef}
+                type="text"
+                defaultValue={doc.name}
+              />
+              <div className={classes.buttonBar}>
+                <button
+                  className={clsx(classes.button, classes.text)}
+                  onClick={() => {
+                    setState("default")
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={clsx(classes.button, classes.accent)}
+                  onClick={() => {
+                    const name = nameInputRef.current?.value
 
-                      if (name !== undefined && name !== "") {
-                        void renameDoc(doc.id, name)
-                        void navigate(-1)
-                      }
-                    }}
-                  >
-                    Rename
-                  </button>
-                </div>
-              </>
-            )}
-          </nav>
+                    if (name !== undefined && name !== "") {
+                      void renameDoc(doc.id, name)
+                      void navigate(-1)
+                    }
+                  }}
+                >
+                  Rename
+                </button>
+              </div>
+            </>
+          )}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>
