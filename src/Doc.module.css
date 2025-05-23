@@ -29,6 +29,8 @@
   overflow-y: scroll;
   padding: 0 var(--content-padding);
   scroll-behavior: smooth;
+  -webkit-user-select: text;
+  user-select: text;
 
   .pageContainer {
     align-items: center;
