@@ -14,6 +14,37 @@
   }
 }
 
+.wrapper {
+  position: relative;
+
+  video {
+    width: 100%;
+  }
+}
+
+.capturing {
+  inset: 0;
+  position: absolute;
+}
+
+.blink {
+  animation: blink 150ms linear 1;
+}
+
+@keyframes blink {
+  0% {
+    background: transparent;
+  }
+
+  25% {
+    background: var(--color-background);
+  }
+
+  100% {
+    background: transparent;
+  }
+}
+
 .footer {
   display: flex;
   justify-content: center;

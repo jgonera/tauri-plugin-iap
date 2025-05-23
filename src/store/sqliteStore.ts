@@ -1,6 +1,6 @@
 import { convertFileSrc } from "@tauri-apps/api/core"
 import { appDataDir, BaseDirectory } from "@tauri-apps/api/path"
-import { mkdir, remove, writeFile } from "@tauri-apps/plugin-fs"
+import { mkdir, open, remove } from "@tauri-apps/plugin-fs"
 import Database from "@tauri-apps/plugin-sql"
 import sql from "sql-template-tag"
 import { v7 as uuidv7 } from "uuid"
@@ -17,6 +17,8 @@ import { base64ToArrayBuffer } from "@/util"
 
 const APP_DATA_DIR = await appDataDir()
 const DB = await Database.load("sqlite:scribbleScan.db")
+// Write files in 100KB chunks, helps responsiveness on Android
+const FILE_WRITE_CHUNK = 100_000
 
 function getImageURL(docId: string, pageId: string) {
   return convertFileSrc(
@@ -174,13 +176,23 @@ export async function addPage(
     updatedAt: now,
   }
 
-  await writeFile(
-    `scribbleScan/docs/${docId}/${page.id}.jpg`,
-    base64ToArrayBuffer(base64Image),
-    {
-      baseDir: BaseDirectory.AppData,
-    },
-  )
+  const buffer = base64ToArrayBuffer(base64Image)
+  console.log(`File size: ${buffer.length.toString()}`)
+
+  console.time("writeFile")
+  const file = await open(`scribbleScan/docs/${docId}/${page.id}.jpg`, {
+    createNew: true,
+    write: true,
+    baseDir: BaseDirectory.AppData,
+  })
+  for (let i = 0; i < buffer.length; i += FILE_WRITE_CHUNK) {
+    await file.write(buffer.slice(i, i + FILE_WRITE_CHUNK))
+  }
+  await file.close()
+  // await writeFile(`scribbleScan/docs/${docId}/${page.id}.jpg`, buffer, {
+  //   baseDir: BaseDirectory.AppData,
+  // })
+  console.timeEnd("writeFile")
 
   await execute(
     DB,

@@ -1,4 +1,5 @@
 import { ArrowLeft } from "@phosphor-icons/react"
+import clsx from "clsx"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 
@@ -15,8 +16,8 @@ export default function Camera() {
   const { id } = useParams()
   const navigate = useNavigate()
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const blinkRef = useRef<HTMLDivElement | null>(null)
   const [stream, setStream] = useState<MediaStream | null>(null)
-  const [isCapturing, setIsCapturing] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const { createDoc, addPage, addPageText } = useStore()
 
@@ -48,7 +49,9 @@ export default function Camera() {
 
   const capture = useCallback(async () => {
     console.time("capture")
-    setIsCapturing(true)
+
+    blinkRef.current?.classList.add(classes.blink)
+    await new Promise((r) => setTimeout(r, 150))
 
     if (videoRef.current === null || stream === null) {
       throw new Error("Camera not ready!")
@@ -66,6 +69,7 @@ export default function Camera() {
     canvas.width = width
 
     const context = canvas.getContext("2d")
+    videoRef.current.pause()
     context?.drawImage(videoRef.current, 0, 0, width, height)
 
     console.time("toDataURL")
@@ -81,14 +85,11 @@ export default function Camera() {
     }
 
     void (async () => {
-      console.time("addPage")
       const pageId = await addPage(currentId, base64Image)
-      console.timeEnd("addPage")
       const text = await performOCR(base64Image)
       await addPageText(currentId, pageId, text)
     })()
 
-    setIsCapturing(false)
     console.timeEnd("capture")
   }, [addPage, addPageText, createDoc, id, navigate, stream])
 
@@ -105,15 +106,18 @@ export default function Camera() {
         </button>
       </header>
 
-      <video
-        autoPlay
-        onLoadedData={() => {
-          setIsLoaded(true)
-        }}
-        playsInline
-        ref={videoRef}
-        style={{ visibility: isLoaded ? "visible" : "hidden" }}
-      />
+      <div className={classes.wrapper}>
+        <video
+          autoPlay
+          onLoadedData={() => {
+            setIsLoaded(true)
+          }}
+          playsInline
+          ref={videoRef}
+          style={{ visibility: isLoaded ? "visible" : "hidden" }}
+        />
+        <div ref={blinkRef} className={clsx(classes.capturing)} />
+      </div>
 
       <div className={classes.footer}>
         <button
