@@ -1,4 +1,10 @@
-import { ArrowLeft, DotsThreeVertical, Plus, X } from "@phosphor-icons/react"
+import {
+  ArrowLeft,
+  Binoculars,
+  DotsThreeVertical,
+  Plus,
+  X,
+} from "@phosphor-icons/react"
 import { useEffect, useRef, useState } from "react"
 import { Link, useLocation, useNavigate, useParams } from "react-router"
 import { useThrottledCallback } from "use-debounce"
@@ -105,42 +111,63 @@ export default function Search({ showDocDrawer }: SearchProps) {
         <Plus size={32} />
       </Link>
 
-      <ul className={classes.list}>
-        {searchResults.map((sr) => (
-          <li key={sr.id}>
-            <div>
-              <Link className={classes.docLink} to={`/doc/${sr.id}`}>
-                <div className={classes.thumbnailWrapper}>
-                  <img src={sr.imageURL} />
+      <div className={classes.content}>
+        {searchQuery.length === 1 && (
+          <div className={classes.message}>
+            <p className={classes.delayed}>
+              Please type at least 2 characters.
+            </p>
+          </div>
+        )}
+
+        {searchQuery.length > 1 && searchResults.length === 0 && (
+          <div className={classes.message}>
+            <Binoculars size={64} weight="thin" />
+            <p>
+              No results for <strong>{searchQuery}</strong>.
+            </p>
+          </div>
+        )}
+
+        {searchQuery.length > 1 && searchResults.length > 0 && (
+          <ul className={classes.list}>
+            {searchResults.map((sr) => (
+              <li key={sr.id}>
+                <div>
+                  <Link className={classes.docLink} to={`/doc/${sr.id}`}>
+                    <div className={classes.thumbnailWrapper}>
+                      <img src={sr.imageURL} />
+                    </div>
+                    <div className={classes.description}>
+                      <h2 dangerouslySetInnerHTML={{ __html: sr.name }}></h2>
+                      <p className={classes.metadata}>
+                        <time dateTime={sr.updatedAt.toISOString()}>
+                          {dateTimeFormat.format(sr.updatedAt)}
+                        </time>{" "}
+                        • {pluralize(sr.pageCount, "page")}
+                      </p>
+                    </div>
+                  </Link>
+                  <Link
+                    className={classes.docMenuLink}
+                    aria-label={`Menu for ${sr.name}`}
+                    to={`/search/${sr.id}/doc-drawer`}
+                  >
+                    <DotsThreeVertical size={32} />
+                  </Link>
                 </div>
-                <div className={classes.description}>
-                  <h2 dangerouslySetInnerHTML={{ __html: sr.name }}></h2>
-                  <p className={classes.metadata}>
-                    <time dateTime={sr.updatedAt.toISOString()}>
-                      {dateTimeFormat.format(sr.updatedAt)}
-                    </time>{" "}
-                    • {pluralize(sr.pageCount, "page")}
-                  </p>
-                </div>
-              </Link>
-              <Link
-                className={classes.docMenuLink}
-                aria-label={`Menu for ${sr.name}`}
-                to={`/search/${sr.id}/doc-drawer`}
-              >
-                <DotsThreeVertical size={32} />
-              </Link>
-            </div>
-            {sr.fragments.map((f, index) => (
-              <Link
-                key={index}
-                to={`/doc/${sr.id}?pageId=${f.pageId}`}
-                dangerouslySetInnerHTML={{ __html: f.text }}
-              ></Link>
+                {sr.fragments.map((f, index) => (
+                  <Link
+                    key={index}
+                    to={`/doc/${sr.id}?pageId=${f.pageId}`}
+                    dangerouslySetInnerHTML={{ __html: f.text }}
+                  ></Link>
+                ))}
+              </li>
             ))}
-          </li>
-        ))}
-      </ul>
+          </ul>
+        )}
+      </div>
 
       {openDoc && (
         <DocDrawer
