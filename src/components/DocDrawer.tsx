@@ -30,6 +30,8 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
 
   return (
     <Drawer.Root
+      disablePreventScroll={true}
+      noBodyStyles={true}
       repositionInputs={false}
       open={isOpen}
       onOpenChange={(isOpen) => {

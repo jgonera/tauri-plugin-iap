@@ -60,7 +60,7 @@
 .buttonBar {
   display: flex;
   justify-content: space-between;
-  margin: 32px 0;
+  margin: 32px 0 16px;
 }
 
 .button {
@@ -83,8 +83,9 @@
   }
 
   &.text {
+    font-weight: normal;
     text-decoration: underline;
-    text-underline-offset: 8px;
+    text-underline-offset: 6px;
   }
 }
 

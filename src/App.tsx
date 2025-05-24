@@ -1,4 +1,5 @@
 import React from "react"
+import { usePreventScroll } from "react-aria"
 import { RouterProvider } from "react-aria-components"
 import { Route, Routes, useHref, useNavigate } from "react-router"
 
@@ -11,6 +12,7 @@ import Search from "@/Search"
 
 export default function App() {
   const navigate = useNavigate()
+  usePreventScroll()
 
   return (
     <React.StrictMode>
