@@ -1,4 +1,9 @@
-import { DotsThreeVertical, MagnifyingGlass, Plus } from "@phosphor-icons/react"
+import {
+  ArrowFatRight,
+  DotsThreeVertical,
+  MagnifyingGlass,
+  Plus,
+} from "@phosphor-icons/react"
 import { useEffect } from "react"
 import { Link, useNavigate, useParams } from "react-router"
 
@@ -37,36 +42,54 @@ export default function List({ showDocDrawer }: ListProps) {
       </header>
 
       <Link aria-label="New" className={classes.new} to="/camera">
+        {docs.length === 0 && (
+          <ArrowFatRight className={classes.arrow} size={64} weight="thin" />
+        )}
         <Plus size={32} />
       </Link>
 
-      <ul className={classes.list}>
-        {docs.map((d) => (
-          <li key={d.id}>
-            <Link className={classes.docLink} to={`/doc/${d.id}`}>
-              <div className={classes.thumbnailWrapper}>
-                <img src={d.imageURL} />
-              </div>
-              <div className={classes.description}>
-                <h2>{d.name}</h2>
-                <p>
-                  <time dateTime={d.updatedAt.toISOString()}>
-                    {dateTimeFormat.format(d.updatedAt)}
-                  </time>{" "}
-                  • {pluralize(d.pageCount, "page")}
-                </p>
-              </div>
-            </Link>
-            <Link
-              className={classes.docMenuLink}
-              aria-label={`Menu for ${d.name}`}
-              to={`/list/${d.id}/doc-drawer`}
-            >
-              <DotsThreeVertical size={32} />
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className={classes.content}>
+        {docs.length === 0 && (
+          <div className={classes.message}>
+            <p>You don&apos;t have any scribbles yet.</p>
+            <p>
+              Tap the{" "}
+              <Plus className={classes.miniNew} size={16} weight="bold" />{" "}
+              button below
+              <br />
+              to add your first one!
+            </p>
+          </div>
+        )}
+
+        <ul className={classes.list}>
+          {docs.map((d) => (
+            <li key={d.id}>
+              <Link className={classes.docLink} to={`/doc/${d.id}`}>
+                <div className={classes.thumbnailWrapper}>
+                  <img src={d.imageURL} />
+                </div>
+                <div className={classes.description}>
+                  <h2>{d.name}</h2>
+                  <p>
+                    <time dateTime={d.updatedAt.toISOString()}>
+                      {dateTimeFormat.format(d.updatedAt)}
+                    </time>{" "}
+                    • {pluralize(d.pageCount, "page")}
+                  </p>
+                </div>
+              </Link>
+              <Link
+                className={classes.docMenuLink}
+                aria-label={`Menu for ${d.name}`}
+                to={`/list/${d.id}/doc-drawer`}
+              >
+                <DotsThreeVertical size={32} />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {openDoc && (
         <DocDrawer

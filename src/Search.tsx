@@ -5,6 +5,7 @@ import {
   Plus,
   X,
 } from "@phosphor-icons/react"
+import clsx from "clsx"
 import { useEffect, useRef, useState } from "react"
 import { Link, useLocation, useNavigate, useParams } from "react-router"
 import { useThrottledCallback } from "use-debounce"
@@ -113,10 +114,8 @@ export default function Search({ showDocDrawer }: SearchProps) {
 
       <div className={classes.content}>
         {searchQuery.length === 1 && (
-          <div className={classes.message}>
-            <p className={classes.delayed}>
-              Please type at least 2 characters.
-            </p>
+          <div className={clsx(classes.message, classes.delayed)}>
+            <p>Please type at least 2 characters.</p>
           </div>
         )}
 
