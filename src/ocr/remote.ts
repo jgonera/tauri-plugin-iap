@@ -1,30 +1,42 @@
 import { fetch } from "@tauri-apps/plugin-http"
 
-export default async function performRemoteOCR(base64Image: string) {
-  const response = await fetch(
-    "https://ollama-minicpm-v-31109354798.us-central1.run.app/api/generate",
-    {
-      method: "POST",
-      // TODO: Remove when we add OLLAMA_ORIGINS
-      // https://github.com/tauri-apps/plugins-workspace/issues/1968
-      headers: {
-        Origin: "",
-      },
-      body: JSON.stringify({
-        model: "minicpm-v:8b-2.6-q4_K_M",
-        prompt: "Transcribe this image.",
-        images: [base64Image],
-        options: {
-          temperature: 0.01,
-          top_k: 100,
-          top_p: 0.8,
-        },
-        stream: false,
-      }),
-    },
-  )
+const API_URL = "https://ollama-minicpm-v-31109354798.us-central1.run.app/api"
 
-  console.dir(response)
+export async function performOCR(base64Image: string) {
+  const response = await fetch(`${API_URL}/generate`, {
+    method: "POST",
+    // TODO: Remove when we add OLLAMA_ORIGINS
+    // https://github.com/tauri-apps/plugins-workspace/issues/1968
+    headers: {
+      Origin: "",
+    },
+    body: JSON.stringify({
+      model: "minicpm-v:8b-2.6-q4_K_M",
+      prompt: "Transcribe this image.",
+      images: [base64Image],
+      options: {
+        temperature: 0.01,
+        top_k: 100,
+        top_p: 0.8,
+      },
+      stream: false,
+    }),
+  })
+
+  console.log(await response.json())
 
   return ((await response.json()) as { response: string }).response
+}
+
+export async function warmUpOCR() {
+  const response = await fetch(`${API_URL}/version`, {
+    method: "GET",
+    // TODO: Remove when we add OLLAMA_ORIGINS
+    // https://github.com/tauri-apps/plugins-workspace/issues/1968
+    headers: {
+      Origin: "",
+    },
+  })
+
+  console.log(await response.json())
 }
