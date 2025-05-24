@@ -3,13 +3,20 @@
   background: var(--color-background);
   display: flex;
 
-  a {
+  > a,
+  > button {
     align-items: center;
     display: flex;
     flex-shrink: 0;
     height: 64px;
     justify-content: center;
+    transition: color 150ms ease-out;
     width: 64px;
+
+    &:active {
+      color: var(--color-text-muted);
+      transition: none;
+    }
   }
 
   h1 {
@@ -53,7 +60,11 @@
     }
 
     &:last-child {
-      padding-bottom: 96px;
+      margin-bottom: 96px;
+    }
+
+    &:active {
+      background: var(--color-background-muted);
     }
   }
 
@@ -124,6 +135,10 @@
   position: absolute;
   right: 16px;
   width: 64px;
+
+  &:active {
+    filter: brightness(1.1);
+  }
 
   .arrow {
     color: var(--color-text);

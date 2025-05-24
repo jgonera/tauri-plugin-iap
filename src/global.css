@@ -47,12 +47,15 @@
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   font-synthesis: none;
   font-weight: 400;
   line-height: 24px;
+  -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;
   -webkit-text-size-adjust: 100%;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 button,
@@ -106,9 +109,6 @@ body {
   padding: env(safe-area-inset-top) env(safe-area-inset-right)
     env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
   position: relative;
-  -webkit-user-drag: none;
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 h1 {

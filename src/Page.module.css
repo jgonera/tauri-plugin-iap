@@ -10,7 +10,13 @@
     flex-shrink: 0;
     height: 64px;
     justify-content: center;
+    transition: color 150ms ease-out;
     width: 64px;
+
+    &:active {
+      color: var(--color-text-muted);
+      transition: none;
+    }
   }
 
   h1 {

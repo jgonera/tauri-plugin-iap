@@ -122,6 +122,7 @@ export default function DocDrawer({ doc, isOpen, onDelete }: DocDrawerProps) {
           {state === "rename" && (
             <>
               <input
+                autoFocus
                 className={classes.input}
                 ref={nameInputRef}
                 type="text"

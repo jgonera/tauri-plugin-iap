@@ -10,7 +10,13 @@
     flex-shrink: 0;
     height: 64px;
     justify-content: center;
+    transition: color 150ms ease-out;
     width: 64px;
+
+    &:active {
+      color: var(--color-text-muted);
+      transition: none;
+    }
   }
 }
 
@@ -70,7 +76,9 @@
 .list {
   li {
     &:first-child {
-      padding-top: 4px;
+      > div {
+        padding-top: 4px;
+      }
     }
 
     &:last-child {
@@ -80,6 +88,19 @@
     > div {
       align-items: center;
       display: flex;
+
+      &:active {
+        background: var(--color-background-muted);
+      }
+    }
+
+    > a {
+      display: block;
+      padding: 8px var(--content-padding);
+
+      &:active {
+        background: var(--color-background-muted);
+      }
     }
   }
 
@@ -123,11 +144,6 @@
 
   .metadata {
     color: var(--color-text-muted);
-  }
-
-  li > a {
-    display: block;
-    padding: 8px var(--content-padding);
   }
 }
 
