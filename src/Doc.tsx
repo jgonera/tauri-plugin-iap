@@ -152,7 +152,7 @@ export default function Doc({ showDocDrawer }: DocProps) {
   }, [openDoc, textScrollRef, thumbnailScrollRef])
 
   return (
-    openDoc && (
+    openDoc?.id === id && (
       <>
         <header className={classes.header}>
           <button
