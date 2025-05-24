@@ -200,11 +200,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-					E7C074B6328ABD9F8EEE7A8E = {
-						DevelopmentTeam = PQ7386D5U4;
-					};
-				};
 			};
 			buildConfigurationList = 0688004175B83E6A3F4C1175 /* Build configuration list for PBXProject "ScribbleScan" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -339,7 +334,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ScribbleScan_iOS/ScribbleScan_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "PQ7386D5U4";
+				DEVELOPMENT_TEAM = 63QL8GKDFK;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "arm64-sim";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -389,7 +384,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ScribbleScan_iOS/ScribbleScan_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "PQ7386D5U4";
+				DEVELOPMENT_TEAM = 63QL8GKDFK;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "arm64-sim";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
