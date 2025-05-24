@@ -101,11 +101,18 @@ input {
   outline: none;
 }
 
+html {
+  /* iOS seems to need this to correctly adjust window.visualViewport.height */
+  height: 100vh;
+}
+
 body {
   background: var(--color-background);
   color: var(--color-text);
   font-size: 16px;
-  height: 100dvh;
+  /* On iOS 100dvh doesn't adjust to keyboard height correctly so we set a
+   * CSS variable in main.tsx on each resize. */
+  height: var(--viewport-height, 100dvh);
   padding: env(safe-area-inset-top) env(safe-area-inset-right)
     env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
   position: relative;
