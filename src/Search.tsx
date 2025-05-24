@@ -15,6 +15,7 @@ import useStore from "@/useStore"
 import { pluralize } from "@/util"
 
 import classes from "./Search.module.css"
+import useScrollRestore from "@/useScrollRestore"
 
 const dateTimeFormat = new Intl.DateTimeFormat()
 
@@ -69,6 +70,10 @@ export default function Search({ showDocDrawer }: SearchProps) {
   const navigate = useNavigate()
   const { openDoc, searchResults, searchQuery, setOpenDocId, setSearchQuery } =
     useStore()
+  const contentScrollRef = useScrollRestore<HTMLDivElement>({
+    name: "content",
+    restoreY: true,
+  })
 
   useEffect(() => {
     const search = new URLSearchParams(location.search)
@@ -112,7 +117,7 @@ export default function Search({ showDocDrawer }: SearchProps) {
         <Plus size={32} />
       </Link>
 
-      <div className={classes.content}>
+      <div className={classes.content} ref={contentScrollRef}>
         {searchQuery.length === 1 && (
           <div className={clsx(classes.message, classes.delayed)}>
             <p>Please type at least 2 characters.</p>
