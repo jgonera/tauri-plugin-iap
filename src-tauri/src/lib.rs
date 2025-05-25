@@ -30,7 +30,7 @@ pub fn run() {
                 CREATE INDEX IF NOT EXISTS idx_doc_name ON doc(name);
                 CREATE INDEX IF NOT EXISTS idx_doc_updated_at ON doc(updated_at);
                 CREATE INDEX IF NOT EXISTS idx_page_text ON page(text);
-                CREATE UNIQUE INDEX IF NOT EXISTS idx_page_id_position ON page(id, position);
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_page_doc_id_position ON page(doc_id, position);
             ",
             kind: MigrationKind::Up,
         }
