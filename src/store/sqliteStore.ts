@@ -16,6 +16,7 @@ import {
 import { base64ToArrayBuffer } from "@/util"
 
 const APP_DATA_DIR = await appDataDir()
+const DATE_TIME_FORMAT = new Intl.DateTimeFormat()
 const DB = await Database.load("sqlite:scribbleScan.db")
 // Write files in 100KB chunks, helps responsiveness on Android
 const FILE_WRITE_CHUNK = 100_000
@@ -88,13 +89,13 @@ export async function getDoc(docId: string): Promise<Doc> {
 }
 
 export async function createDoc(): Promise<string> {
-  const now = new Date().toISOString()
+  const now = new Date()
 
   const doc = {
     id: uuidv7(),
-    name: `Scribble ${now}`,
-    createdAt: now,
-    updatedAt: now,
+    name: `Scribble from ${DATE_TIME_FORMAT.format(now)}`,
+    createdAt: now.toISOString(),
+    updatedAt: now.toISOString(),
   }
 
   await mkdir(`scribbleScan/docs/${doc.id}`, {
@@ -157,10 +158,10 @@ export async function addPage(
   docId: string,
   base64Image: string,
 ): Promise<string> {
-  const now = new Date().toISOString()
+  const now = new Date()
 
   const page = {
-    createdAt: now,
+    createdAt: now.toISOString(),
     docId,
     id: uuidv7(),
     position: sql`
@@ -173,7 +174,7 @@ export async function addPage(
           id = ${docId}
       )
     `,
-    updatedAt: now,
+    updatedAt: now.toISOString(),
   }
 
   const buffer = base64ToArrayBuffer(base64Image)
@@ -225,7 +226,7 @@ export async function addPageText(
   pageId: string,
   text: string,
 ): Promise<void> {
-  const now = new Date().toISOString()
+  const now = new Date()
 
   await execute(
     DB,
@@ -233,13 +234,13 @@ export async function addPageText(
       UPDATE page
       SET
         text = ${text},
-        updated_at = ${now}
+        updated_at = ${now.toISOString()}
       WHERE
         id = ${pageId};
 
       UPDATE doc
       SET
-        updated_at = ${now}
+        updated_at = ${now.toISOString()}
       WHERE
         id = ${docId};
     `,
@@ -247,7 +248,7 @@ export async function addPageText(
 }
 
 export async function deletePage(docId: string, pageId: string): Promise<void> {
-  const now = new Date().toISOString()
+  const now = new Date()
 
   await execute(
     DB,
@@ -259,7 +260,7 @@ export async function deletePage(docId: string, pageId: string): Promise<void> {
       UPDATE doc
       SET
         page_count = page_count - 1,
-        updated_at = ${now}
+        updated_at = ${now.toISOString()}
       WHERE
         id = ${docId};
     `,

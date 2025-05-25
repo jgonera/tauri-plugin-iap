@@ -13,7 +13,7 @@ import { pluralize } from "@/util"
 
 import classes from "./List.module.css"
 
-const dateTimeFormat = new Intl.DateTimeFormat()
+const DATE_TIME_FORMAT = new Intl.DateTimeFormat()
 
 interface ListProps {
   showDocDrawer?: boolean
@@ -66,7 +66,7 @@ export default function List({ showDocDrawer }: ListProps) {
                   <h2>{d.name}</h2>
                   <p>
                     <time dateTime={d.updatedAt.toISOString()}>
-                      {dateTimeFormat.format(d.updatedAt)}
+                      {DATE_TIME_FORMAT.format(d.updatedAt)}
                     </time>{" "}
                     • {pluralize(d.pageCount, "page")}
                   </p>

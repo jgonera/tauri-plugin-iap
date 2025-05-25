@@ -17,7 +17,7 @@ import { pluralize } from "@/util"
 
 import classes from "./Search.module.css"
 
-const dateTimeFormat = new Intl.DateTimeFormat()
+const DATE_TIME_FORMAT = new Intl.DateTimeFormat()
 
 interface SearchInputProps {
   onChange: (value: string) => void
@@ -142,7 +142,7 @@ export default function Search({ showDocDrawer }: SearchProps) {
                       <h2 dangerouslySetInnerHTML={{ __html: sr.name }}></h2>
                       <p className={classes.metadata}>
                         <time dateTime={sr.updatedAt.toISOString()}>
-                          {dateTimeFormat.format(sr.updatedAt)}
+                          {DATE_TIME_FORMAT.format(sr.updatedAt)}
                         </time>{" "}
                         • {pluralize(sr.pageCount, "page")}
                       </p>
