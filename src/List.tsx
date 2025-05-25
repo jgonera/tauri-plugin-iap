@@ -8,6 +8,7 @@ import { useEffect } from "react"
 import { Link, useNavigate, useParams } from "react-router"
 
 import DocDrawer from "@/components/DocDrawer"
+import useScrollRestore from "@/useScrollRestore"
 import useStore from "@/useStore"
 import { pluralize } from "@/util"
 
@@ -23,6 +24,10 @@ export default function List({ showDocDrawer }: ListProps) {
   const { id } = useParams()
   const navigate = useNavigate()
   const { docs, openDoc, setOpenDocId } = useStore()
+  const contentScrollRef = useScrollRestore<HTMLDivElement>({
+    name: "content",
+    restoreY: true,
+  })
 
   // We keep `openDoc` set even when there's no `id` so that the drawer can be
   // still rendered with full content while its closing animation finishes.
@@ -41,7 +46,7 @@ export default function List({ showDocDrawer }: ListProps) {
         </Link>
       </header>
 
-      <div className={classes.content}>
+      <div className={classes.content} ref={contentScrollRef}>
         {docs.length === 0 && (
           <div className={classes.message}>
             <p>You don&apos;t have any scribbles yet.</p>
