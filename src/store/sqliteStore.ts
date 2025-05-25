@@ -16,7 +16,13 @@ import {
 import { base64ToArrayBuffer } from "@/util"
 
 const APP_DATA_DIR = await appDataDir()
-const DATE_TIME_FORMAT = new Intl.DateTimeFormat()
+const DATE_TIME_FORMAT = new Intl.DateTimeFormat(undefined, {
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+})
 const DB = await Database.load("sqlite:scribbleScan.db")
 // Write files in 100KB chunks, helps responsiveness on Android
 const FILE_WRITE_CHUNK = 100_000
@@ -97,7 +103,7 @@ export async function createDoc(): Promise<string> {
 
   const doc = {
     id: uuidv7(),
-    name: `Scribble from ${DATE_TIME_FORMAT.format(now)}`,
+    name: `Scribble ${DATE_TIME_FORMAT.format(now)}`,
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
   }
