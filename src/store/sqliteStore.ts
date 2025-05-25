@@ -41,6 +41,8 @@ export async function getDocs(): Promise<ListItem[]> {
         doc
         JOIN page first_page ON first_page.doc_id = doc.id
         AND first_page.position = 0
+      ORDER BY
+        updated_at DESC
     `,
   )
 
@@ -79,6 +81,8 @@ export async function getDoc(docId: string): Promise<Doc> {
         page
       WHERE
         doc_id = ${docId}
+      ORDER BY
+        position ASC
     `,
   )
 
@@ -302,6 +306,8 @@ export async function search(query: string): Promise<SearchResult[]> {
       WHERE
         doc.name LIKE ${`%${query}%`}
         OR page.text LIKE ${`%${query}%`}
+      ORDER BY
+        doc.updated_at DESC
     `,
   )
 
