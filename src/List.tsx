@@ -41,13 +41,6 @@ export default function List({ showDocDrawer }: ListProps) {
         </Link>
       </header>
 
-      <Link aria-label="New" className={classes.new} to="/camera">
-        {docs.length === 0 && (
-          <ArrowFatRight className={classes.arrow} size={64} weight="thin" />
-        )}
-        <Plus size={32} />
-      </Link>
-
       <div className={classes.content}>
         {docs.length === 0 && (
           <div className={classes.message}>
@@ -90,6 +83,13 @@ export default function List({ showDocDrawer }: ListProps) {
           ))}
         </ul>
       </div>
+
+      <Link aria-label="New" className={classes.new} to="/camera">
+        {docs.length === 0 && (
+          <ArrowFatRight className={classes.arrow} size={64} weight="thin" />
+        )}
+        <Plus size={32} />
+      </Link>
 
       {openDoc && (
         <DocDrawer

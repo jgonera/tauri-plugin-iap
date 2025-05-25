@@ -11,11 +11,11 @@ import { Link, useLocation, useNavigate, useParams } from "react-router"
 import { useThrottledCallback } from "use-debounce"
 
 import DocDrawer from "@/components/DocDrawer"
+import useScrollRestore from "@/useScrollRestore"
 import useStore from "@/useStore"
 import { pluralize } from "@/util"
 
 import classes from "./Search.module.css"
-import useScrollRestore from "@/useScrollRestore"
 
 const dateTimeFormat = new Intl.DateTimeFormat()
 
@@ -113,10 +113,6 @@ export default function Search({ showDocDrawer }: SearchProps) {
         <SearchInput defaultValue={searchQuery} onChange={handleInput} />
       </header>
 
-      <Link aria-label="New" className={classes.new} to="/camera">
-        <Plus size={32} />
-      </Link>
-
       <div className={classes.content} ref={contentScrollRef}>
         {searchQuery.length === 1 && (
           <div className={clsx(classes.message, classes.delayed)}>
@@ -172,6 +168,10 @@ export default function Search({ showDocDrawer }: SearchProps) {
           </ul>
         )}
       </div>
+
+      <Link aria-label="New" className={classes.new} to="/camera">
+        <Plus size={32} />
+      </Link>
 
       {openDoc && (
         <DocDrawer
