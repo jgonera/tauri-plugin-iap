@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { usePreventScroll } from "react-aria"
 import { RouterProvider } from "react-aria-components"
 import { Route, Routes, useHref, useNavigate } from "react-router"
@@ -7,10 +7,15 @@ import Camera from "@/Camera"
 import Debug from "@/Debug"
 import Doc from "@/Doc"
 import List from "@/List"
+import { warmUpOCR } from "@/ocr"
 import Page from "@/Page"
 import Search from "@/Search"
 
 export default function App() {
+  useEffect(() => {
+    void warmUpOCR()
+  }, [])
+
   const navigate = useNavigate()
   usePreventScroll()
 

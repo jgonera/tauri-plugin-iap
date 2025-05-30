@@ -3,14 +3,10 @@ import clsx from "clsx"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 
-import * as mockOCR from "@/ocr/mock"
-import * as remoteOCR from "@/ocr/remote"
+import { performOCR, warmUpOCR } from "@/ocr"
 import useStore from "@/useStore"
 
 import classes from "./Camera.module.css"
-
-const { performOCR, warmUpOCR } = import.meta.env.DEV ? mockOCR : remoteOCR
-// const { performOCR, warmUpOCR } = remoteOCR
 
 export default function Camera() {
   const { id } = useParams()

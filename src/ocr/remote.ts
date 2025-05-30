@@ -29,13 +29,23 @@ export async function performOCR(base64Image: string) {
 }
 
 export async function warmUpOCR() {
-  const response = await fetch(`${API_URL}/version`, {
-    method: "GET",
+  const response = await fetch(`${API_URL}/generate`, {
+    method: "POST",
     // TODO: Remove when we add OLLAMA_ORIGINS
     // https://github.com/tauri-apps/plugins-workspace/issues/1968
     headers: {
       Origin: "",
     },
+    body: JSON.stringify({
+      model: "minicpm-v:8b-2.6-q4_K_M",
+      prompt: "Write one word.",
+      options: {
+        temperature: 0.01,
+        top_k: 100,
+        top_p: 0.8,
+      },
+      stream: false,
+    }),
   })
 
   console.log(await response.json())
