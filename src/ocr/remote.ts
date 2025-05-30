@@ -23,9 +23,11 @@ export async function performOCR(base64Image: string) {
     }),
   })
 
-  console.log(await response.json())
+  const json = (await response.json()) as { response: string }
 
-  return ((await response.json()) as { response: string }).response
+  console.log(json)
+
+  return json.response
 }
 
 export async function warmUpOCR() {
@@ -48,5 +50,7 @@ export async function warmUpOCR() {
     }),
   })
 
-  console.log(await response.json())
+  const json = (await response.json()) as { response: string }
+
+  console.log(json)
 }
