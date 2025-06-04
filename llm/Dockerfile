@@ -5,6 +5,9 @@ ADD https://huggingface.co/openbmb/MiniCPM-o-2_6-gguf/resolve/main/Model-7.6B-Q4
 ADD https://huggingface.co/openbmb/MiniCPM-o-2_6-gguf/resolve/main/mmproj-model-f16.gguf?download=true \
   /models/openbmb/MiniCPM-o-2_6-gguf/mmproj-model-f16.gguf
 
+# Disable healthcheck from parent image
+HEALTHCHECK NONE
+
 CMD [ \
   "--host", "0.0.0.0", \
   "--mmproj", "/models/openbmb/MiniCPM-o-2_6-gguf/mmproj-model-f16.gguf" \
