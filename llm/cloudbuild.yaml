@@ -5,7 +5,7 @@ steps:
 images: ["${_IMAGE}"]
 
 substitutions:
-  _IMAGE: "us-central1-docker.pkg.dev/${PROJECT_ID}/scribblescan/llama.cpp-minicpm-o-2_6-q4_k_m:${SHORT_SHA}"
+  _IMAGE: "us-central1-docker.pkg.dev/${PROJECT_ID}/scribblescan/llm:${SHORT_SHA}"
 
 options:
   dynamicSubstitutions: true

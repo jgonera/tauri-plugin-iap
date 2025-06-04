@@ -38,22 +38,25 @@ function llm:deploy {
 
   gcloud run deploy scribblescan-llm \
     --allow-unauthenticated \
-    --cpu 8 \
+    --cpu 4 \
     --gpu 1 \
     --gpu-type nvidia-l4 \
-    --image us-central1-docker.pkg.dev/com-papierlabs/scribblescan/llama.cpp-minicpm-o-2_6-q4_k_m:$1 \
+    --image us-central1-docker.pkg.dev/com-papierlabs/scribblescan/llm:$1 \
     --max-instances 3 \
-    --memory 32Gi \
+    --memory 16Gi \
     --no-cpu-throttling \
     --no-gpu-zonal-redundancy \
     --port 8080 \
     --region us-central1 \
     --service-account scribblescan-llm@com-papierlabs.iam.gserviceaccount.com \
+    --startup-probe=timeoutSeconds=60,httpGet.path=/health,httpGet.port=8080 \
+    --liveness-probe=timeoutSeconds=10,httpGet.path=/health,httpGet.port=8080 \
     --timeout=60
 }
 
 function llm:images {
-  gcloud container images list-tags us-central1-docker.pkg.dev/com-papierlabs/scribblescan/llama.cpp-minicpm-o-2_6-q4_k_m
+  gcloud container images list-tags \
+    us-central1-docker.pkg.dev/com-papierlabs/scribblescan/llm
 }
 
 TIMEFORMAT="Task completed in %3lR"

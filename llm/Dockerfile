@@ -5,19 +5,12 @@ ADD https://huggingface.co/openbmb/MiniCPM-o-2_6-gguf/resolve/main/Model-7.6B-Q4
 ADD https://huggingface.co/openbmb/MiniCPM-o-2_6-gguf/resolve/main/mmproj-model-f16.gguf?download=true \
   /models/openbmb/MiniCPM-o-2_6-gguf/mmproj-model-f16.gguf
 
+# Can't use CMD because with default entrypoint we get `error: invalid
+# argument: /bin/sh`.
 ENTRYPOINT ["/bin/sh", "-c", "/app/llama-server \
   --gpu-layers 999 \
   --host 0.0.0.0 \
   --mmproj /models/openbmb/MiniCPM-o-2_6-gguf/mmproj-model-f16.gguf \
   --model /models/openbmb/MiniCPM-o-2_6-gguf/Model-7.6B-Q4_K_M.gguf \
   --port 8080 \
-  --verbose \
 "]
-
-# CMD [ \
-#   "--host", "0.0.0.0", \
-#   "--mmproj", "/models/openbmb/MiniCPM-o-2_6-gguf/mmproj-model-f16.gguf", \
-#   "--model", "/models/openbmb/MiniCPM-o-2_6-gguf/Model-7.6B-Q4_K_M.gguf", \
-#   "--port", "8080", \
-#   "--verbose", \
-# ]
