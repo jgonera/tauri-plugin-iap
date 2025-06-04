@@ -1,0 +1,12 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "--tag", "${_IMAGE}", "."]
+
+images: ["${_IMAGE}"]
+
+substitutions:
+  _IMAGE: "us-central1-docker.pkg.dev/${PROJECT_ID}/scribblescan/llama.cpp-minicpm-o-2_6-q4_k_m:${SHORT_SHA}"
+
+options:
+  dynamicSubstitutions: true
+  machineType: "E2_HIGHCPU_32"
