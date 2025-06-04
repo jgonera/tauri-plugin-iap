@@ -46,7 +46,7 @@ function llm:deploy {
     --memory 32Gi \
     --no-cpu-throttling \
     --no-gpu-zonal-redundancy \
-    --port 8000 \
+    --port 8080 \
     --region us-central1 \
     --service-account scribblescan-llm@com-papierlabs.iam.gserviceaccount.com \
     --timeout=60
