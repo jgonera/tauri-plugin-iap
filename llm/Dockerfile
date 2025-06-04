@@ -7,7 +7,8 @@ ADD https://huggingface.co/openbmb/MiniCPM-o-2_6-gguf/resolve/main/mmproj-model-
 
 CMD [ \
   "--host", "0.0.0.0", \
-  "--mmproj", "/models/openbmb/MiniCPM-o-2_6-gguf/mmproj-model-f16.gguf" \
-  "--model", "/models/openbmb/MiniCPM-o-2_6-gguf/Model-7.6B-Q4_K_M.gguf" \
+  "--mmproj", "/models/openbmb/MiniCPM-o-2_6-gguf/mmproj-model-f16.gguf", \
+  "--model", "/models/openbmb/MiniCPM-o-2_6-gguf/Model-7.6B-Q4_K_M.gguf", \
   "--port", "8080", \
+  "--verbose", \
 ]
