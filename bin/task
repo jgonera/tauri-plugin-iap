@@ -49,7 +49,7 @@ function llm:deploy {
     --port 8080 \
     --region us-central1 \
     --service-account scribblescan-llm@com-papierlabs.iam.gserviceaccount.com \
-    --startup-probe=timeoutSeconds=60,httpGet.path=/health,httpGet.port=8080 \
+    --startup-probe=timeoutSeconds=10,httpGet.path=/health,httpGet.port=8080 \
     --liveness-probe=timeoutSeconds=10,httpGet.path=/health,httpGet.port=8080 \
     --timeout=60
 }
