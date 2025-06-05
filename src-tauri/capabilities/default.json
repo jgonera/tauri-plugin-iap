@@ -18,7 +18,7 @@
     {
       "identifier": "http:default",
       "allow": [
-        { "url": "https://ollama-minicpm-v-31109354798.us-central1.run.app" }
+        { "url": "https://scribblescan-llm-451942241925.us-central1.run.app" }
       ]
     },
     "opener:default",
