@@ -6,7 +6,7 @@ ADD https://huggingface.co/openbmb/MiniCPM-o-2_6-gguf/resolve/main/mmproj-model-
   /models/openbmb/MiniCPM-o-2_6-gguf/mmproj-model-f16.gguf
 
 # Can't use CMD because with default entrypoint we get `error: invalid
-# argument: /bin/sh`.
+# argument: /bin/sh`. See https://github.com/ggml-org/llama.cpp/issues/14019
 ENTRYPOINT ["/bin/sh", "-c", "/app/llama-server \
   --gpu-layers 999 \
   --host 0.0.0.0 \
