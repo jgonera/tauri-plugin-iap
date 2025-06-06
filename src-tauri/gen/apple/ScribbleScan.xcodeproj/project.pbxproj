@@ -18,7 +18,6 @@
 		B421713D198159F3BC8B441B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 035E436634337DD3DBA6D024 /* LaunchScreen.storyboard */; };
 		C05340027CCCB0B2775AEF2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73BC2266FC2DD5D99D88646F /* Assets.xcassets */; };
 		CE3F87BE05DB5DD41BE7AAEA /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6EB6477B695951EB28B43E7 /* WebKit.framework */; };
-		D0823F63C3CE0D7F9FA5E9B9 /* libapp.a in Resources */ = {isa = PBXBuildFile; fileRef = 4F7E9E30AA922747713D467E /* libapp.a */; };
 		D26E7F659AAF832F219D2904 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55E50B0E4905E090D0248BB0 /* main.mm */; };
 /* End PBXBuildFile section */
 
@@ -227,7 +226,6 @@
 				C05340027CCCB0B2775AEF2A /* Assets.xcassets in Resources */,
 				B421713D198159F3BC8B441B /* LaunchScreen.storyboard in Resources */,
 				03399FA05E1F90F107EF569E /* assets in Resources */,
-				D0823F63C3CE0D7F9FA5E9B9 /* libapp.a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
