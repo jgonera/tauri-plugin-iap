@@ -4,8 +4,9 @@ import {
   MagnifyingGlass,
   Plus,
 } from "@phosphor-icons/react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
+import { ping } from "tauri-plugin-iap-api"
 
 import DocDrawer from "@/components/DocDrawer"
 import useScrollRestore from "@/useScrollRestore"
@@ -29,6 +30,8 @@ export default function List({ showDocDrawer }: ListProps) {
     restoreY: true,
   })
 
+  const [pingResponse, setPingResponse] = useState<null | string>(null)
+
   // We keep `openDoc` set even when there's no `id` so that the drawer can be
   // still rendered with full content while its closing animation finishes.
   useEffect(() => {
@@ -36,6 +39,12 @@ export default function List({ showDocDrawer }: ListProps) {
       setOpenDocId(id)
     }
   }, [id, setOpenDocId])
+
+  useEffect(() => {
+    void (async () => {
+      setPingResponse(await ping("hola"))
+    })()
+  }, [])
 
   return (
     <>
@@ -47,6 +56,7 @@ export default function List({ showDocDrawer }: ListProps) {
       </header>
 
       <div className={classes.content} ref={contentScrollRef}>
+        <p>pingResponse: {pingResponse}</p>
         {docs.length === 0 && (
           <div className={classes.message}>
             <p>You don&apos;t have any scribbles yet.</p>

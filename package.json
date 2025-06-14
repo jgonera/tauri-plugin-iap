@@ -32,6 +32,7 @@
     "react-router": "^7.3.0",
     "react-zoom-pan-pinch": "^3.7.0",
     "sql-template-tag": "^5.2.1",
+    "tauri-plugin-iap-api": "file:../tauri-plugin-iap",
     "use-debounce": "^10.0.4",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",

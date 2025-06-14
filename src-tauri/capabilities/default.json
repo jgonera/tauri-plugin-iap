@@ -21,6 +21,7 @@
         { "url": "https://scribblescan-llm-451942241925.us-central1.run.app" }
       ]
     },
+    "iap:default",
     "opener:default",
     "sharesheet:default",
     "sql:default",
