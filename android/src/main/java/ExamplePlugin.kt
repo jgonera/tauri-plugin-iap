@@ -22,7 +22,7 @@ class ExamplePlugin(private val activity: Activity): Plugin(activity) {
         val args = invoke.parseArgs(PingArgs::class.java)
 
         val ret = JSObject()
-        ret.put("value", implementation.pong(args.value ?: "default value :("))
+        ret.put("value", implementation.pong("Hello from Android: ${args.value}"))
         invoke.resolve(ret)
     }
 }

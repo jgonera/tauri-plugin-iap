@@ -10,7 +10,7 @@ class PingArgs: Decodable {
 class ExamplePlugin: Plugin {
   @objc public func ping(_ invoke: Invoke) throws {
     let args = try invoke.parseArgs(PingArgs.self)
-    invoke.resolve(["value": args.value ?? ""])
+    invoke.resolve(["value": "Hello from iOS: \(args.value)"])
   }
 }
 
