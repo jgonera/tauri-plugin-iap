@@ -18,6 +18,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
   let handle = api.register_android_plugin("com.papierlabs.tauri.iap", "ExamplePlugin")?;
   #[cfg(target_os = "ios")]
   let handle = api.register_ios_plugin(init_plugin_iap)?;
+
   Ok(Iap(handle))
 }
 
@@ -25,6 +26,12 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 pub struct Iap<R: Runtime>(PluginHandle<R>);
 
 impl<R: Runtime> Iap<R> {
+  pub fn get_product_details(&self, payload: GetProductDetailsRequest) -> crate::Result<GetProductDetailsResponse> {
+    self.0
+      .run_mobile_plugin("getProductDetails", payload)
+      .map_err(Into::into)
+  }
+
   pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
     self
       .0
