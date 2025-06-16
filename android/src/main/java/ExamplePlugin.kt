@@ -14,6 +14,7 @@ import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClient.ProductType
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
@@ -32,7 +33,12 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
 
     private var billingClient =
         BillingClient.newBuilder(activity).setListener(purchasesUpdatedListener)
-            // Configure other settings.
+            // This is needed to avoid `java.lang.IllegalArgumentException:
+            // Pending purchases for one-time products must be supported`
+            .enablePendingPurchases(
+                PendingPurchasesParams.newBuilder().enableOneTimeProducts()
+                    .build()
+            )
             .build()
 
     override fun load(webView: WebView) {
