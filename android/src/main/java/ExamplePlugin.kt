@@ -91,10 +91,68 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
                         put("productType", pd.productType)
                         put("title", pd.title)
                         put(
-                            "price",
-                            pd.subscriptionOfferDetails?.get(0)?.pricingPhases?.pricingPhaseList?.get(
-                                0
-                            )?.formattedPrice
+                            "subscriptionOfferDetails",
+                            pd.subscriptionOfferDetails?.map { sod ->
+                                JSObject().apply {
+                                    put("basePlanId", sod.basePlanId)
+                                    put(
+                                        "installmentPlanDetails",
+                                        sod.installmentPlanDetails?.let {
+                                            JSObject().apply {
+                                                put(
+                                                    "installmentPlanCommitmentPaymentsCount",
+                                                    it.installmentPlanCommitmentPaymentsCount
+                                                )
+                                                put(
+                                                    "subsequentInstallmentPlanCommitmentPaymentsCount",
+                                                    it.subsequentInstallmentPlanCommitmentPaymentsCount
+                                                )
+                                            }
+                                        }
+                                    )
+                                    put("offerId", sod.offerId)
+                                    put(
+                                        "offerTags",
+                                        JSArray().apply {
+                                            sod.offerTags.map { ot ->
+                                                put(ot)
+                                            }
+                                        })
+                                    put("offerToken", sod.offerToken)
+                                    put("pricingPhases", JSObject().apply {
+                                        put(
+                                            "pricingPhaseList",
+                                            sod.pricingPhases.pricingPhaseList.map { pp ->
+                                                JSObject().apply {
+                                                    put(
+                                                        "billingCycleCount",
+                                                        pp.billingCycleCount
+                                                    )
+                                                    put(
+                                                        "billingPeriod",
+                                                        pp.billingPeriod
+                                                    )
+                                                    put(
+                                                        "formattedPrice",
+                                                        pp.formattedPrice
+                                                    )
+                                                    put(
+                                                        "priceAmountMicros",
+                                                        pp.priceAmountMicros
+                                                    )
+                                                    put(
+                                                        "priceCurrencyCode",
+                                                        pp.priceCurrencyCode
+                                                    )
+                                                    put(
+                                                        "recurrenceMode",
+                                                        pp.recurrenceMode
+                                                    )
+                                                }
+                                            })
+                                    })
+                                }
+                            }
                         )
                     })
                 }

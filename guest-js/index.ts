@@ -6,7 +6,26 @@ type ProductDetails = {
   productId: string;
   productType: string;
   title: string;
-  price: string;
+  subscriptionOfferDetails: {
+    basePlanId: string;
+    installmentPlanDetails: {
+      installmentPlanCommitmentPaymentsCount: number;
+      subsequentInstallmentPlanCommitmentPaymentsCount: number
+    },
+    offerId: string | null;
+    offerTags: string[];
+    offerToken: string;
+    pricingPhases: {
+      pricingPhaseList: {
+        billingCycleCount: number;
+        billingPeriod: string;
+        formattedPrice: string;
+        priceAmountMicros: BigInt;
+        priceCurrencyCode: string;
+        recurrenceMode: number;
+      }[];
+    }
+  }[] | null;
 };
 
 export async function getProductDetails(productId: string): Promise<{ productDetails: ProductDetails[] }> {
