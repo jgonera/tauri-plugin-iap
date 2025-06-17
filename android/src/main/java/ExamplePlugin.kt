@@ -1,6 +1,7 @@
 package com.papierlabs.tauri.iap
 
 import android.app.Activity
+import android.util.Log
 import android.webkit.WebView
 import app.tauri.annotation.Command
 import app.tauri.annotation.InvokeArg
@@ -18,6 +19,11 @@ import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
+
+@InvokeArg
+class GetProductDetailsArgs {
+    lateinit var productId: String
+}
 
 @InvokeArg
 class PingArgs {
@@ -44,8 +50,12 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
     override fun load(webView: WebView) {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingResponseCode.OK) {
-                    // TODO: Add a `isReady` property and set it to true
+                // TODO: Add a `isReady` property and set it to true or use billingClient.isReady
+                if (billingResult.responseCode != BillingResponseCode.OK) {
+                    Log.e(
+                        "tauri.iap",
+                        "Can't connect to billing! responseCode: ${billingResult.responseCode}, debugMessage: ${billingResult.debugMessage}"
+                    )
                 }
             }
 
@@ -57,12 +67,13 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
 
     @Command
     fun getProductDetails(invoke: Invoke) {
+        val args = invoke.parseArgs(GetProductDetailsArgs::class.java)
+
         val queryProductDetailsParams =
             QueryProductDetailsParams.newBuilder().setProductList(
                 listOf(
                     Product.newBuilder()
-                        // TODO: Parametrize this
-                        .setProductId("com.scribblescan.test")
+                        .setProductId(args.productId)
                         .setProductType(ProductType.SUBS).build()
                 )
             ).build()
