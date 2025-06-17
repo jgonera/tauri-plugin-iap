@@ -20,7 +20,7 @@ type ProductDetails = {
         billingCycleCount: number;
         billingPeriod: string;
         formattedPrice: string;
-        priceAmountMicros: BigInt;
+        priceAmountMicros: number;
         priceCurrencyCode: string;
         recurrenceMode: number;
       }[];

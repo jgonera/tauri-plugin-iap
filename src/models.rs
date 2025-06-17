@@ -32,20 +32,17 @@ pub struct ProductDetails {
   pub product_id: String,
   pub product_type: String,
   pub title: String,
-  #[serde(flatten)]
-  pub subscription_offer_details: Option<SubscriptionOfferDetails>,
+  pub subscription_offer_details: Option<Vec<SubscriptionOfferDetails>>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SubscriptionOfferDetails {
   pub base_plan_id: String,
-  #[serde(flatten)]
-  pub installment_plan_details: InstallmentPlanDetails,
+  pub installment_plan_details: Option<InstallmentPlanDetails>,
   pub offer_id: Option<String>,
   pub offer_tags: Vec<String>,
   pub offer_token: String,
-  #[serde(flatten)]
   pub pricing_phases: PricingPhases,
 }
 
@@ -59,7 +56,6 @@ pub struct InstallmentPlanDetails {
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PricingPhases {
-  #[serde(flatten)]
   pub pricing_phase_list: Vec<PricingPhase>,
 }
 

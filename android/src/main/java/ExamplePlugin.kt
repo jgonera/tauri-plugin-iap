@@ -21,12 +21,12 @@ import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
 
 @InvokeArg
-class GetProductDetailsArgs {
+internal class GetProductDetailsArgs {
     lateinit var productId: String
 }
 
 @InvokeArg
-class PingArgs {
+internal class PingArgs {
     var value: String? = null
 }
 
@@ -92,65 +92,73 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
                         put("title", pd.title)
                         put(
                             "subscriptionOfferDetails",
-                            pd.subscriptionOfferDetails?.map { sod ->
-                                JSObject().apply {
-                                    put("basePlanId", sod.basePlanId)
-                                    put(
-                                        "installmentPlanDetails",
-                                        sod.installmentPlanDetails?.let {
-                                            JSObject().apply {
-                                                put(
-                                                    "installmentPlanCommitmentPaymentsCount",
-                                                    it.installmentPlanCommitmentPaymentsCount
-                                                )
-                                                put(
-                                                    "subsequentInstallmentPlanCommitmentPaymentsCount",
-                                                    it.subsequentInstallmentPlanCommitmentPaymentsCount
-                                                )
-                                            }
-                                        }
-                                    )
-                                    put("offerId", sod.offerId)
-                                    put(
-                                        "offerTags",
-                                        JSArray().apply {
-                                            sod.offerTags.map { ot ->
-                                                put(ot)
-                                            }
-                                        })
-                                    put("offerToken", sod.offerToken)
-                                    put("pricingPhases", JSObject().apply {
-                                        put(
-                                            "pricingPhaseList",
-                                            sod.pricingPhases.pricingPhaseList.map { pp ->
+                            pd.subscriptionOfferDetails?.let {
+                                JSArray().apply {
+                                    it.forEach { sod ->
+                                        put(JSObject().apply {
+                                            put("basePlanId", sod.basePlanId)
+                                            put(
+                                                "installmentPlanDetails",
+                                                sod.installmentPlanDetails?.let {
+                                                    JSObject().apply {
+                                                        put(
+                                                            "installmentPlanCommitmentPaymentsCount",
+                                                            it.installmentPlanCommitmentPaymentsCount
+                                                        )
+                                                        put(
+                                                            "subsequentInstallmentPlanCommitmentPaymentsCount",
+                                                            it.subsequentInstallmentPlanCommitmentPaymentsCount
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                            put("offerId", sod.offerId)
+                                            put(
+                                                "offerTags",
+                                                JSArray().apply {
+                                                    sod.offerTags.forEach { ot ->
+                                                        put(ot)
+                                                    }
+                                                })
+                                            put("offerToken", sod.offerToken)
+                                            put(
+                                                "pricingPhases",
                                                 JSObject().apply {
                                                     put(
-                                                        "billingCycleCount",
-                                                        pp.billingCycleCount
-                                                    )
-                                                    put(
-                                                        "billingPeriod",
-                                                        pp.billingPeriod
-                                                    )
-                                                    put(
-                                                        "formattedPrice",
-                                                        pp.formattedPrice
-                                                    )
-                                                    put(
-                                                        "priceAmountMicros",
-                                                        pp.priceAmountMicros
-                                                    )
-                                                    put(
-                                                        "priceCurrencyCode",
-                                                        pp.priceCurrencyCode
-                                                    )
-                                                    put(
-                                                        "recurrenceMode",
-                                                        pp.recurrenceMode
-                                                    )
-                                                }
-                                            })
-                                    })
+                                                        "pricingPhaseList",
+                                                        JSArray().apply {
+                                                            sod.pricingPhases.pricingPhaseList.forEach { pp ->
+                                                                put(JSObject().apply {
+                                                                    put(
+                                                                        "billingCycleCount",
+                                                                        pp.billingCycleCount
+                                                                    )
+                                                                    put(
+                                                                        "billingPeriod",
+                                                                        pp.billingPeriod
+                                                                    )
+                                                                    put(
+                                                                        "formattedPrice",
+                                                                        pp.formattedPrice
+                                                                    )
+                                                                    put(
+                                                                        "priceAmountMicros",
+                                                                        pp.priceAmountMicros
+                                                                    )
+                                                                    put(
+                                                                        "priceCurrencyCode",
+                                                                        pp.priceCurrencyCode
+                                                                    )
+                                                                    put(
+                                                                        "recurrenceMode",
+                                                                        pp.recurrenceMode
+                                                                    )
+                                                                })
+                                                            }
+                                                        })
+                                                })
+                                        })
+                                    }
                                 }
                             }
                         )
@@ -174,5 +182,11 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
         val ret = JSObject()
         ret.put("value", "Hello from Android: ${args.value}")
         invoke.resolve(ret)
+    }
+
+    private fun <T> toJSArray(list: List<T>) {
+        JSArray().apply {
+            list.forEach { l -> put(l) }
+        }
     }
 }
