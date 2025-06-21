@@ -6,7 +6,7 @@ import {
 } from "@phosphor-icons/react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
-import { ping } from "tauri-plugin-iap-api"
+import { getProductDetails } from "tauri-plugin-iap-api"
 
 import DocDrawer from "@/components/DocDrawer"
 import useScrollRestore from "@/useScrollRestore"
@@ -42,7 +42,9 @@ export default function List({ showDocDrawer }: ListProps) {
 
   useEffect(() => {
     void (async () => {
-      setPingResponse(await ping("hola"))
+      const response = await getProductDetails("com.scribblescan.test")
+      console.log(response)
+      setPingResponse(JSON.stringify(response, null, 2))
     })()
   }, [])
 
@@ -56,7 +58,8 @@ export default function List({ showDocDrawer }: ListProps) {
       </header>
 
       <div className={classes.content} ref={contentScrollRef}>
-        <p>pingResponse: {pingResponse}</p>
+        <pre>pingResponse: {pingResponse}</pre>
+
         {docs.length === 0 && (
           <div className={classes.message}>
             <p>You don&apos;t have any scribbles yet.</p>
