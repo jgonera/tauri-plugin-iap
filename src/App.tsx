@@ -10,6 +10,7 @@ import List from "@/List"
 import { warmUpOCR } from "@/ocr"
 import Page from "@/Page"
 import Search from "@/Search"
+import Subscribe from "@/Subscribe"
 
 export default function App() {
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function App() {
             path="/search/:id/doc-drawer"
             element={<Search showDocDrawer />}
           />
+          <Route path="/subscribe" element={<Subscribe />} />
         </Routes>
       </RouterProvider>
     </React.StrictMode>

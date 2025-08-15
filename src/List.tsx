@@ -4,9 +4,8 @@ import {
   MagnifyingGlass,
   Plus,
 } from "@phosphor-icons/react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Link, useNavigate, useParams } from "react-router"
-import { getProductDetails } from "tauri-plugin-iap-api"
 
 import DocDrawer from "@/components/DocDrawer"
 import useScrollRestore from "@/useScrollRestore"
@@ -30,8 +29,6 @@ export default function List({ showDocDrawer }: ListProps) {
     restoreY: true,
   })
 
-  const [pingResponse, setPingResponse] = useState<null | string>(null)
-
   // We keep `openDoc` set even when there's no `id` so that the drawer can be
   // still rendered with full content while its closing animation finishes.
   useEffect(() => {
@@ -40,26 +37,19 @@ export default function List({ showDocDrawer }: ListProps) {
     }
   }, [id, setOpenDocId])
 
-  useEffect(() => {
-    void (async () => {
-      const response = await getProductDetails("com.scribblescan.test")
-      console.log(response)
-      setPingResponse(JSON.stringify(response, null, 2))
-    })()
-  }, [])
-
   return (
     <>
       <header className={classes.header}>
         <h1>Scribbles</h1>
+        <Link aria-label="Subscribe" to={`/subscribe`}>
+          Sub
+        </Link>
         <Link aria-label="Search" to={`/search`}>
           <MagnifyingGlass size={32} />
         </Link>
       </header>
 
       <div className={classes.content} ref={contentScrollRef}>
-        <pre>pingResponse: {pingResponse}</pre>
-
         {docs.length === 0 && (
           <div className={classes.message}>
             <p>You don&apos;t have any scribbles yet.</p>
