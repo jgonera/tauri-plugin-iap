@@ -307,6 +307,18 @@
           "markdownDescription": "Denies the get_product_details command without any pre-configured scope."
         },
         {
+          "description": "Enables the launch_purchase_flow command without any pre-configured scope.",
+          "type": "string",
+          "const": "allow-launch-purchase-flow",
+          "markdownDescription": "Enables the launch_purchase_flow command without any pre-configured scope."
+        },
+        {
+          "description": "Denies the launch_purchase_flow command without any pre-configured scope.",
+          "type": "string",
+          "const": "deny-launch-purchase-flow",
+          "markdownDescription": "Denies the launch_purchase_flow command without any pre-configured scope."
+        },
+        {
           "description": "Enables the ping command without any pre-configured scope.",
           "type": "string",
           "const": "allow-ping",
@@ -319,10 +331,10 @@
           "markdownDescription": "Denies the ping command without any pre-configured scope."
         },
         {
-          "description": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-get-product-details`\n- `allow-ping`",
+          "description": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-get-product-details`\n- `allow-launch-purchase-flow`\n- `allow-ping`",
           "type": "string",
           "const": "default",
-          "markdownDescription": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-get-product-details`\n- `allow-ping`"
+          "markdownDescription": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-get-product-details`\n- `allow-launch-purchase-flow`\n- `allow-ping`"
         }
       ]
     }

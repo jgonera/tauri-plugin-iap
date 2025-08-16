@@ -36,6 +36,15 @@ export async function getProductDetails(productId: string): Promise<{ productDet
   });
 }
 
+export async function launchPurchaseFlow(productId: string, offerToken: string): Promise<{ responseCode: number }> {
+  return invoke<{ responseCode: number }>('plugin:iap|launch_purchase_flow', {
+    payload: {
+      productId,
+      offerToken,
+    },
+  });
+}
+
 export async function ping(value: string): Promise<string | null> {
   return await invoke<{ value?: string }>('plugin:iap|ping', {
     payload: {

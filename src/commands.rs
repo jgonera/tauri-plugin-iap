@@ -13,6 +13,14 @@ pub(crate) async fn get_product_details<R: Runtime>(
 }
 
 #[command]
+pub(crate) async fn launch_purchase_flow<R: Runtime>(
+    app: AppHandle<R>,
+    payload: LaunchPurchaseFlowRequest,
+) -> Result<LaunchPurchaseFlowResponse> {
+    app.iap().launch_purchase_flow(payload)
+}
+
+#[command]
 pub(crate) async fn ping<R: Runtime>(
     app: AppHandle<R>,
     payload: PingRequest,

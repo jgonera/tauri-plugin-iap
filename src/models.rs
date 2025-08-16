@@ -69,3 +69,16 @@ pub struct PricingPhase {
   pub price_currency_code: String,
   pub recurrence_mode: i32,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LaunchPurchaseFlowRequest {
+  pub product_id: String,
+  pub offer_token: String,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LaunchPurchaseFlowResponse {
+  pub response_code: i32,
+}

@@ -32,6 +32,12 @@ impl<R: Runtime> Iap<R> {
       .map_err(Into::into)
   }
 
+  pub fn launch_purchase_flow(&self, payload: LaunchPurchaseFlowRequest) -> crate::Result<LaunchPurchaseFlowResponse> {
+    self.0
+      .run_mobile_plugin("launchPurchaseFlow", payload)
+      .map_err(Into::into)
+  }
+
   pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
     self
       .0
