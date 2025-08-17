@@ -1,2 +1,2 @@
 dev: npx tauri android dev
-logs: adb logcat --clear && exec adb logcat -e tauri
+logs: adb logcat --clear && exec adb logcat | rg --line-buffered tauri
