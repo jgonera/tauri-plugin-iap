@@ -58,8 +58,9 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
     override fun load(webView: WebView) {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                // TODO: Add a `isReady` property and set it to true or use billingClient.isReady
-                if (billingResult.responseCode != BillingResponseCode.OK) {
+                if (billingResult.responseCode == BillingResponseCode.OK) {
+                    Log.i("tauri.iap", "Billing client connected successfully")
+                } else {
                     Log.e(
                         "tauri.iap",
                         "Can't connect to billing! responseCode: ${billingResult.responseCode}, debugMessage: ${billingResult.debugMessage}"
@@ -68,7 +69,7 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
             }
 
             override fun onBillingServiceDisconnected() {
-                // TODO: Set `isReady` to false and implement connection retry logic
+                Log.w("tauri.iap", "Billing service disconnected")
             }
         })
     }
@@ -187,6 +188,14 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
     fun launchPurchaseFlow(invoke: Invoke) {
         val args = invoke.parseArgs(LaunchPurchaseFlowArgs::class.java)
 
+        if (!billingClient.isReady) {
+            Log.e("tauri.iap", "BillingClient is not ready")
+            val response = JSObject()
+            response.put("responseCode", BillingResponseCode.SERVICE_DISCONNECTED)
+            invoke.resolve(response)
+            return
+        }
+
         // First, query product details to get the ProductDetails object
         val queryProductDetailsParams =
             QueryProductDetailsParams.newBuilder().setProductList(
@@ -199,13 +208,14 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
 
         billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
             if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
+                // TODO: Is this correct? Does this list always have just one element?
                 val productDetails = productDetailsList[0]
-                
+
                 // Find the subscription offer details with the matching offer token
-                val subscriptionOfferDetails = productDetails.subscriptionOfferDetails?.find { 
-                    it.offerToken == args.offerToken 
+                val subscriptionOfferDetails = productDetails.subscriptionOfferDetails?.find {
+                    it.offerToken == args.offerToken
                 }
-                
+
                 if (subscriptionOfferDetails == null) {
                     Log.e("tauri.iap", "Offer token not found in product details")
                     val response = JSObject()
@@ -227,7 +237,7 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
                     .build()
 
                 val purchaseResult = billingClient.launchBillingFlow(activity, billingFlowParams)
-                
+
                 if (purchaseResult.responseCode != BillingResponseCode.OK) {
                     Log.e("tauri.iap", "Failed to launch purchase flow: responseCode=${purchaseResult.responseCode}, debugMessage=${purchaseResult.debugMessage}")
                 }
