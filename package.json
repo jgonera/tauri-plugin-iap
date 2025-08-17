@@ -6,11 +6,12 @@
   "scripts": {
     "build:android": "tsc && tauri android build",
     "build:ios": "tsc && tauri ios build",
-    "dev:android": "tauri android dev",
-    "dev:ios": "tauri ios dev",
+    "dev": "vite",
+    "dev:android": "SHOREMAN_COLORS=always shoreman Procfile.android | tee dev.log",
+    "dev:ios": "SHOREMAN_COLORS=always shoreman Procfile.ios | tee dev.log",
     "format": "eslint --fix --ext .ts src/ && prettier --write \"./**/*.{js,json,md,ts,tsx}\"",
     "lint": "eslint --ext .ts src/ && prettier --check \"./**/*.{js,json,md,ts,tsx}\"",
-    "log:android": "adb logcat -d | rg -e tauri | tail -n 100",
+    "log": "tail -n 100 dev.log",
     "tauri": "tauri"
   },
   "dependencies": {

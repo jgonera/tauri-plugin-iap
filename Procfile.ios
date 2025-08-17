@@ -1,0 +1,2 @@
+dev: npx tauri ios dev
+logs: tail -f ~/Library/Logs/CoreSimulator/CoreSimulator.log
