@@ -4,8 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "build:android": "tsc && tauri android build",
-    "build:ios": "tsc && tauri ios build",
+    "build": "tsc && vite build",
+    "build:android": "tauri android build",
+    "build:ios": "tauri ios build",
     "dev": "vite",
     "dev:android": "SHOREMAN_COLORS=always shoreman Procfile.android | tee dev.log",
     "dev:ios": "SHOREMAN_COLORS=always shoreman Procfile.ios | tee dev.log",
