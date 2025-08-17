@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build",
+    "build:android": "tsc && tauri android build",
+    "build:ios": "tsc && tauri ios build",
     "dev:android": "tauri android dev",
     "dev:ios": "tauri ios dev",
     "format": "eslint --fix --ext .ts src/ && prettier --write \"./**/*.{js,json,md,ts,tsx}\"",
