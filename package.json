@@ -10,6 +10,7 @@
     "dev:ios": "tauri ios dev",
     "format": "eslint --fix --ext .ts src/ && prettier --write \"./**/*.{js,json,md,ts,tsx}\"",
     "lint": "eslint --ext .ts src/ && prettier --check \"./**/*.{js,json,md,ts,tsx}\"",
+    "log:android": "adb logcat -d | rg -e tauri | tail -n 100",
     "tauri": "tauri"
   },
   "dependencies": {
