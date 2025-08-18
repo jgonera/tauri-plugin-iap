@@ -109,6 +109,7 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
 
         queryProductDetails(args.productId) { billingResult, productDetailsList ->
             if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
+                // TODO: Is this correct? Does this list always have just one element?
                 val productDetails = productDetailsList[0]
 
                 val subscriptionOfferDetails = productDetails.subscriptionOfferDetails?.find {
