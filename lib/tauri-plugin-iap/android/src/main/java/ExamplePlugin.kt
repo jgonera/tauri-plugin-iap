@@ -78,106 +78,19 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
     fun getProductDetails(invoke: Invoke) {
         val args = invoke.parseArgs(GetProductDetailsArgs::class.java)
 
-        val queryProductDetailsParams =
-            QueryProductDetailsParams.newBuilder().setProductList(
-                listOf(
-                    Product.newBuilder()
-                        .setProductId(args.productId)
-                        .setProductType(ProductType.SUBS).build()
-                )
-            ).build()
-
-        billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
+        queryProductDetails(args.productId) { billingResult, productDetailsList ->
             if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
                 val response = JSObject()
                 val productDetailsArray = JSArray()
 
                 productDetailsList.forEach { pd ->
-                    productDetailsArray.put(JSObject().apply {
-                        put("description", pd.description)
-                        put("name", pd.name)
-                        put("productId", pd.productId)
-                        put("productType", pd.productType)
-                        put("title", pd.title)
-                        put(
-                            "subscriptionOfferDetails",
-                            pd.subscriptionOfferDetails?.let {
-                                JSArray().apply {
-                                    it.forEach { sod ->
-                                        put(JSObject().apply {
-                                            put("basePlanId", sod.basePlanId)
-                                            put(
-                                                "installmentPlanDetails",
-                                                sod.installmentPlanDetails?.let {
-                                                    JSObject().apply {
-                                                        put(
-                                                            "installmentPlanCommitmentPaymentsCount",
-                                                            it.installmentPlanCommitmentPaymentsCount
-                                                        )
-                                                        put(
-                                                            "subsequentInstallmentPlanCommitmentPaymentsCount",
-                                                            it.subsequentInstallmentPlanCommitmentPaymentsCount
-                                                        )
-                                                    }
-                                                }
-                                            )
-                                            put("offerId", sod.offerId)
-                                            put(
-                                                "offerTags",
-                                                JSArray().apply {
-                                                    sod.offerTags.forEach { ot ->
-                                                        put(ot)
-                                                    }
-                                                })
-                                            put("offerToken", sod.offerToken)
-                                            put(
-                                                "pricingPhases",
-                                                JSObject().apply {
-                                                    put(
-                                                        "pricingPhaseList",
-                                                        JSArray().apply {
-                                                            sod.pricingPhases.pricingPhaseList.forEach { pp ->
-                                                                put(JSObject().apply {
-                                                                    put(
-                                                                        "billingCycleCount",
-                                                                        pp.billingCycleCount
-                                                                    )
-                                                                    put(
-                                                                        "billingPeriod",
-                                                                        pp.billingPeriod
-                                                                    )
-                                                                    put(
-                                                                        "formattedPrice",
-                                                                        pp.formattedPrice
-                                                                    )
-                                                                    put(
-                                                                        "priceAmountMicros",
-                                                                        pp.priceAmountMicros
-                                                                    )
-                                                                    put(
-                                                                        "priceCurrencyCode",
-                                                                        pp.priceCurrencyCode
-                                                                    )
-                                                                    put(
-                                                                        "recurrenceMode",
-                                                                        pp.recurrenceMode
-                                                                    )
-                                                                })
-                                                            }
-                                                        })
-                                                })
-                                        })
-                                    }
-                                }
-                            }
-                        )
-                    })
+                    productDetailsArray.put(mapProductDetailsToJS(pd))
                 }
 
                 response.put("productDetails", productDetailsArray)
                 invoke.resolve(response)
 
-                return@queryProductDetailsAsync
+                return@queryProductDetails
             } else {
                 invoke.reject("Error in getProducts! responseCode: ${billingResult.responseCode}, debugMessage: ${billingResult.debugMessage}")
             }
@@ -190,41 +103,24 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
 
         if (!billingClient.isReady) {
             Log.e("tauri.iap", "BillingClient is not ready")
-            val response = JSObject()
-            response.put("responseCode", BillingResponseCode.SERVICE_DISCONNECTED)
-            invoke.resolve(response)
+            invoke.resolve(createResponseWithCode(BillingResponseCode.SERVICE_DISCONNECTED))
             return
         }
 
-        // First, query product details to get the ProductDetails object
-        val queryProductDetailsParams =
-            QueryProductDetailsParams.newBuilder().setProductList(
-                listOf(
-                    Product.newBuilder()
-                        .setProductId(args.productId)
-                        .setProductType(ProductType.SUBS).build()
-                )
-            ).build()
-
-        billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
+        queryProductDetails(args.productId) { billingResult, productDetailsList ->
             if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
-                // TODO: Is this correct? Does this list always have just one element?
                 val productDetails = productDetailsList[0]
 
-                // Find the subscription offer details with the matching offer token
                 val subscriptionOfferDetails = productDetails.subscriptionOfferDetails?.find {
                     it.offerToken == args.offerToken
                 }
 
                 if (subscriptionOfferDetails == null) {
                     Log.e("tauri.iap", "Offer token not found in product details")
-                    val response = JSObject()
-                    response.put("responseCode", BillingResponseCode.ITEM_NOT_OWNED)
-                    invoke.resolve(response)
-                    return@queryProductDetailsAsync
+                    invoke.resolve(createResponseWithCode(BillingResponseCode.ITEM_NOT_OWNED))
+                    return@queryProductDetails
                 }
 
-                // Create BillingFlowParams with ProductDetails and offer token
                 val billingFlowParams = BillingFlowParams.newBuilder()
                     .setProductDetailsParamsList(
                         listOf(
@@ -242,14 +138,10 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
                     Log.e("tauri.iap", "Failed to launch purchase flow: responseCode=${purchaseResult.responseCode}, debugMessage=${purchaseResult.debugMessage}")
                 }
 
-                val response = JSObject()
-                response.put("responseCode", purchaseResult.responseCode)
-                invoke.resolve(response)
+                invoke.resolve(createResponseWithCode(purchaseResult.responseCode))
             } else {
                 Log.e("tauri.iap", "Failed to query product details for purchase flow: responseCode=${billingResult.responseCode}, debugMessage=${billingResult.debugMessage}")
-                val response = JSObject()
-                response.put("responseCode", billingResult.responseCode)
-                invoke.resolve(response)
+                invoke.resolve(createResponseWithCode(billingResult.responseCode))
             }
         }
     }
@@ -263,9 +155,65 @@ class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
         invoke.resolve(ret)
     }
 
-    private fun <T> toJSArray(list: List<T>) {
-        JSArray().apply {
-            list.forEach { l -> put(l) }
+    private fun queryProductDetails(productId: String, callback: (BillingResult, List<com.android.billingclient.api.ProductDetails>) -> Unit) {
+        val queryProductDetailsParams = QueryProductDetailsParams.newBuilder().setProductList(
+            listOf(
+                Product.newBuilder()
+                    .setProductId(productId)
+                    .setProductType(ProductType.SUBS).build()
+            )
+        ).build()
+
+        billingClient.queryProductDetailsAsync(queryProductDetailsParams, callback)
+    }
+
+    private fun createResponseWithCode(responseCode: Int): JSObject {
+        return JSObject().apply {
+            put("responseCode", responseCode)
         }
+    }
+
+    private fun <T> List<T>.toJSArray(mapper: (T) -> Any = { it as Any }): JSArray {
+        return JSArray().apply {
+            this@toJSArray.forEach { item -> put(mapper(item)) }
+        }
+    }
+
+    private fun jsObject(builder: JSObject.() -> Unit): JSObject {
+        return JSObject().apply(builder)
+    }
+
+    private fun mapProductDetailsToJS(pd: com.android.billingclient.api.ProductDetails): JSObject = jsObject {
+        put("description", pd.description)
+        put("name", pd.name)
+        put("productId", pd.productId)
+        put("productType", pd.productType)
+        put("title", pd.title)
+        put("subscriptionOfferDetails", pd.subscriptionOfferDetails?.toJSArray { sod ->
+            jsObject {
+                put("basePlanId", sod.basePlanId)
+                put("installmentPlanDetails", sod.installmentPlanDetails?.let { ipd ->
+                    jsObject {
+                        put("installmentPlanCommitmentPaymentsCount", ipd.installmentPlanCommitmentPaymentsCount)
+                        put("subsequentInstallmentPlanCommitmentPaymentsCount", ipd.subsequentInstallmentPlanCommitmentPaymentsCount)
+                    }
+                })
+                put("offerId", sod.offerId)
+                put("offerTags", sod.offerTags.toJSArray())
+                put("offerToken", sod.offerToken)
+                put("pricingPhases", jsObject {
+                    put("pricingPhaseList", sod.pricingPhases.pricingPhaseList.toJSArray { pp ->
+                        jsObject {
+                            put("billingCycleCount", pp.billingCycleCount)
+                            put("billingPeriod", pp.billingPeriod)
+                            put("formattedPrice", pp.formattedPrice)
+                            put("priceAmountMicros", pp.priceAmountMicros)
+                            put("priceCurrencyCode", pp.priceCurrencyCode)
+                            put("recurrenceMode", pp.recurrenceMode)
+                        }
+                    })
+                })
+            }
+        })
     }
 }
