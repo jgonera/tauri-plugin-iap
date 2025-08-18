@@ -39,7 +39,7 @@ internal class PingArgs {
 }
 
 @TauriPlugin
-class ExamplePlugin(private val activity: Activity) : Plugin(activity) {
+class IapPlugin(private val activity: Activity) : Plugin(activity) {
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { billingResult, purchases ->
             // To be implemented in a later section.
