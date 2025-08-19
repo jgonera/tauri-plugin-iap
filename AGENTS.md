@@ -14,9 +14,11 @@ extract text, and search through their document collection.
 
 - `npm run dev:android` - Start Android development with live reload and logging
 - `npm run dev:ios` - Start iOS development with live reload and logging
-- `npm run lint` - Run ESLint and Prettier checks
+- `npm run lint` - Run linters and code formatters in check mode (TypeScript,
+  Rust, Kotlin)
 - `npm run log` - View recent development logs
-- `npm run format` - Auto-fix ESLint issues and format code with Prettier
+- `npm run format` - Auto-fix linting issues and format code (TypeScript, Rust,
+  Kotlin)
 
 The following commands are internally used by Tauri, no need to run them:
 
@@ -68,6 +70,7 @@ The following commands are internally used by Tauri, no need to run them:
 - SQLite database integration
 - File system access for document storage
 - Custom IAP plugin integration
+- Kotlin and Swift used for native mobile APIs
 
 ### Data Model
 
