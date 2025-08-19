@@ -7,6 +7,8 @@ Default permissions for the plugin
 - `allow-get-product-details`
 - `allow-launch-purchase-flow`
 - `allow-ping`
+- `allow-registerListener`
+- `allow-unregister-listener`
 
 ## Permission Table
 
@@ -91,6 +93,58 @@ Enables the ping command without any pre-configured scope.
 <td>
 
 Denies the ping command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`iap:allow-registerListener`
+
+</td>
+<td>
+
+Enables the registerListener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`iap:deny-registerListener`
+
+</td>
+<td>
+
+Denies the registerListener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`iap:allow-unregister-listener`
+
+</td>
+<td>
+
+Enables the unregister_listener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`iap:deny-unregister-listener`
+
+</td>
+<td>
+
+Denies the unregister_listener command without any pre-configured scope.
 
 </td>
 </tr>

@@ -40,7 +40,45 @@ internal class PingArgs {
 @TauriPlugin
 class IapPlugin(private val activity: Activity) : Plugin(activity) {
   private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
-    // To be implemented in a later section.
+    Log.i("tauri.iap", "Purchases updated: responseCode=${billingResult.responseCode}")
+
+    val eventData = jsObject {
+      put(
+          "billingResult",
+          jsObject {
+            put("responseCode", billingResult.responseCode)
+            put("debugMessage", billingResult.debugMessage)
+          })
+
+      put(
+          "purchases",
+          purchases?.toJSArray { purchase ->
+            jsObject {
+              put("orderId", purchase.orderId)
+              put("packageName", purchase.packageName)
+              put("purchaseState", purchase.purchaseState)
+              put("purchaseTime", purchase.purchaseTime)
+              put("purchaseToken", purchase.purchaseToken)
+              put("quantity", purchase.quantity)
+              put("signature", purchase.signature)
+              put("skus", purchase.skus.toJSArray())
+              put("isAcknowledged", purchase.isAcknowledged)
+              put("isAutoRenewing", purchase.isAutoRenewing)
+              put("originalJson", purchase.originalJson)
+              put("developerPayload", purchase.developerPayload)
+              put(
+                  "accountIdentifiers",
+                  purchase.accountIdentifiers?.let { ai ->
+                    jsObject {
+                      put("obfuscatedAccountId", ai.obfuscatedAccountId)
+                      put("obfuscatedProfileId", ai.obfuscatedProfileId)
+                    }
+                  })
+            }
+          } ?: JSArray())
+    }
+
+    trigger("purchases-updated", eventData)
   }
 
   private var billingClient =

@@ -1,16 +1,60 @@
 import { useEffect, useState } from "react"
-import { getProductDetails, launchPurchaseFlow } from "tauri-plugin-iap-api"
+import {
+  getProductDetails,
+  launchPurchaseFlow,
+  onPurchasesUpdated,
+} from "tauri-plugin-iap-api"
 
 export default function Subscribe() {
   const [response, setResponse] = useState<null | Awaited<
     ReturnType<typeof getProductDetails>
   >>(null)
+  const [purchaseStatus, setPurchaseStatus] = useState<string>(
+    "No purchase initiated",
+  )
 
   useEffect(() => {
     void (async () => {
       const response = await getProductDetails("com.scribblescan.test")
       setResponse(response)
     })()
+  }, [])
+
+  useEffect(() => {
+    let unlisten: (() => void) | null = null
+
+    void (async () => {
+      // Register the purchase callback
+      unlisten = await onPurchasesUpdated((event) => {
+        console.log(event)
+        const { billingResult, purchases } = event
+
+        if (billingResult.responseCode === 0) {
+          // BillingResponseCode.OK
+          console.log("Purchase successful:", purchases)
+          setPurchaseStatus(
+            `Purchase successful! ${purchases.length} purchase(s) completed`,
+          )
+
+          // Handle successful purchases
+          purchases.forEach((purchase) => {
+            console.log(`Order ID: ${purchase.orderId}`)
+            console.log(`Purchase State: ${purchase.purchaseState}`)
+            console.log(`Purchase Token: ${purchase.purchaseToken}`)
+          })
+        } else {
+          console.error("Purchase failed:", billingResult.debugMessage)
+          setPurchaseStatus(`Purchase failed: ${billingResult.debugMessage}`)
+        }
+      })
+    })()
+
+    // Cleanup function
+    return () => {
+      if (unlisten) {
+        unlisten()
+      }
+    }
   }, [])
 
   return (
@@ -28,11 +72,23 @@ export default function Subscribe() {
             return
           }
 
+          setPurchaseStatus("Launching purchase flow...")
           void launchPurchaseFlow("com.scribblescan.test", offerToken)
         }}
       >
-        Launch
+        Launch Purchase
       </button>
+
+      <div
+        style={{
+          margin: "20px 0",
+          padding: "10px",
+          backgroundColor: "#f0f0f0",
+          borderRadius: "4px",
+        }}
+      >
+        <strong>Purchase Status:</strong> {purchaseStatus}
+      </div>
 
       <pre>{JSON.stringify(response, null, 2)}</pre>
     </>
