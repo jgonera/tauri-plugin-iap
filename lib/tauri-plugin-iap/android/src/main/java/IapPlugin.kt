@@ -116,15 +116,6 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
             // TODO: Is this correct? Does this list always have just one element?
             val productDetails = productDetailsList[0]
 
-            val subscriptionOfferDetails = productDetails.subscriptionOfferDetails?.find {
-                it.offerToken == args.offerToken
-            }
-
-            if (subscriptionOfferDetails == null) {
-                Log.e("tauri.iap", "Offer token not found in product details")
-                invoke.resolve(createResponseWithCode(BillingResponseCode.ITEM_NOT_OWNED))
-                return@queryProductDetails
-            }
 
             val billingFlowParams = BillingFlowParams.newBuilder()
                 .setProductDetailsParamsList(
