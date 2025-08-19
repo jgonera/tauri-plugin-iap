@@ -14,11 +14,15 @@ extract text, and search through their document collection.
 
 - `npm run dev:android` - Start Android development with live reload and logging
 - `npm run dev:ios` - Start iOS development with live reload and logging
-- `npm run lint` - Run linters and code formatters in check mode (TypeScript,
-  Rust, Kotlin)
-- `npm run log` - View recent development logs
 - `npm run format` - Auto-fix linting issues and format code (TypeScript, Rust,
   Kotlin)
+- `npm run format:kotlin|node|rust` - Specific subcommands for formatting code
+  in a given language.
+- `npm run lint` - Run linters and code formatters in check mode (TypeScript,
+  Rust, Kotlin)
+- `npm run lint:kotlin|node|rust` - Specific subcommands for linting and
+  checking formatting for a given language.
+- `npm run log` - View recent development logs
 
 The following commands are internally used by Tauri, no need to run them:
 
@@ -27,11 +31,21 @@ The following commands are internally used by Tauri, no need to run them:
 
 **IMPORTANT:**
 
-- The server and the frontend log everything into the `dev.log` file.
+- The development server and the frontend log everything into the `dev.log`
+  file.
 - Use the `npm run log` command to read the log file.
-- Never start the server! It is already started for you.
-- Never stop the server! It keeps running. It auto compiles and auto reloads. It
-  does log to `dev.log`
+- Never start the development server! It is already started for you.
+- Never stop the development server! It keeps running. It auto compiles and auto
+  reloads. It does log to `dev.log`
+- Always run appropriate `npm run lint:*` command after you finish working on
+  code. If you can't figure out which subcommand to run, run the general one. If
+  there are formatting errors run the appropriate `npm run format` command.
+  Other errors need to be fixed by you.
+- If you modify Android-related code make sure at the end that it builds with
+  `npm run build:android`. You can build just one target (e.g.
+  `npm run build:android -- --target aarch64`) to speed things up.
+- If you modify iOS-related code make sure at the end that it build with
+  `npm run build:ios`.
 
 ## Architecture
 
