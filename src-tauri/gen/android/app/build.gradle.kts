@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("rust")
+    id("com.ncorti.ktfmt.gradle")
 }
 
 val tauriProperties = Properties().apply {
