@@ -79,21 +79,20 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
         val args = invoke.parseArgs(GetProductDetailsArgs::class.java)
 
         queryProductDetails(args.productId) { billingResult, productDetailsList ->
-            if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
-                val response = JSObject()
-                val productDetailsArray = JSArray()
-
-                productDetailsList.forEach { pd ->
-                    productDetailsArray.put(mapProductDetailsToJS(pd))
-                }
-
-                response.put("productDetails", productDetailsArray)
-                invoke.resolve(response)
-
-                return@queryProductDetails
-            } else {
+            if (billingResult.responseCode != BillingResponseCode.OK || productDetailsList.isEmpty()) {
                 invoke.reject("Error in getProducts! responseCode: ${billingResult.responseCode}, debugMessage: ${billingResult.debugMessage}")
+                return@queryProductDetails
             }
+
+            val response = JSObject()
+            val productDetailsArray = JSArray()
+
+            productDetailsList.forEach { pd ->
+                productDetailsArray.put(mapProductDetailsToJS(pd))
+            }
+
+            response.put("productDetails", productDetailsArray)
+            invoke.resolve(response)
         }
     }
 
@@ -108,42 +107,43 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
         }
 
         queryProductDetails(args.productId) { billingResult, productDetailsList ->
-            if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
-                // TODO: Is this correct? Does this list always have just one element?
-                val productDetails = productDetailsList[0]
-
-                val subscriptionOfferDetails = productDetails.subscriptionOfferDetails?.find {
-                    it.offerToken == args.offerToken
-                }
-
-                if (subscriptionOfferDetails == null) {
-                    Log.e("tauri.iap", "Offer token not found in product details")
-                    invoke.resolve(createResponseWithCode(BillingResponseCode.ITEM_NOT_OWNED))
-                    return@queryProductDetails
-                }
-
-                val billingFlowParams = BillingFlowParams.newBuilder()
-                    .setProductDetailsParamsList(
-                        listOf(
-                            BillingFlowParams.ProductDetailsParams.newBuilder()
-                                .setProductDetails(productDetails)
-                                .setOfferToken(args.offerToken)
-                                .build()
-                        )
-                    )
-                    .build()
-
-                val purchaseResult = billingClient.launchBillingFlow(activity, billingFlowParams)
-
-                if (purchaseResult.responseCode != BillingResponseCode.OK) {
-                    Log.e("tauri.iap", "Failed to launch purchase flow: responseCode=${purchaseResult.responseCode}, debugMessage=${purchaseResult.debugMessage}")
-                }
-
-                invoke.resolve(createResponseWithCode(purchaseResult.responseCode))
-            } else {
+            if (billingResult.responseCode != BillingResponseCode.OK || productDetailsList.isEmpty()) {
                 Log.e("tauri.iap", "Failed to query product details for purchase flow: responseCode=${billingResult.responseCode}, debugMessage=${billingResult.debugMessage}")
                 invoke.resolve(createResponseWithCode(billingResult.responseCode))
+                return@queryProductDetails
             }
+
+            // TODO: Is this correct? Does this list always have just one element?
+            val productDetails = productDetailsList[0]
+
+            val subscriptionOfferDetails = productDetails.subscriptionOfferDetails?.find {
+                it.offerToken == args.offerToken
+            }
+
+            if (subscriptionOfferDetails == null) {
+                Log.e("tauri.iap", "Offer token not found in product details")
+                invoke.resolve(createResponseWithCode(BillingResponseCode.ITEM_NOT_OWNED))
+                return@queryProductDetails
+            }
+
+            val billingFlowParams = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(
+                    listOf(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                            .setProductDetails(productDetails)
+                            .setOfferToken(args.offerToken)
+                            .build()
+                    )
+                )
+                .build()
+
+            val purchaseResult = billingClient.launchBillingFlow(activity, billingFlowParams)
+
+            if (purchaseResult.responseCode != BillingResponseCode.OK) {
+                Log.e("tauri.iap", "Failed to launch purchase flow: responseCode=${purchaseResult.responseCode}, debugMessage=${purchaseResult.debugMessage}")
+            }
+
+            invoke.resolve(createResponseWithCode(purchaseResult.responseCode))
         }
     }
 
