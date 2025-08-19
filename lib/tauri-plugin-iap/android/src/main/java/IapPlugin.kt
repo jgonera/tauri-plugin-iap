@@ -80,19 +80,45 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
 
         queryProductDetails(args.productId) { billingResult, productDetailsList ->
             if (billingResult.responseCode != BillingResponseCode.OK || productDetailsList.isEmpty()) {
-                invoke.reject("Error in getProducts! responseCode: ${billingResult.responseCode}, debugMessage: ${billingResult.debugMessage}")
+                logErrorAndReject(invoke, "Failed to query product details for purchase flow: responseCode=${billingResult.responseCode}, debugMessage=${billingResult.debugMessage}")
                 return@queryProductDetails
             }
 
-            val response = JSObject()
-            val productDetailsArray = JSArray()
-
-            productDetailsList.forEach { pd ->
-                productDetailsArray.put(mapProductDetailsToJS(pd))
-            }
-
-            response.put("productDetails", productDetailsArray)
-            invoke.resolve(response)
+            invoke.resolve(jsObject {
+                put("productDetails", productDetailsList.toJSArray { pd -> jsObject {
+                    put("description", pd.description)
+                    put("name", pd.name)
+                    put("productId", pd.productId)
+                    put("productType", pd.productType)
+                    put("title", pd.title)
+                    put("subscriptionOfferDetails", pd.subscriptionOfferDetails?.toJSArray { sod ->
+                        jsObject {
+                            put("basePlanId", sod.basePlanId)
+                            put("installmentPlanDetails", sod.installmentPlanDetails?.let { ipd ->
+                                jsObject {
+                                    put("installmentPlanCommitmentPaymentsCount", ipd.installmentPlanCommitmentPaymentsCount)
+                                    put("subsequentInstallmentPlanCommitmentPaymentsCount", ipd.subsequentInstallmentPlanCommitmentPaymentsCount)
+                                }
+                            })
+                            put("offerId", sod.offerId)
+                            put("offerTags", sod.offerTags.toJSArray())
+                            put("offerToken", sod.offerToken)
+                            put("pricingPhases", jsObject {
+                                put("pricingPhaseList", sod.pricingPhases.pricingPhaseList.toJSArray { pp ->
+                                    jsObject {
+                                        put("billingCycleCount", pp.billingCycleCount)
+                                        put("billingPeriod", pp.billingPeriod)
+                                        put("formattedPrice", pp.formattedPrice)
+                                        put("priceAmountMicros", pp.priceAmountMicros)
+                                        put("priceCurrencyCode", pp.priceCurrencyCode)
+                                        put("recurrenceMode", pp.recurrenceMode)
+                                    }
+                                })
+                            })
+                        }
+                    })
+                } } )
+            })
         }
     }
 
@@ -101,21 +127,18 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
         val args = invoke.parseArgs(LaunchPurchaseFlowArgs::class.java)
 
         if (!billingClient.isReady) {
-            Log.e("tauri.iap", "BillingClient is not ready")
-            invoke.resolve(createResponseWithCode(BillingResponseCode.SERVICE_DISCONNECTED))
+            logErrorAndReject(invoke, "BillingClient is not ready")
             return
         }
 
         queryProductDetails(args.productId) { billingResult, productDetailsList ->
             if (billingResult.responseCode != BillingResponseCode.OK || productDetailsList.isEmpty()) {
-                Log.e("tauri.iap", "Failed to query product details for purchase flow: responseCode=${billingResult.responseCode}, debugMessage=${billingResult.debugMessage}")
-                invoke.resolve(createResponseWithCode(billingResult.responseCode))
+                logErrorAndReject(invoke, "Failed to query product details for purchase flow: responseCode=${billingResult.responseCode}, debugMessage=${billingResult.debugMessage}")
                 return@queryProductDetails
             }
 
             // TODO: Is this correct? Does this list always have just one element?
             val productDetails = productDetailsList[0]
-
 
             val billingFlowParams = BillingFlowParams.newBuilder()
                 .setProductDetailsParamsList(
@@ -131,10 +154,10 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
             val purchaseResult = billingClient.launchBillingFlow(activity, billingFlowParams)
 
             if (purchaseResult.responseCode != BillingResponseCode.OK) {
-                Log.e("tauri.iap", "Failed to launch purchase flow: responseCode=${purchaseResult.responseCode}, debugMessage=${purchaseResult.debugMessage}")
+                logErrorAndReject(invoke, "Failed to launch purchase flow: responseCode=${purchaseResult.responseCode}, debugMessage=${purchaseResult.debugMessage}")
+            } else {
+                invoke.resolve(jsObject { put("responseCode", purchaseResult.responseCode) } )
             }
-
-            invoke.resolve(createResponseWithCode(purchaseResult.responseCode))
         }
     }
 
@@ -159,10 +182,9 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
         billingClient.queryProductDetailsAsync(queryProductDetailsParams, callback)
     }
 
-    private fun createResponseWithCode(responseCode: Int): JSObject {
-        return JSObject().apply {
-            put("responseCode", responseCode)
-        }
+    private fun logErrorAndReject(invoke: Invoke, message: String) {
+        Log.e("tauri.iap", message)
+        invoke.reject(message)
     }
 
     private fun <T> List<T>.toJSArray(mapper: (T) -> Any = { it as Any }): JSArray {
@@ -175,37 +197,4 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
         return JSObject().apply(builder)
     }
 
-    private fun mapProductDetailsToJS(pd: com.android.billingclient.api.ProductDetails): JSObject = jsObject {
-        put("description", pd.description)
-        put("name", pd.name)
-        put("productId", pd.productId)
-        put("productType", pd.productType)
-        put("title", pd.title)
-        put("subscriptionOfferDetails", pd.subscriptionOfferDetails?.toJSArray { sod ->
-            jsObject {
-                put("basePlanId", sod.basePlanId)
-                put("installmentPlanDetails", sod.installmentPlanDetails?.let { ipd ->
-                    jsObject {
-                        put("installmentPlanCommitmentPaymentsCount", ipd.installmentPlanCommitmentPaymentsCount)
-                        put("subsequentInstallmentPlanCommitmentPaymentsCount", ipd.subsequentInstallmentPlanCommitmentPaymentsCount)
-                    }
-                })
-                put("offerId", sod.offerId)
-                put("offerTags", sod.offerTags.toJSArray())
-                put("offerToken", sod.offerToken)
-                put("pricingPhases", jsObject {
-                    put("pricingPhaseList", sod.pricingPhases.pricingPhaseList.toJSArray { pp ->
-                        jsObject {
-                            put("billingCycleCount", pp.billingCycleCount)
-                            put("billingPeriod", pp.billingPeriod)
-                            put("formattedPrice", pp.formattedPrice)
-                            put("priceAmountMicros", pp.priceAmountMicros)
-                            put("priceCurrencyCode", pp.priceCurrencyCode)
-                            put("recurrenceMode", pp.recurrenceMode)
-                        }
-                    })
-                })
-            }
-        })
-    }
 }
