@@ -15,7 +15,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
   api: PluginApi<R, C>,
 ) -> crate::Result<Iap<R>> {
   #[cfg(target_os = "android")]
-  let handle = api.register_android_plugin("com.papierlabs.tauri.iap", "ExamplePlugin")?;
+  let handle = api.register_android_plugin("com.papierlabs.tauri.iap", "IapPlugin")?;
   #[cfg(target_os = "ios")]
   let handle = api.register_ios_plugin(init_plugin_iap)?;
 
