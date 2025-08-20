@@ -13,6 +13,9 @@ pluginManagement {
                 case "org.jetbrains.kotlin.android":
                     useVersion("1.8.20")
                     break
+                case "com.ncorti.ktfmt.gradle":
+                    useVersion("0.18.0")
+                    break
             }
         }
     }

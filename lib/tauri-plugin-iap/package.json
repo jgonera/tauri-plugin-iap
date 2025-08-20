@@ -19,7 +19,15 @@
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "npm build",
-    "pretest": "npm build"
+    "pretest": "npm build",
+    "format": "npm run format:node && npm run format:kotlin && npm run format:rust",
+    "format:kotlin": "cd android && ./gradlew ktfmtFormat",
+    "format:node": "NODE_OPTIONS=\"--experimental-strip-types\" prettier --write \"./**/*.{js,json,md,ts,tsx}\"",
+    "format:rust": "cargo fmt",
+    "lint": "npm run lint:node && npm run lint:kotlin && npm run lint:rust",
+    "lint:kotlin": "cd android && ./gradlew ktfmtCheck",
+    "lint:node": "NODE_OPTIONS=\"--experimental-strip-types\" prettier --check \"./**/*.{js,json,md,ts,tsx}\"",
+    "lint:rust": "cargo fmt --check"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.8.0"

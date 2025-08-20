@@ -11,27 +11,27 @@ interface ProductDetails {
   productType: string
   title: string
   subscriptionOfferDetails:
-  | {
-    basePlanId: string
-    installmentPlanDetails: {
-      installmentPlanCommitmentPaymentsCount: number
-      subsequentInstallmentPlanCommitmentPaymentsCount: number
-    }
-    offerId: string | null
-    offerTags: string[]
-    offerToken: string
-    pricingPhases: {
-      pricingPhaseList: {
-        billingCycleCount: number
-        billingPeriod: string
-        formattedPrice: string
-        priceAmountMicros: number
-        priceCurrencyCode: string
-        recurrenceMode: number
+    | {
+        basePlanId: string
+        installmentPlanDetails: {
+          installmentPlanCommitmentPaymentsCount: number
+          subsequentInstallmentPlanCommitmentPaymentsCount: number
+        }
+        offerId: string | null
+        offerTags: string[]
+        offerToken: string
+        pricingPhases: {
+          pricingPhaseList: {
+            billingCycleCount: number
+            billingPeriod: string
+            formattedPrice: string
+            priceAmountMicros: number
+            priceCurrencyCode: string
+            recurrenceMode: number
+          }[]
+        }
       }[]
-    }
-  }[]
-  | null
+    | null
 }
 
 interface BillingResult {
