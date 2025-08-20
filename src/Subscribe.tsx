@@ -1,3 +1,4 @@
+import { PluginListener } from "@tauri-apps/api/core"
 import { useEffect, useState } from "react"
 import {
   getProductDetails,
@@ -21,11 +22,12 @@ export default function Subscribe() {
   }, [])
 
   useEffect(() => {
-    let unlisten: (() => void) | null = null
+    let listener: PluginListener | null = null
 
     void (async () => {
       // Register the purchase callback
-      unlisten = await onPurchasesUpdated((event) => {
+      console.log("Registering onPurchasesUpdated callback")
+      listener = await onPurchasesUpdated((event) => {
         console.log(event)
         const { billingResult, purchases } = event
 
@@ -51,8 +53,8 @@ export default function Subscribe() {
 
     // Cleanup function
     return () => {
-      if (unlisten) {
-        unlisten()
+      if (listener) {
+        void listener.unregister()
       }
     }
   }, [])
