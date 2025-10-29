@@ -1,138 +1,77 @@
 # AGENTS.md
 
-## Overview
+This file provides guidance to AI agents when working with code in this
+repository.
 
-ScribbleScan is a cross-platform mobile app (iOS and Android) for scanning and
-performing OCR on handwritten and printed documents.
+## Project Overview
 
-This is a monorepo that contains several projects, described in following
-sections. Each section name corresponds to a subdirectory of this monorepo.
+This is a Tauri plugin for in-app purchases (IAP) that provides cross-platform
+support for mobile app monetization. Android implementation is WIP, iOS is not
+yet started. The plugin follows the standard Tauri plugin architecture with:
 
-## api
+- **Rust core** (`src/`) - Main plugin logic with platform-specific
+  implementation
+- **TypeScript API** (`guest-js/`) - Frontend API for Tauri applications
+- **Android implementation** (`android/`) - Kotlin code using Google Play
+  Billing
+- **iOS implementation** (`ios/`) - Swift code for App Store integration
 
-Backed API for the mobile app. Placeholder for now.
+## Development Commands
 
-## mobile
+### Building
 
-The mobile app is built with Tauri + React + TypeScript. The app allows users to
-capture document pages, perform OCR to extract text, and search through their
-document collection.
+- `npm build` - Build the TypeScript API (compiles `guest-js/index.ts` to
+  `dist-js/`)
+- `cargo build` - Build the Rust plugin
 
-### Development Commands
+### TypeScript Development
 
-- `npm run dev:android` - Start Android development with live reload and logging
-- `npm run dev:ios` - Start iOS development with live reload and logging
-- `npm run format` - Auto-fix linting issues and format code (TypeScript, Rust,
-  Kotlin)
-- `npm run format:kotlin|node|rust` - Specific subcommands for formatting code
-  in a given language.
-- `npm run lint` - Run linters and code formatters in check mode (TypeScript,
-  Rust, Kotlin)
-- `npm run lint:kotlin|node|rust` - Specific subcommands for linting and
-  checking formatting for a given language.
-- `npm run log` - View recent development logs
+- Uses Rollup for bundling with dual ESM/CJS output
+- TypeScript configuration in `tsconfig.json` with strict settings
+- Run `npm build` after making changes to `guest-js/index.ts`
 
-The following commands are internally used by Tauri, no need to run them:
+### Testing
 
-- `npm run dev` - Start Vite development server for web development
-- `npm run tauri` - Access Tauri CLI commands
+- Android: Standard Android testing with JUnit (`./gradlew test` in android/)
+- iOS: Swift Package Manager testing (`swift test` in ios/)
+- No specific test commands defined in package.json yet
 
-**IMPORTANT:**
+## Architecture
 
-- The development server and the frontend log everything into the `dev.log`
-  file.
-- Use the `npm run log` command to read the log file.
-- Never start the development server! It is already started for you.
-- Never stop the development server! It keeps running. It auto compiles and auto
-  reloads. It does log to `dev.log`
-- Always run appropriate `npm run lint:*` command after you finish working on
-  code. If you can't figure out which subcommand to run, run the general one. If
-  there are formatting errors run the appropriate `npm run format` command.
-  Other errors need to be fixed by you.
-- If you modify Android-related code make sure at the end that it builds with
-  `npm run build:android`. You can build just one target (e.g.
-  `npm run build:android -- --target aarch64`) to speed things up.
-- If you modify iOS-related code make sure at the end that it build with
-  `npm run build:ios`.
+### Core Plugin Structure
 
-### Architecture
+- `src/lib.rs` - Main plugin entry point with `init()` function and `IapExt`
+  trait
+- `src/commands.rs` - Tauri command handlers (`get_product_details`, `ping`)
+- `src/models.rs` - Shared data structures with serde serialization
+- `src/mobile.rs` & `src/desktop.rs` - Platform-specific implementations
+- `build.rs` - Plugin build configuration specifying commands and platform paths
 
-#### Tech Stack
+### API Design
 
-- **Frontend**: React 18 + TypeScript + Vite
-- **Mobile Framework**: Tauri v2 (Rust backend, web frontend)
-- **Database**: SQLite via `@tauri-apps/plugin-sql` with runtime schema checks
-  via Zod
-- **Routing**: React Router v7
-- **State Management**: Zustand
-- **UI Components**: Custom React components + CSS modules
-- **OCR**: Remote service with mock implementation for development
+The plugin exposes two main commands:
 
-#### Project Structure
+- `get_product_details(productId)` - Fetch product information from app stores
+- `ping(value)` - Test command for connectivity
 
-##### Frontend (`src/`)
+### Data Models
 
-- `App.tsx` - Main router with all application routes
-- `Camera.tsx` - Document scanning interface
-- `Doc.tsx` - Document viewer with pages
-- `Page.tsx` - Individual page viewer with OCR text
-- `Search.tsx` - Full-text search interface
-- `List.tsx` - Document library view
-- `Subscribe.tsx` - Subscription/IAP interface
+Complex product details structure supporting Google Play Billing with
+subscription offers, pricing phases, and installment plans. All models use
+camelCase serialization for consistency with TypeScript.
 
-##### Core Systems
+### Platform Integration
 
-- `src/store/` - Database helpers, SQLite store, and type definitions
-- `src/ocr/` - OCR abstraction layer (switches between mock and remote)
-- `src/components/` - Reusable UI components
+- Android: Uses Google Play Billing Client (billing-ktx:7.1.1)
+- iOS: Swift Package Manager with Tauri iOS bindings
+- Build configuration handles platform-specific code compilation
 
-##### Tauri Backend (`src-tauri/`)
+## Key Files
 
-- Rust backend with mobile capabilities
-- SQLite database integration
-- File system access for document storage
-- Custom IAP plugin integration
-- Kotlin and Swift used for native mobile APIs
+- `permissions/` - Tauri permission definitions for plugin commands
+- `dist-js/` - Generated TypeScript build output (don't edit directly)
+- `android/build.gradle.kts` - Android build configuration with dependencies
+- `ios/Package.swift` - Swift package definition for iOS
 
-#### Data Model
-
-Documents contain multiple pages with OCR text:
-
-- `Doc` - Document with metadata and pages array
-- `Page` - Individual page with image URL and extracted text
-- Database uses UUID identifiers and timestamps
-
-#### OCR Integration
-
-The app supports two OCR modes:
-
-- **Development**: Mock OCR with placeholder text
-- **Production**: Remote OCR service integration
-- OCR warming occurs on app startup
-
-#### Custom Tauri Plugin
-
-Includes a custom IAP (In-App Purchase) plugin at `lib/tauri-plugin-iap/` for
-subscription management.
-
-### Configuration Files
-
-- `tauri.conf.json` - Tauri app configuration with mobile settings
-- `eslint.config.ts` - Uses jgonera ESLint configuration
-- `prettier.config.ts` - Uses jgonera Prettier configuration
-- `stylelint.config.js` - CSS linting configuration
-- `tsconfig.json` - TypeScript configuration with strict settings
-
-### Database
-
-- SQLite database (`scribbleScan.db`) preloaded via Tauri SQL plugin
-- Document and page storage with full-text search capabilities
-- Uses SQL template tags for query syntax highlighting and formatting via
-  Prettier
-
-### Mobile Platform Notes
-
-- iOS development team ID configured in bundle settings
-- Android build uses modern Gradle with Kotlin
-- Asset protocol enabled for local file access
-- CSP configured for Tauri security requirements
+The plugin follows Tauri v2 patterns with proper permission management and
+cross-platform mobile support for app store integrations.
