@@ -1,16 +1,24 @@
 # AGENTS.md
 
-This file provides guidance to AI Agents when working with code in this
-repository.
+## Overview
 
-## Project Overview
+ScribbleScan is a cross-platform mobile app (iOS and Android) for scanning and
+performing OCR on handwritten and printed documents.
 
-ScribbleScan is a cross-platform mobile app (iOS and Android) built with Tauri +
-React + TypeScript for scanning and performing OCR on handwritten and printed
-documents. The app allows users to capture document pages, perform OCR to
-extract text, and search through their document collection.
+This is a monorepo that contains several projects, described in following
+sections. Each section name corresponds to a subdirectory of this monorepo.
 
-## Development Commands
+## api
+
+Backed API for the mobile app. Placeholder for now.
+
+## mobile
+
+The mobile app is built with Tauri + React + TypeScript. The app allows users to
+capture document pages, perform OCR to extract text, and search through their
+document collection.
+
+### Development Commands
 
 - `npm run dev:android` - Start Android development with live reload and logging
 - `npm run dev:ios` - Start iOS development with live reload and logging
@@ -47,9 +55,9 @@ The following commands are internally used by Tauri, no need to run them:
 - If you modify iOS-related code make sure at the end that it build with
   `npm run build:ios`.
 
-## Architecture
+### Architecture
 
-### Tech Stack
+#### Tech Stack
 
 - **Frontend**: React 18 + TypeScript + Vite
 - **Mobile Framework**: Tauri v2 (Rust backend, web frontend)
@@ -60,9 +68,9 @@ The following commands are internally used by Tauri, no need to run them:
 - **UI Components**: Custom React components + CSS modules
 - **OCR**: Remote service with mock implementation for development
 
-### Project Structure
+#### Project Structure
 
-#### Frontend (`src/`)
+##### Frontend (`src/`)
 
 - `App.tsx` - Main router with all application routes
 - `Camera.tsx` - Document scanning interface
@@ -72,13 +80,13 @@ The following commands are internally used by Tauri, no need to run them:
 - `List.tsx` - Document library view
 - `Subscribe.tsx` - Subscription/IAP interface
 
-#### Core Systems
+##### Core Systems
 
 - `src/store/` - Database helpers, SQLite store, and type definitions
 - `src/ocr/` - OCR abstraction layer (switches between mock and remote)
 - `src/components/` - Reusable UI components
 
-#### Tauri Backend (`src-tauri/`)
+##### Tauri Backend (`src-tauri/`)
 
 - Rust backend with mobile capabilities
 - SQLite database integration
@@ -86,7 +94,7 @@ The following commands are internally used by Tauri, no need to run them:
 - Custom IAP plugin integration
 - Kotlin and Swift used for native mobile APIs
 
-### Data Model
+#### Data Model
 
 Documents contain multiple pages with OCR text:
 
@@ -94,7 +102,7 @@ Documents contain multiple pages with OCR text:
 - `Page` - Individual page with image URL and extracted text
 - Database uses UUID identifiers and timestamps
 
-### OCR Integration
+#### OCR Integration
 
 The app supports two OCR modes:
 
@@ -102,12 +110,12 @@ The app supports two OCR modes:
 - **Production**: Remote OCR service integration
 - OCR warming occurs on app startup
 
-### Custom Tauri Plugin
+#### Custom Tauri Plugin
 
 Includes a custom IAP (In-App Purchase) plugin at `lib/tauri-plugin-iap/` for
 subscription management.
 
-## Configuration Files
+### Configuration Files
 
 - `tauri.conf.json` - Tauri app configuration with mobile settings
 - `eslint.config.ts` - Uses jgonera ESLint configuration
@@ -115,14 +123,14 @@ subscription management.
 - `stylelint.config.js` - CSS linting configuration
 - `tsconfig.json` - TypeScript configuration with strict settings
 
-## Database
+### Database
 
 - SQLite database (`scribbleScan.db`) preloaded via Tauri SQL plugin
 - Document and page storage with full-text search capabilities
 - Uses SQL template tags for query syntax highlighting and formatting via
   Prettier
 
-## Mobile Platform Notes
+### Mobile Platform Notes
 
 - iOS development team ID configured in bundle settings
 - Android build uses modern Gradle with Kotlin
