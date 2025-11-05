@@ -3,6 +3,7 @@ const COMMANDS: &[&str] = &[
     "launch_purchase_flow",
     "ping",
     "registerListener",
+    "remove_listener",
     "unregister_listener",
 ];
 

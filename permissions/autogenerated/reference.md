@@ -8,6 +8,7 @@ Default permissions for the plugin
 - `allow-launch-purchase-flow`
 - `allow-ping`
 - `allow-registerListener`
+- `allow-remove-listener`
 - `allow-unregister-listener`
 
 ## Permission Table
@@ -119,6 +120,32 @@ Enables the registerListener command without any pre-configured scope.
 <td>
 
 Denies the registerListener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`iap:allow-remove-listener`
+
+</td>
+<td>
+
+Enables the remove_listener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`iap:deny-remove-listener`
+
+</td>
+<td>
+
+Denies the remove_listener command without any pre-configured scope.
 
 </td>
 </tr>
