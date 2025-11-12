@@ -4,7 +4,7 @@ import {
   type PluginListener,
 } from "@tauri-apps/api/core"
 
-interface ProductDetails {
+export interface ProductDetails {
   description: string
   name: string
   productId: string
@@ -95,7 +95,7 @@ export async function ping(value: string): Promise<string | null> {
     payload: {
       value,
     },
-  }).then((r) => (r.value ? r.value : null))
+  }).then((r) => r.value ?? null)
 }
 
 export async function onPurchasesUpdated(

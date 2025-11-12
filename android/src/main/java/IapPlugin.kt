@@ -48,6 +48,8 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
           jsObject {
             put("responseCode", billingResult.responseCode)
             put("debugMessage", billingResult.debugMessage)
+            // TODO: Is there also
+            // billingResult.onPurchasesUpdatedSubResponseCode?
           })
 
       put(
