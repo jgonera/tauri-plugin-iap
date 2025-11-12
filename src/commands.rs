@@ -21,6 +21,14 @@ pub(crate) async fn launch_purchase_flow<R: Runtime>(
 }
 
 #[command]
+pub(crate) async fn query_purchases<R: Runtime>(
+    app: AppHandle<R>,
+    payload: QueryPurchasesRequest,
+) -> Result<QueryPurchasesResponse> {
+    app.iap().query_purchases(payload)
+}
+
+#[command]
 pub(crate) async fn ping<R: Runtime>(
     app: AppHandle<R>,
     payload: PingRequest,

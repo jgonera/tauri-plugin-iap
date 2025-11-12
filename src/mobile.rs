@@ -44,6 +44,15 @@ impl<R: Runtime> Iap<R> {
             .map_err(Into::into)
     }
 
+    pub fn query_purchases(
+        &self,
+        payload: QueryPurchasesRequest,
+    ) -> crate::Result<QueryPurchasesResponse> {
+        self.0
+            .run_mobile_plugin("queryPurchases", payload)
+            .map_err(Into::into)
+    }
+
     pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
         self.0
             .run_mobile_plugin("ping", payload)

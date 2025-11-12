@@ -6,6 +6,7 @@ Default permissions for the plugin
 
 - `allow-get-product-details`
 - `allow-launch-purchase-flow`
+- `allow-query-purchases`
 - `allow-ping`
 - `allow-registerListener`
 - `allow-remove-listener`
@@ -94,6 +95,32 @@ Enables the ping command without any pre-configured scope.
 <td>
 
 Denies the ping command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`iap:allow-query-purchases`
+
+</td>
+<td>
+
+Enables the query_purchases command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`iap:deny-query-purchases`
+
+</td>
+<td>
+
+Denies the query_purchases command without any pre-configured scope.
 
 </td>
 </tr>

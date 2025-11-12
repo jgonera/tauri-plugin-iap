@@ -1,6 +1,7 @@
 const COMMANDS: &[&str] = &[
     "get_product_details",
     "launch_purchase_flow",
+    "query_purchases",
     "ping",
     "registerListener",
     "remove_listener",

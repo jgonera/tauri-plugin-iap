@@ -34,12 +34,12 @@ export interface ProductDetails {
     | null
 }
 
-interface BillingResult {
+export interface BillingResult {
   responseCode: number
   debugMessage: string
 }
 
-interface Purchase {
+export interface Purchase {
   orderId: string
   packageName: string
   purchaseState: number
@@ -87,6 +87,12 @@ export async function launchPurchaseFlow(
       productId,
       offerToken,
     },
+  })
+}
+
+export async function queryPurchases(): Promise<{ purchases: Purchase[] }> {
+  return invoke<{ purchases: Purchase[] }>("plugin:iap|query_purchases", {
+    payload: {},
   })
 }
 

@@ -20,6 +20,7 @@ import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
+import com.android.billingclient.api.QueryPurchasesParams
 
 @InvokeArg
 internal class GetProductDetailsArgs {
@@ -228,6 +229,58 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
         invoke.resolve(jsObject { put("responseCode", purchaseResult.responseCode) })
       }
     }
+  }
+
+  @Command
+  fun queryPurchases(invoke: Invoke) {
+    if (!billingClient.isReady) {
+      logErrorAndReject(invoke, "BillingClient is not ready")
+      return
+    }
+
+    billingClient.queryPurchasesAsync(
+        QueryPurchasesParams.newBuilder().setProductType(ProductType.SUBS).build()) {
+            billingResult,
+            purchasesList ->
+          if (billingResult.responseCode != BillingResponseCode.OK) {
+            logErrorAndReject(
+                invoke,
+                "Failed to query purchases: " +
+                    "responseCode=${billingResult.responseCode}, " +
+                    "debugMessage=${billingResult.debugMessage}")
+            return@queryPurchasesAsync
+          }
+
+          invoke.resolve(
+              jsObject {
+                put(
+                    "purchases",
+                    purchasesList.toJSArray { purchase ->
+                      jsObject {
+                        put("orderId", purchase.orderId)
+                        put("packageName", purchase.packageName)
+                        put("purchaseState", purchase.purchaseState)
+                        put("purchaseTime", purchase.purchaseTime)
+                        put("purchaseToken", purchase.purchaseToken)
+                        put("quantity", purchase.quantity)
+                        put("signature", purchase.signature)
+                        put("skus", purchase.skus.toJSArray())
+                        put("isAcknowledged", purchase.isAcknowledged)
+                        put("isAutoRenewing", purchase.isAutoRenewing)
+                        put("originalJson", purchase.originalJson)
+                        put("developerPayload", purchase.developerPayload)
+                        put(
+                            "accountIdentifiers",
+                            purchase.accountIdentifiers?.let { ai ->
+                              jsObject {
+                                put("obfuscatedAccountId", ai.obfuscatedAccountId)
+                                put("obfuscatedProfileId", ai.obfuscatedProfileId)
+                              }
+                            })
+                      }
+                    })
+              })
+        }
   }
 
   @Command

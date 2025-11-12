@@ -30,6 +30,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
         .invoke_handler(tauri::generate_handler![
             commands::get_product_details,
             commands::launch_purchase_flow,
+            commands::query_purchases,
             commands::ping,
         ])
         .setup(|app, api| {
