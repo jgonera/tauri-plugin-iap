@@ -4,34 +4,14 @@ import {
   type PluginListener,
 } from "@tauri-apps/api/core"
 
+export interface SubscriptionOffer {
+  basePlanId: string
+  formattedPrice: string
+  offerToken: string
+}
+
 export interface ProductDetails {
-  description: string
-  name: string
-  productId: string
-  productType: string
-  title: string
-  subscriptionOfferDetails:
-    | {
-        basePlanId: string
-        installmentPlanDetails: {
-          installmentPlanCommitmentPaymentsCount: number
-          subsequentInstallmentPlanCommitmentPaymentsCount: number
-        }
-        offerId: string | null
-        offerTags: string[]
-        offerToken: string
-        pricingPhases: {
-          pricingPhaseList: {
-            billingCycleCount: number
-            billingPeriod: string
-            formattedPrice: string
-            priceAmountMicros: number
-            priceCurrencyCode: string
-            recurrenceMode: number
-          }[]
-        }
-      }[]
-    | null
+  subscriptionOffers: SubscriptionOffer[]
 }
 
 export interface BillingResult {

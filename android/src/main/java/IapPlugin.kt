@@ -136,49 +136,17 @@ class IapPlugin(private val activity: Activity) : Plugin(activity) {
                 "productDetails",
                 productDetailsList.toJSArray { pd ->
                   jsObject {
-                    put("description", pd.description)
-                    put("name", pd.name)
-                    put("productId", pd.productId)
-                    put("productType", pd.productType)
-                    put("title", pd.title)
                     put(
-                        "subscriptionOfferDetails",
+                        "subscriptionOffers",
                         pd.subscriptionOfferDetails?.toJSArray { sod ->
                           jsObject {
                             put("basePlanId", sod.basePlanId)
                             put(
-                                "installmentPlanDetails",
-                                sod.installmentPlanDetails?.let { ipd ->
-                                  jsObject {
-                                    put(
-                                        "installmentPlanCommitmentPaymentsCount",
-                                        ipd.installmentPlanCommitmentPaymentsCount)
-                                    put(
-                                        "subsequentInstallmentPlanCommitmentPaymentsCount",
-                                        ipd.subsequentInstallmentPlanCommitmentPaymentsCount)
-                                  }
-                                })
-                            put("offerId", sod.offerId)
-                            put("offerTags", sod.offerTags.toJSArray())
+                                "formattedPrice",
+                                sod.pricingPhases.pricingPhaseList[0].formattedPrice)
                             put("offerToken", sod.offerToken)
-                            put(
-                                "pricingPhases",
-                                jsObject {
-                                  put(
-                                      "pricingPhaseList",
-                                      sod.pricingPhases.pricingPhaseList.toJSArray { pp ->
-                                        jsObject {
-                                          put("billingCycleCount", pp.billingCycleCount)
-                                          put("billingPeriod", pp.billingPeriod)
-                                          put("formattedPrice", pp.formattedPrice)
-                                          put("priceAmountMicros", pp.priceAmountMicros)
-                                          put("priceCurrencyCode", pp.priceCurrencyCode)
-                                          put("recurrenceMode", pp.recurrenceMode)
-                                        }
-                                      })
-                                })
                           }
-                        })
+                        } ?: JSArray())
                   }
                 })
           })

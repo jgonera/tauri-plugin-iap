@@ -29,45 +29,16 @@ class IapPlugin: Plugin {
     invoke.resolve([
       "productDetails": [
         [
-          "description": "Dummy subscription description for \(args.productId)",
-          "name": "Dummy Product",
-          "productId": args.productId,
-          "productType": "subs",
-          "title": "Dummy Subscription",
-          "subscriptionOfferDetails": [
+          "subscriptionOffers": [
             [
               "basePlanId": "monthly",
-              "offerTags": [],
-              "offerToken": "dummy-offer-token",
-              "pricingPhases": [
-                "pricingPhaseList": [
-                  [
-                    "billingCycleCount": 0,
-                    "billingPeriod": "P1M",
-                    "formattedPrice": "$5.10",
-                    "priceAmountMicros": 5100000,
-                    "priceCurrencyCode": "USD",
-                    "recurrenceMode": 1
-                  ]
-                ]
-              ]
+              "formattedPrice": "$5.10",
+              "offerToken": "dummy-offer-token-monthly"
             ],
             [
               "basePlanId": "yearly",
-              "offerTags": [],
-              "offerToken": "dummy-offer-token",
-              "pricingPhases": [
-                "pricingPhaseList": [
-                  [
-                    "billingCycleCount": 0,
-                    "billingPeriod": "P1Y",
-                    "formattedPrice": "$45.10",
-                    "priceAmountMicros": 45100000,
-                    "priceCurrencyCode": "USD",
-                    "recurrenceMode": 1
-                  ]
-                ]
-              ]
+              "formattedPrice": "$45.10",
+              "offerToken": "dummy-offer-token-yearly"
             ]
           ]
         ]
